@@ -1,0 +1,22 @@
+body {
+    /*min-height: 2000px;*/
+    height:100%;
+}
+
+html {
+    height:100%;
+}
+
+.container-fluid {
+    padding: 0px;
+    height: calc(100% - 51px);
+    overflow:hidden;
+}
+
+.navbar-static-top {
+    margin-bottom: 0px;
+}
+
+#mapDiv {
+    height: 100%;
+}
