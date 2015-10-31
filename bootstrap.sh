@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
 #This shell script is called during Provisioning when a Vagrant Virtual Machine is started - it is called at the end of the Vagrantfile.
 
-cd /vagrant  #This is the vagrant shared folder
+cd /var/www  #This is the vagrant shared folder
 
-# Install PHINX (PHP database migration tool) using Composer
-#sudo php composer.phar require robmorgan/phinx
+# Update Composer (it's already installed by Scotchbox)
+sudo composer self-update
+
+# Install PHP dependencies using Composer (Phinx, etc)
+sudo composer install
+
+# Run database migrations with Phinx
+php vendor/bin/phinx migrate -e development
+
 
 echo "================================="
 echo "This server has been configured!"

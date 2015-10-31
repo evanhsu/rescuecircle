@@ -14,19 +14,19 @@ class mydb {
 			switch ($mode) {
 			case 1:
 		
-				$host = "siskiyou_general.db.4665018.hostedresource.com";	// LIVE
-				$user = "siskiyou_general";		// LIVE
-				$passwd="Siskiyou09";	// LIVE
-				$database = "siskiyou_general";	// LIVE
+				$host = "";		// LIVE
+				$user = "";		// LIVE
+				$passwd="";		// LIVE
+				$database = "";	// LIVE
 				$port = 65536;			// LIVE
 				break;
 		
 			case 2:
 			default:
 				$host = "localhost";	// DEV
-				$user = "siskiyou_general";		// DEV
-				$passwd="Siskiyou09";	// DEV
-				$database = "siskiyou_general";	// DEV
+				$user = "root";			// DEV
+				$passwd="root";			// DEV
+				$database = "scotchbox";// DEV
 				break;
 			} //end switch
 			// Using mysqli (PHP 5)

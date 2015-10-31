@@ -24,13 +24,13 @@ Vagrant.configure(2) do |config|
   config.vm.synced_folder ".", "/var/www", :mount_options => ["dmode=777", "fmode=666"]
 
   # Enable the Virtual Box GUI to watch for any VM boot messages (for troubleshooting bootup issues)
-  #config.vm.provider :virtualbox do |vb|
-  #  vb.gui = true
-  #end
+  # config.vm.provider :virtualbox do |vb|
+  #   vb.gui = true
+  # end
 
   # Configure SSH
-  #config.ssh.username = 'vagrant'
-  #config.ssh.password = 'vagrant'
+  # config.ssh.username = 'vagrant'
+  # config.ssh.password = 'vagrant'
 
   # Provision the server with a bash script (perform server configuration after it has booted up)
   config.vm.provision :shell, path: "bootstrap.sh"

@@ -5,17 +5,20 @@
 var mapDiv = "mapDiv";
 var mapServer = "";
 
+
+
 // Test Data
 var heliLocations = {"helicopters":[
-                    {"tailnumber":"N123AB", "crewName":"Crew #1", "latitude":"42.1",    "longitude":"-123.1"},
-                    {"tailnumber":"N456CD", "crewName":"Crew #2", "latitude":"43.2",    "longitude":"-116.2"},
-                    {"tailnumber":"N789EF", "crewName":"Crew #3", "latitude":"44.3",    "longitude":"-110.3"},
+                    {"tailnumber":"N123AB", "crewName":"Crew #1", "latitude":"42.1",    "longitude":"-123.1",   "staffing_emts":"3",    "staffing_shorthaul":"6"},
+                    {"tailnumber":"N456CD", "crewName":"Crew #2", "latitude":"43.2",    "longitude":"-116.2",   "staffing_emts":"4",    "staffing_shorthaul":"7"},
+                    {"tailnumber":"N789EF", "crewName":"Crew #3", "latitude":"44.3",    "longitude":"-110.3",   "staffing_emts":"5",    "staffing_shorthaul":"6"},
                 ]};
 
-//console.error(heliLocations);
+// console.error(heliLocations);
 
 
-// Request a basemap from the server
+// Assemble and render the entire map
+var map;    // Accessible in the global scope
 require([   "esri/map",
             "esri/Color",
             "esri/geometry/Point",
@@ -27,6 +30,7 @@ require([   "esri/map",
             "esri/graphic",
             "esri/layers/GraphicsLayer",
             "esri/units",
+            "assets/js/Helicopter",
             "dojo/domReady!",
         ], function(    Map, 
                         Color,
@@ -38,76 +42,39 @@ require([   "esri/map",
                         SimpleLineSymbol,
                         Graphic, 
                         GraphicsLayer,
-                        Units
+                        Units,
+                        Helicopter
                     ) { 
-    var map = new Map(mapDiv, {
+    map = new Map(mapDiv, {
       center: [-113, 45],
       zoom: 6,
       basemap: "topo"
     });
 
-    var gl1 = new GraphicsLayer({ id: "helicopters" }); // This layer holds the helicopters
-    var gl2 = new GraphicsLayer({ id: "circles" });     // This layer holds the 100nm distance rings 
-    
-    var simpleMarker = new SimpleMarkerSymbol().setSize(30);
-    var heliMarker = new PictureMarkerSymbol('assets/images/heli-icon.png',75,75);
+var gl1 = new GraphicsLayer({ id: "helicopters" }); // This layer holds the helicopters
+var gl2 = new GraphicsLayer({ id: "circles" });     // This layer holds the 100nm distance rings
 
-    // Styling for the 100nm circle around each helicopter
+//Add each point to the GraphicsLayer
+var p,heliGraphic,responseRingGraphic,c,heli;
 
-    // Styling for a Response Circle for an ACTIVE helicopter (updated within the last 24 hours)
-    var responseCircleSymbolActive = new SimpleFillSymbol(
-                                            SimpleFillSymbol.STYLE_NULL,
-                                            new SimpleLineSymbol(   esri.symbol.SimpleLineSymbol.STYLE_SHORTDOT,
-                                                                    new Color([100,200,100]), 
-                                                                    3),
-                                            null /* Fill-color for circle */
-                                        );
+map.addLayer(gl1);
+map.addLayer(gl2);
+map.on("load", function() {
 
-    // Styling for a Response Circle for an INACTIVE helicopter (NOT updated within the last 24 hours)
-    var responseCircleSymbolInactive = new SimpleFillSymbol(
-                                            SimpleFillSymbol.STYLE_NULL,
-                                            new SimpleLineSymbol(   esri.symbol.SimpleLineSymbol.STYLE_SHORTDOT,
-                                                                    new Color([150,150,150]), 
-                                                                    3),
-                                            null /* Fill-color for circle */
-                                        );
-
-    var responseCircleParams = {    radius: 100,
-                                    radiusUnit: Units.NAUTICAL_MILES,
-                                    numberOfPoints: 120,
-                                    geodesic: true };
-
-    //Add each point to the GraphicsLayer
-    var p,heliGraphic,responseCircleGraphic,c,heli;
-    
-    map.addLayer(gl1);
-    map.addLayer(gl2);
-    map.on("load", function() {
-
-        // Draw each helicopter on the map and place a 100nm ring around it
-        for(var i=0; i < heliLocations.helicopters.length; i++) {
-            heli = heliLocations.helicopters[i];
-
-            p = new Point(Number(heli.longitude),Number(heli.latitude));
-            c = new Circle(p, responseCircleParams);
-/*
-            if(heli.upToDate()) {
-                // Use symbology for an ACTIVE helicopter (bright colors)
-                heliGraphic= new Graphic(p,heliMarkerActive);
-                responseCircleGraphic = new Graphic(c, responseCircleSymbolActive);
-            }
-            else {
-                // Use symbology for an INACTIVE helicopter (dim colors)
-                heliGraphic= new Graphic(p,heliMarkerInactive);
-                responseCircleGraphic = new Graphic(c, responseCircleSymbolInactive);
-            }
-*/
-            heliGraphic= new Graphic(p,heliMarker);
-            responseCircleGraphic = new Graphic(c, responseCircleSymbolActive);
-
-            gl1.add(heliGraphic);           // Add the helicopter to the "helicopters" GraphicsLayer
-            gl2.add(responseCircleGraphic); // Add the distance ring to the "circles" GraphicsLayer
+    // Draw each helicopter on the map and place a 100nm ring around it
+    for(var i=0; i < heliLocations.helicopters.length; i++) {
+        heli = new Helicopter(heliLocations.helicopters[i]);
+        if(i==1) {
+            heli.fresh = false;
         }
-        
-    });
-  });
+        gl1.add(heli.mapGraphic());     // Add a helicopter icon to the appropriate GraphicsLayer
+        gl2.add(heli.mapResponseRingGraphic()); // Add a circle to a different GraphicsLayer to represent the response range for this helicopter
+
+    }
+    
+}); // End map.on(load)
+map.on("click", function(e) {
+    //gl2.hide();
+});
+
+}); // End require()
