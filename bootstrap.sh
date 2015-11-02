@@ -9,9 +9,6 @@ sudo composer self-update
 # Install PHP dependencies using Composer (Phinx, etc)
 sudo composer install
 
-# Run database migrations with Phinx
-php vendor/bin/phinx migrate -e development
-
 
 echo "================================="
 echo "This server has been configured!"
