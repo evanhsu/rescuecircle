@@ -12,13 +12,13 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Map</a></li>
-        <li><a href="#status">Status</a></li>
-        <li><a href="#identity">Identity</a></li>
-        <li><a href="#accounts">Accounts</a></li>
+        <li class="active"><a href="/">Map</a></li>
+        <li><a href="crews/1/status">Status</a></li>
+        <li><a href="crews/1">Identity</a></li>
+        <li><a href="crews/1/accounts">Accounts</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#">Login</a></li>
+        <li><a href="/login">Login</a></li>
       </ul>
     </div><!--/.nav-collapse -->
   </div>

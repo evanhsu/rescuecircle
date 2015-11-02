@@ -67,8 +67,8 @@ map.on("load", function() {
         if(i==1) {
             heli.fresh = false;
         }
-        gl1.add(heli.mapGraphic());     // Add a helicopter icon to the appropriate GraphicsLayer
-        gl2.add(heli.mapResponseRingGraphic()); // Add a circle to a different GraphicsLayer to represent the response range for this helicopter
+        gl1.add(heli.mapGraphic());              // Add a helicopter icon to the appropriate GraphicsLayer
+        gl2.add(heli.mapResponseRingGraphic());  // Add a circle to a different GraphicsLayer to represent the response range for this helicopter
 
     }
     

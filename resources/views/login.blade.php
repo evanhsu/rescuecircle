@@ -32,18 +32,25 @@
 
   <body>
     <?php include("includes/menubar.php"); ?>
-    <div id="container-fluid" class="container-fluid" style="background-color: gray;">
-      <div id="loginWindow" style="width:400px; height:250px;border:2px solid red;margin:50px auto 0 auto;">
-        <form action="/login" method="post">
-            <span style="font-weight:bold;display:inline;">Email:</span>
-            <span style="font-weight:bold;display:inline;"><input type="text" id="email" /></span><br />
+    <div id="container-fluid" class="container-fluid" style="background: url('assets/images/map-dim.jpg'); background-size:cover;">
+      <div id="loginWindow" style="width:350px;height:350px;border:4px dashed #99dd99;margin:50px auto 0 auto;padding-top:100px;padding-left:0px; background:url('assets/images/crew-login-heli.png') no-repeat white;background-position:right bottom;border-radius:175px;text-align:center;">
+        <form class="form-vertical" role="form" action="/login" method="post" style="margin:0 auto 0 auto;width:75%;text-align:left;">
+            <div class="form-group" style="margin-bottom:5px;">
+                <label class="control-label sr-only" for="email">Email:</label>
+                <input type="email" class="form-control" id="email" placeholder="Email" />
+            </div>
 
-            <span style="font-weight:bold;display:inline;">Password:</span>
-            <span style="font-weight:bold;display:inline;"><input type="password" id="password" /></span><br />
+            <div class="form-group">
+                <label class="control-label sr-only" for="password">Password:</label>
+                <input type="password" class="form-control" id="password" placeholder="Password" />
+            </div>
 
-            <input type="submit" id="submitbutton" />
+            <div class="form-group">
+                <button type="submit" class="btn btn-default">Login</button>
+            </div>
+
       </div> <!-- /loginWindow -->
-    </div>
+    </div> <!-- /container-fluid -->
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
