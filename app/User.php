@@ -28,12 +28,48 @@ class User extends Model implements AuthenticatableContract,
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['firstname', 'lastname', 'email', 'password'];
 
     /**
-     * The attributes excluded from the model's JSON form.
+     * The attributes excluded from the models JSON form.
      *
      * @var array
      */
-    protected $hidden = ['password', 'remember_token'];
+    protected $hidden = ['encrypted_password', 'salt', 'remember_token'];
+
+
+    protected function authenticated(Request $request, User $user)
+    {
+        // This is the URL that a user is sent to after successfully logging in
+        return redirect()->intended('/crews/'.$this->crew_id.'/status');
+    }
+    
+    public function getAuthPassword() {
+        // This function is used by the Auth::attempt function to retrieve the custom-named password field
+        return $this->encrypted_password;
+    }
+
+    /*
+    *   Determine whether this User can alter user accounts for members of the specified crew
+    *
+    *   @var boolean
+    */
+    public function isAdminForCrew($crew_id) {
+        if(($this->crew_id == $crew_id) || $this->is_global_admin) {
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    }
+
+    public function isGlobalAdmin() {
+        if($this->global_admin == 1) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }

@@ -14,11 +14,16 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('firstname');
+            $table->string('lastname');
             $table->string('email')->unique();
-            $table->string('password', 60);
+            $table->integer('crew_id');
+            $table->string('encrypted_password', 60);
+            $table->string('salt', 60);
+            $table->tinyInteger('global_admin');    // 0 or 1 (Trouble with the BOOLEAN data type when migrating between different dB's)
             $table->rememberToken();
-            $table->timestamps();
+            $table->timestamps();   # created_at AND updated_at
+            $table->dateTime('last_login_at');
         });
     }
 

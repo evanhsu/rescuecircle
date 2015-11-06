@@ -53,12 +53,14 @@ require([   "esri/map",
 
 var gl1 = new GraphicsLayer({ id: "helicopters" }); // This layer holds the helicopters
 var gl2 = new GraphicsLayer({ id: "circles" });     // This layer holds the 100nm distance rings
+var gl3 = new GraphicsLayer({ id: "lines" });       // This layer is a test of graphical line symbols
 
 //Add each point to the GraphicsLayer
 var p,heliGraphic,responseRingGraphic,c,heli;
 
 map.addLayer(gl1);
 map.addLayer(gl2);
+// map.addLayer(gl3);
 map.on("load", function() {
 
     // Draw each helicopter on the map and place a 100nm ring around it

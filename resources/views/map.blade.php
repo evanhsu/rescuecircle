@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="favicon.ico">
@@ -16,6 +17,7 @@
 
     <!-- Custom styles for this template -->
     <link href="assets/css/navbar-static-top.css" rel="stylesheet">
+    <link href="assets/css/main.css" rel="stylesheet">
     <link rel="stylesheet" href="http://js.arcgis.com/3.14/esri/css/esri.css">
     
     <script>
@@ -31,6 +33,11 @@
     </script>
     <script src="http://js.arcgis.com/3.14/"></script>  <?php /* ArcGIS API - must load before other classes */?>
     <script src="assets/js/arcmap.js"></script>         <?php /* Render the map and all layers - waits for the DOM to load so dependencies will always load first */?>
+    <script>
+        (function() {
+            $("#flash").show().delay(5000).fadeOut();   //Fails silently if #flash doesn't exist
+        })();
+    </script>
     <!--<script src="assets/js/helicopterClass.js"></script>-->
     
 
@@ -49,6 +56,9 @@
   <body>
     <?php include("includes/menubar.php"); ?>
     <div id="container-fluid" class="container-fluid">
+        @if (isset($status))
+            <div id='flash' class="alert"> {{ $status }} </div>
+        @endif
       <div id="mapDiv">
         <!-- ArcMap gets placed here -->
       </div> <!-- /mapDiv -->

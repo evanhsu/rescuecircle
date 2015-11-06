@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="favicon.ico">
@@ -16,7 +17,7 @@
 
     <!-- Custom styles for this template -->
     <link href="assets/css/navbar-static-top.css" rel="stylesheet">
-    
+    <link href="assets/css/main.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -33,19 +34,30 @@
   <body>
     <?php include("includes/menubar.php"); ?>
     <div id="container-fluid" class="container-fluid" style="background: url('assets/images/map-dim.jpg'); background-size:cover;">
-      <div id="loginWindow" style="width:350px;height:350px;border:4px dashed #99dd99;margin:50px auto 0 auto;padding-top:100px;padding-left:0px; background:url('assets/images/crew-login-heli.png') no-repeat white;background-position:right bottom;border-radius:175px;text-align:center;">
-        <form class="form-vertical" role="form" action="/login" method="post" style="margin:0 auto 0 auto;width:75%;text-align:left;">
+      <div id="login-window">
+        <div class="alert alert-danger" style="margin-top:-40px;
+        @if ($error = $errors->first('password'))
+            ">
+            {{ $error }}
+        @else
+            visibility:hidden;">&nbsp;
+        @endif
+        </div>
+        <form id="login-form" class="form-vertical" role="form" action="/login" method="post">
             <div class="form-group" style="margin-bottom:5px;">
                 <label class="control-label sr-only" for="email">Email:</label>
-                <input type="email" class="form-control" id="email" placeholder="Email" />
+                <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="{{ old('email') }}" />
+
             </div>
 
             <div class="form-group">
                 <label class="control-label sr-only" for="password">Password:</label>
-                <input type="password" class="form-control" id="password" placeholder="Password" />
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password" />
+                <div id="forgot-password"><a href="/users/reset">Forgot Password</a></div>
             </div>
 
             <div class="form-group">
+                {!! csrf_field() !!}
                 <button type="submit" class="btn btn-default">Login</button>
             </div>
 

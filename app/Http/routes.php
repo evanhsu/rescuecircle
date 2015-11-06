@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('map');
-});
+Route::get('/', array('uses' => 'Auth\AuthController@determineTrust'));
 
 
 // HOME
@@ -24,7 +22,7 @@ Route::get('/', function () {
 // A "Status" is an object that belongs to 'Crew'.  
 // A new Status is created when the Crew Status form is submitted.
 // A Status cannot be deleted, only superceded. This maintains a history log of statuses.
-// Route::get('/crews/:id/status',  /* CrewController@status) */);
+Route::get('/crews/{id}/status', array('uses' => 'CrewController@status'));
 // Route::post('/crews/:id/status', /* StatusController@create */);
 
 
@@ -35,27 +33,27 @@ Route::get('/', function () {
 
 
 // CREWMEMBER ACCOUNTS
-// Route::get('/crews/:id/accounts',       /* CrewController@accounts */);
-// Route::get('/crews/:id/accounts/new',   /* UserController@new */);
-// Route::get('/accounts/:id',             /* UserController@show */);
-// Route::post('/accounts/:id',            /* UserController@update */);
-// Route::post('/accounts/:id/destroy',    /* UserController@destroy */);
-// Route::post('/accounts/:id/reset',      /* UserController@reset */);
+// Route::get('/crews/:id/accounts',        /* CrewController@accounts */);
+// Route::get('/crews/:id/accounts/new',    /* UserController@new */);
+// Route::get('/accounts/:id',              /* UserController@show */);
+// Route::post('/accounts/:id',             /* UserController@update */);
+// Route::post('/accounts/:id/destroy',     /* UserController@destroy */);
+// Route::post('/accounts/reset',           /* UserController@postReset */);    // Accepts an email as POST parameter
+// Route::get('/accounts/reset',            /* UserController@getReset */);     // Show password reset form
+
 
 
 // SESSIONS
-// Route::get('/login',  /* SessionController@new */);
-// Route::post('/login', /* SessionController@login */);
 // Route::get('/logout', /* SessionController@logout */);
-Route::get('login', function() {
-    return view('login');
-});
+Route::get('/login',  array('uses' => 'Auth\AuthController@getLogin'));
+Route::post('/login', array('uses' => 'Auth\AuthController@postLogin'));
 
 
 // GLOBAL ADMIN ACCOUNT MANAGEMENT
 // Route::post('/admin/crews/:id/destroy', /* AdminCrewController@destroy */);
 // Route::get('/admin/crews/new',          /* AdminCrewController@new */ );
 // Route::post('/admin/crews/create',      /* AdminCrewController@create */);
+Route::get('/crews', array('uses' => 'CrewController@getCrews'));
 
 // Route::get('/accounts',    /* UserController@index */ );
 

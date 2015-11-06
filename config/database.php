@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'development'),
 
     /*
     |--------------------------------------------------------------------------
@@ -46,36 +46,28 @@ return [
 
     'connections' => [
 
-        'sqlite' => [
-            'driver'   => 'sqlite',
-            'database' => database_path('database.sqlite'),
-            'prefix'   => '',
-        ],
-
-        'mysql' => [
-            'driver'    => 'mysql',
-            'host'      => env('DB_HOST', 'localhost'),
-            'database'  => env('DB_DATABASE', 'forge'),
-            'username'  => env('DB_USERNAME', 'forge'),
-            'password'  => env('DB_PASSWORD', ''),
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix'    => '',
-            'strict'    => false,
-        ],
-
-        'pgsql' => [
+        'development' => [
             'driver'   => 'pgsql',
+            'host'     => env('DB_HOST', 'localhost'),
+            'database' => env('DB_DATABASE', 'scotchbox'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', 'root'),
+            'charset'  => 'utf8',
+            'prefix'   => '',
+            'schema'   => 'public',
+        ],
+
+        'staging' => [      /* FAMWeb MS SQL Server 2012 */
+            'driver'   => 'sqlsrv',
             'host'     => env('DB_HOST', 'localhost'),
             'database' => env('DB_DATABASE', 'forge'),
             'username' => env('DB_USERNAME', 'forge'),
             'password' => env('DB_PASSWORD', ''),
             'charset'  => 'utf8',
             'prefix'   => '',
-            'schema'   => 'public',
         ],
 
-        'sqlsrv' => [
+        'production' => [
             'driver'   => 'sqlsrv',
             'host'     => env('DB_HOST', 'localhost'),
             'database' => env('DB_DATABASE', 'forge'),

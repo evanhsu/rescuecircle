@@ -35,7 +35,14 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next)
     {
         if ($this->auth->check()) {
-            return redirect('/home');
+            // return redirect('/home');
+            $user = $this->auth->user();
+            if($user->isGlobalAdmin()) {
+                return redirect('/crews');
+            }
+            else {
+                return redirect('/crews/'.$this->auth->user()->crew_id.'/status');
+            }
         }
 
         return $next($request);
