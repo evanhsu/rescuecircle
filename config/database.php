@@ -59,20 +59,20 @@ return [
 
         'staging' => [      /* FAMWeb MS SQL Server 2012 */
             'driver'   => 'sqlsrv',
-            'host'     => env('DB_HOST', 'localhost'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'host'     => env('DB_HOST', 'unknown'),
+            'database' => env('DB_DATABASE', 'unknown'),
+            'username' => env('DB_USERNAME', 'unknown'),
+            'password' => env('DB_PASSWORD', 'unknown'),
             'charset'  => 'utf8',
             'prefix'   => '',
         ],
 
         'production' => [
             'driver'   => 'sqlsrv',
-            'host'     => env('DB_HOST', 'localhost'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'host'     => env('DB_HOST', 'unknown'),
+            'database' => env('DB_DATABASE', 'unknown'),
+            'username' => env('DB_USERNAME', 'unknown'),
+            'password' => env('DB_PASSWORD', 'unknown'),
             'charset'  => 'utf8',
             'prefix'   => '',
         ],
