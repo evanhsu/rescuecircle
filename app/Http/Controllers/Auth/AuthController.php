@@ -121,16 +121,15 @@ Class AuthController extends Controller
     } // End postLogout()
 
     public function determineTrust(Request $request) {
-        return "home";
-        /*
+
         if(Auth::check()) {
             // User is logged in
-            return View::make('/');
+            return view('map');
         }
         else {
             // User is NOT logged in
-            return View::make('/');
+            return view('map');
         }
-        */
+
     } // End determineTrust()
 }

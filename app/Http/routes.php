@@ -12,6 +12,7 @@
 */
 
 Route::get('/', array('uses' => 'Auth\AuthController@determineTrust'));
+Route::get('/feed.json', array('uses' => 'MapController@getMapJSON'));
 
 
 // HOME

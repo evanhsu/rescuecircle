@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\User;
 use Illuminate\Support\Facades\Auth;
+use App\User;
 
 Class MapController extends Controller {
 
@@ -35,7 +35,7 @@ Class MapController extends Controller {
         *           };
         *
         */
-        return Response::json(array('helicopters' => array(array( 'tailnumber'=> "N12345", 
+        return response()->json(array('helicopters' => array(array( 'tailnumber'=> "N12345", 
                                                             'crew_id'   => '1',
                                                             'latitude'  => '42.67893',
                                                             'longitude' => '-123.89409'))));
