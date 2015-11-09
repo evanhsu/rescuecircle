@@ -117,19 +117,10 @@ Class AuthController extends Controller
         Auth::logout();
 
         // Redirect to the home page with a message
-        return redirect('/')->with('status','You have been logged out.');
+        return redirect('/')->with('alert',array('message' => 'You have been logged out.', 'type' => 'success'));
     } // End postLogout()
 
     public function determineTrust(Request $request) {
-
-        if(Auth::check()) {
-            // User is logged in
-            return view('map');
-        }
-        else {
-            // User is NOT logged in
-            return view('map');
-        }
 
     } // End determineTrust()
 }

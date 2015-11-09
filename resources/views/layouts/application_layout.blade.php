@@ -36,11 +36,11 @@
 
   <body>
     @include('menubar')
-
-    @if (isset($status))
-        <div id='flash' class="alert"> {{ $status }} </div>
-    @endif
-
+        @if (Session::has('alert'))
+            <div class="alert alert-info" role="alert">
+                {{ Session::get('alert')['message'] }}
+            </div>
+        @endif
     @yield('content')
 
     @section('scripts-postload')
@@ -51,6 +51,11 @@
         <script src="assets/js/bootstrap.min.js"></script>
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
         <script src="assets/js/ie10-viewport-bug-workaround.js"></script>
+        <script>
+            (function() {
+                $(".alert").show().delay(10000).fadeOut();   //Fails silently if .alert doesn't exist
+            })();
+        </script>
     @show
 
   </body>

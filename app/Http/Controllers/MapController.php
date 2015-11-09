@@ -14,8 +14,14 @@ Class MapController extends Controller {
 
         // Display the main map page.
         // The menubar will display different links depending on whether this user is logged in or not
-
-        return View::make('/')->with('');
+        if(Auth::check()) {
+            // User is logged in
+            return view('map');
+        }
+        else {
+            // User is NOT logged in
+            return view('map');
+        }
     } // End getMap()
 
     public function getMapJSON() {

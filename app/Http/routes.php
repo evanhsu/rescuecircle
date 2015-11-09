@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('/', array('uses' => 'Auth\AuthController@determineTrust'));
+Route::get('/', array('uses' => 'MapController@getMap'));
 Route::get('/feed.json', array('uses' => 'MapController@getMapJSON'));
 
 
@@ -45,7 +45,7 @@ Route::get('/crews/{id}/status', array('uses' => 'CrewController@status'));
 
 
 // SESSIONS
-// Route::get('/logout', /* SessionController@logout */);
+Route::get('/logout', array('uses' => 'Auth\AuthController@getLogout'));
 Route::get('/login',  array('uses' => 'Auth\AuthController@getLogin'));
 Route::post('/login', array('uses' => 'Auth\AuthController@postLogin'));
 
