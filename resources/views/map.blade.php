@@ -22,13 +22,6 @@
             }]
         };
     </script>
-    <script src="http://js.arcgis.com/3.14/"></script>  <?php /* ArcGIS API - must load before other classes */?>
-    <script src="assets/js/arcmap.js"></script>         <?php /* Render the map and all layers - waits for the DOM to load so dependencies will always load first */?>
-    <script>
-        (function() {
-            $("#flash").show().delay(5000).fadeOut();   //Fails silently if #flash doesn't exist
-        })();
-    </script>
 @endsection
     
 
@@ -38,4 +31,15 @@
         <!-- ArcMap gets placed here -->
         </div> <!-- /mapDiv -->
     </div>
+@endsection
+
+@section('scripts-postload')
+    @parent
+    <script src="http://js.arcgis.com/3.14/"></script>  <?php /* ArcGIS API - must load before other classes */?>
+    <script src="assets/js/arcmap.js"></script>         <?php /* Render the map and all layers - waits for the DOM to load so dependencies will always load first */?>
+    <script>
+        (function() {
+            $("#flash").show().delay(5000).fadeOut();   //Fails silently if #flash doesn't exist
+        })();
+    </script>
 @endsection

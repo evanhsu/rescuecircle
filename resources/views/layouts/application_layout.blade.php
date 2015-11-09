@@ -32,18 +32,16 @@
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
     @show
-
   </head>
 
   <body>
     @include('menubar')
-    <div id="container-fluid" class="container-fluid">
-        @if (isset($status))
-            <div id='flash' class="alert"> {{ $status }} </div>
-        @endif
 
-        @yield('content')
-    </div>
+    @if (isset($status))
+        <div id='flash' class="alert"> {{ $status }} </div>
+    @endif
+
+    @yield('content')
 
     @section('scripts-postload')
         <!-- Bootstrap core JavaScript
