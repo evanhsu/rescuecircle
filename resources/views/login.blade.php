@@ -18,6 +18,7 @@
         @else
             visibility:hidden;">&nbsp;
         @endif
+        
         </div>
         <form id="login-form" class="form-vertical" role="form" action="/login" method="post">
             <div class="form-group" style="margin-bottom:5px;">

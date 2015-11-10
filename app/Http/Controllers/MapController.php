@@ -10,18 +10,12 @@ use App\User;
 Class MapController extends Controller {
 
 
-    public function getMap() {
+    public function getMap(Request $request) {
 
         // Display the main map page.
-        // The menubar will display different links depending on whether this user is logged in or not
-        if(Auth::check()) {
-            // User is logged in
-            return view('map');
-        }
-        else {
-            // User is NOT logged in
-            return view('map');
-        }
+        // The menubar will be selected by the MenubarComposer (app/Http/ViewComposers/MenubarComposer.php)
+        $request->session()->flash('active_menubutton','map'); // Tell the menubar which button to highlight
+        return view('map');
     } // End getMap()
 
     public function getMapJSON() {

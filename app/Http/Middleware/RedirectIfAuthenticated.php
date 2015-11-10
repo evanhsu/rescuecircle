@@ -38,10 +38,10 @@ class RedirectIfAuthenticated
             // return redirect('/home');
             $user = $this->auth->user();
             if($user->isGlobalAdmin()) {
-                return redirect('/crews');
+                return redirect()->route('crews_index');
             }
             else {
-                return redirect('/crews/'.$this->auth->user()->crew_id.'/status');
+                return redirect()->route('status_for_crew',[$this->auth->user()->crew_id]);
             }
         }
 

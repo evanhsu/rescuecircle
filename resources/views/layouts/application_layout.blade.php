@@ -36,11 +36,12 @@
 
   <body>
     @include('menubar')
-        @if (Session::has('alert'))
-            <div class="alert alert-info" role="alert">
-                {{ Session::get('alert')['message'] }}
-            </div>
-        @endif
+    
+    @if (Session::has('alert'))
+        <div class="alert alert-info" role="alert">
+            {{ Session::get('alert')['message'] }}
+        </div>
+    @endif
     @yield('content')
 
     @section('scripts-postload')

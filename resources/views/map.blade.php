@@ -23,7 +23,7 @@
         };
     </script>
 @endsection
-    
+
 
 @section('content')
     <div id="container-fluid" class="container-fluid">

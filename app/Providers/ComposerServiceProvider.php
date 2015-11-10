@@ -6,15 +6,16 @@ use Illuminate\Support\ServiceProvider;
 class ComposerServiceProvider extends ServiceProvider {
 
     /**
-     * Specify that the 'ApplicationComposer' should be called when
-     * ANY view is rendered (denoted by the '*').
+     * Specify that the MenubarComposer should be called whenever the 'menubar' View is invoked
      *
      * @return void
      */
     public function boot()
     {
-        // Bind 
-        View::composer('*', 'App\Http\ViewComposers\ApplicationComposer');
+        // Bind each Composer to its Views
+
+        // The MenubarComposer should be called whenever the 'menubar' View is invoked
+        View::composer('menubar', 'App\Http\ViewComposers\MenubarComposer');
     }
 
     /**
