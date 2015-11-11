@@ -62,6 +62,7 @@ class User extends Model implements AuthenticatableContract,
             return false;
         }
 
+        // This could be changed to use the hasPermission method
     }
 
     public function isGlobalAdmin() {
@@ -71,6 +72,21 @@ class User extends Model implements AuthenticatableContract,
         else {
             return false;
         }
+
+        // This could be changed to use the hasPermission method
+    }
+
+    public function hasPermission($permission) {
+        // Determine whether this user has the specified $permission in their User.permission array
+        //
+        // INPUT:
+        //  string $permission
+        //
+        // OUTPUT:
+        //  bool TRUE|FALSE
+
+        //return in_array($permission, $this->permissions);
+        return true; //**************************************** Change this once the User->permissions array has been implemented ****
     }
 }
 ?>

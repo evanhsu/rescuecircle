@@ -35,13 +35,13 @@ class Authenticate
     public function handle($request, Closure $next)
     {
         if ($this->auth->guest()) {
+            // The current user is a guest (not logged in)
             if ($request->ajax()) {
                 return response('Unauthorized.', 401);
             } else {
                 return redirect()->guest('/login');
             }
         }
-
         return $next($request);
     }
 }
