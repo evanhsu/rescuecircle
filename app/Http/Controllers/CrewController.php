@@ -53,7 +53,7 @@ class CrewController extends Controller
     public function create()
     {
         //
-        return "Create a new Crew - form";
+        return view('crew.new');
     }
 
     /**

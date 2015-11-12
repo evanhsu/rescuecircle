@@ -17,6 +17,9 @@ class HasPermission
      * has the same crew_id as the page being requested.
      * i.e. When $enforce_same_crew is TRUE, a user with crew_id=2 cannot access /crews/1/status
      *
+     * NOTE
+     * Users with the 'global_admin' permission will ALWAYS be allowed through this middleware.
+     *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure $next
      * @param  String   $permission
@@ -30,11 +33,16 @@ class HasPermission
         // Any other string value is converted to boolean FALSE.
         $enforce_same_crew = ($enforce_same_crew === strtolower('true'));
 
-
-        if(!$request->user()->hasPermission($permission)) {
+        // Filter and redirect
+        if($request->user()->isGlobalAdmin()) {
+            // Do not redirect - this user will be allowed through
+        }
+        elseif(!$request->user()->hasPermission($permission)) {
+            // This user did not has the $permission string in his User.permissions array
             return redirect()->route('map');
         }
         elseif($enforce_same_crew && (Route::current()->getParameter('id') != $request->user()->crew_id)) {
+            // This user's crew_id does not match the crew_id of the requested page (AND the $enforce_same_crew flag was set to TRUE)
             return redirect()->route('map');
         }
 
