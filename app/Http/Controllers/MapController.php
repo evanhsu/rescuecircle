@@ -4,18 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\User;
 use Illuminate\Support\Facades\Auth;
+use App\User;
 
 Class MapController extends Controller {
 
 
-    public function getMap() {
+    public function getMap(Request $request) {
 
         // Display the main map page.
-        // The menubar will display different links depending on whether this user is logged in or not
-
-        return View::make('/')->with('');
+        // The menubar will be selected by the MenubarComposer (app/Http/ViewComposers/MenubarComposer.php)
+        $request->session()->flash('active_menubutton','map'); // Tell the menubar which button to highlight
+        return view('map');
     } // End getMap()
 
     public function getMapJSON() {
@@ -35,7 +35,7 @@ Class MapController extends Controller {
         *           };
         *
         */
-        return Response::json(array('helicopters' => array(array( 'tailnumber'=> "N12345", 
+        return response()->json(array('helicopters' => array(array( 'tailnumber'=> "N12345", 
                                                             'crew_id'   => '1',
                                                             'latitude'  => '42.67893',
                                                             'longitude' => '-123.89409'))));

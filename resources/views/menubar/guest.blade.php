@@ -1,4 +1,13 @@
-<!-- Static navbar -->
+<?php
+  $a = strtolower($active_menubutton);
+
+  function is_active($button,$active_menubutton) {
+    // Decide whether to style the requested menu link with the "active" class
+    // The $active_menubutton variable is set in the MenubarComposer
+    echo ($button == $active_menubutton) ? " class=\"active\"" : "";
+  }
+?>
+
 <nav class="navbar navbar-default navbar-static-top">
   <div class="container">
     <div class="navbar-header">
@@ -12,13 +21,10 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="/">Map</a></li>
-        <li><a href="crews/1/status">Status</a></li>
-        <li><a href="crews/1">Identity</a></li>
-        <li><a href="crews/1/accounts">Accounts</a></li>
+        <li<?php is_active('map',$a); ?>><a href="/">Map</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="/login">Login</a></li>
+        <li<?php is_active('login',$a); ?>><a href="/login">Login</a></li>
       </ul>
     </div><!--/.nav-collapse -->
   </div>

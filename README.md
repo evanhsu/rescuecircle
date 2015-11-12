@@ -6,9 +6,11 @@ The RESCUECIRCLE site displays the location of every short-haul helicopter curre
 
 The site was built on the following web stack, although it may work just fine on future versions of PHP:
 
-* PHP 5.3.4
+* PHP 5.6
+* Composer
+* Laravel 
 * Apache 2.2.17
-* MySQL 5.1
+* PostgreSQL 
 * jQuery 1.11.3
 * Bootstrap 3.3.5
 
@@ -29,5 +31,5 @@ The site was built on the following web stack, although it may work just fine on
 
 ### Who do I talk to? ###
 
-* Repo owner or admin
-* Other community or team contact
+* Evan Hsu
+* GitHub/evanhsu

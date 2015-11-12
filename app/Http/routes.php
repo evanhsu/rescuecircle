@@ -11,23 +11,20 @@
 |
 */
 
-Route::get('/', array('uses' => 'Auth\AuthController@determineTrust'));
-
-
 // HOME
-// Route::get('/', /* MapController@show */);
+Route::get('/', array('as' => 'map', 'uses' => 'MapController@getMap'));
+Route::get('/feed.json', array('uses' => 'MapController@getMapJSON'));
 
 
 // CREW STATUS
 // A "Status" is an object that belongs to 'Crew'.  
 // A new Status is created when the Crew Status form is submitted.
 // A Status cannot be deleted, only superceded. This maintains a history log of statuses.
-Route::get('/crews/{id}/status', array('uses' => 'CrewController@status'));
+Route::get('/crews/{id}/status', array('as' => 'status_for_crew', 'uses' => 'CrewController@status'));
 // Route::post('/crews/:id/status', /* StatusController@create */);
 
 
 // CREW IDENTITY
-// Route::get('/crews',      /* CrewController@index */);
 // Route::get('/crews/:id',  /* CrewController@show */);
 // Route::post('/crews/:id', /* CrewController@update */);
 
@@ -44,16 +41,16 @@ Route::get('/crews/{id}/status', array('uses' => 'CrewController@status'));
 
 
 // SESSIONS
-// Route::get('/logout', /* SessionController@logout */);
-Route::get('/login',  array('uses' => 'Auth\AuthController@getLogin'));
+Route::get('/logout', array('as' => 'logout', 'uses' => 'Auth\AuthController@getLogout'));
+Route::get('/login',  array('as' => 'login', 'uses' => 'Auth\AuthController@getLogin'));
 Route::post('/login', array('uses' => 'Auth\AuthController@postLogin'));
 
 
 // GLOBAL ADMIN ACCOUNT MANAGEMENT
 // Route::post('/admin/crews/:id/destroy', /* AdminCrewController@destroy */);
-// Route::get('/admin/crews/new',          /* AdminCrewController@new */ );
+Route::get('/crews/new', array('as' => 'new_crew', 'uses' => 'CrewController@create'));
 // Route::post('/admin/crews/create',      /* AdminCrewController@create */);
-Route::get('/crews', array('uses' => 'CrewController@getCrews'));
+Route::get('/crews', array('as' => 'crews_index', 'uses' => 'CrewController@index'));
 
 // Route::get('/accounts',    /* UserController@index */ );
 

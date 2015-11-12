@@ -86,10 +86,11 @@ Class AuthController extends Controller
     protected $redirectTo = '/';
 
 
-    public function getLogin() {
+    public function getLogin(Request $request) {
 
         // Display the login form
         // If the user is already logged in, this request will be intercepted by the Auth middleware (/app/Http/middleware/RedirectIfAuthenticated.php)
+        $request->session()->flash('active_menubutton','login'); // Tell the menubar which button to highlight
         return view('login');
     } // End getLogin()
 
@@ -102,7 +103,15 @@ Class AuthController extends Controller
 
         if(Auth::attempt($login_credentials)) {
             // Authentication passed, user is logged in
-            return redirect()->action('CrewController@status');
+            $user = Auth::user();
+            if($user->isGlobalAdmin()) {
+                // If this user is an Admin, land on the list of all Crews (Crews@getIndex)
+                return redirect()->route('crews_index');
+            }
+            else {
+                // If this user is NOT an Admin, land on the status update page for their crew
+                return redirect()->route('status_for_crew', [$user->crew_id]);
+            }
         } else {
             // Authentication failed
             $errors = new MessageBag(['password' => ['Those credentials are invalid.']]);
@@ -114,23 +123,15 @@ Class AuthController extends Controller
     } // End postLogin()
 
     public function getLogout(Request $request) {
-        Auth::logout();
-
-        // Redirect to the home page with a message
-        return redirect('/')->with('status','You have been logged out.');
-    } // End postLogout()
-
-    public function determineTrust(Request $request) {
-        return "home";
-        /*
         if(Auth::check()) {
-            // User is logged in
-            return View::make('/');
+            Auth::logout();
+
+            // Redirect to the home page with a message
+            return redirect('/')->with('alert',array('message' => 'You have been logged out.', 'type' => 'success'));
         }
         else {
-            // User is NOT logged in
-            return View::make('/');
+            // User wasn't logged in, just redirect to home
+            return redirect('/');
         }
-        */
-    } // End determineTrust()
+    } // End postLogout()
 }
