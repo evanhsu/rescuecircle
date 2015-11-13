@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
+use App\Crew;
 
 class CrewController extends Controller
 {
@@ -17,9 +19,13 @@ class CrewController extends Controller
         $this->middleware('auth');
 
         // Require the current user to have certain permission before allowing access
-        $this->middleware('hasPermission:crew_admin,true', ['only' => ['status']]);
-        $this->middleware('hasPermission:global_admin', ['only' => ['getCrews',
+        $this->middleware('hasPermission:crew_admin,true', ['only' => [ 'status',
+                                                                        'show',
+                                                                        'edit',
+                                                                        'update']]);
+        $this->middleware('hasPermission:global_admin', ['only' => ['index',
                                                                     'create',
+                                                                    'store',
                                                                     'destroy']]);
     }
 
@@ -42,7 +48,9 @@ class CrewController extends Controller
     public function index(Request $request)
     {
         //
-        return "Index of all crews";
+        $crews = Crew::orderBy('name', 'asc')->get();
+        return view('crews.index', ['crews' => $crews]);
+        // return "Index of all crews";
     }
 
     /**
@@ -53,7 +61,7 @@ class CrewController extends Controller
     public function create()
     {
         //
-        return view('crew.new');
+        return view('crews.new');
     }
 
     /**
@@ -64,7 +72,14 @@ class CrewController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required|unique:crews|max:255']);
+
+        // Form is valid, continue...
+        $crew = new Crew(Input::all());
+        if($crew->save()) {
+            return redirect()->route('crews_index');
+        }
     }
 
     /**
@@ -76,6 +91,7 @@ class CrewController extends Controller
     public function show($id)
     {
         //
+        return "crew.show";
     }
 
     /**
@@ -87,6 +103,7 @@ class CrewController extends Controller
     public function edit($id)
     {
         //
+        return "crew.edit";
     }
 
     /**

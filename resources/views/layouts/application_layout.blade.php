@@ -42,6 +42,8 @@
             {{ Session::get('alert')['message'] }}
         </div>
     @endif
+
+    
     @yield('content')
 
     @section('scripts-postload')

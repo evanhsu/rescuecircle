@@ -39,7 +39,7 @@ Vagrant.configure(2) do |config|
   # Database settings for ScotchBox (MySQL & PostgreSQL):
   # dB Name:    scotchbox
   # Username:   root
-  # Password:   vagrant
+  # Password:   root
   # Host:       localhost
 
   # SSH Settings
