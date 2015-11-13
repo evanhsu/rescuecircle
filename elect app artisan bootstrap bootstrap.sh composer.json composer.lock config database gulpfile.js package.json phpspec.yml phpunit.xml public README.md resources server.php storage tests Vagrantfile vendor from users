@@ -1,4 +1,0 @@
- id | name | address_street1 | address_street2 | address_city | address_state | zip | phone | fax | helicopter1_tailnumber | helicopter1_model | helicopter2_tailnumber | helicopter2_model | created_at | updated_at 
-----+------+-----------------+-----------------+--------------+---------------+-----+-------+-----+------------------------+-------------------+------------------------+-------------------+------------+------------
-(0 rows)
-
