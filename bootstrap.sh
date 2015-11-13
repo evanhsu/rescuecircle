@@ -19,6 +19,11 @@ sudo composer install
 #
 #   host    all     all     all     password
 
+# Run database migrations
+php artisan migrate
+
+# Load seed data into the database
+php artisan db:seed
 
 echo "================================="
 echo "This server has been configured!"
