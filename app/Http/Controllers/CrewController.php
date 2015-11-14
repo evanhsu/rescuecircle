@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Form;
 use App\Crew;
 
 class CrewController extends Controller
@@ -103,7 +104,11 @@ class CrewController extends Controller
     public function edit($id)
     {
         //
-        return "crew.edit";
+        if($crew = Crew::findorfail($id)) {
+            return view('crews.edit')->with('crew',$crew);
+        }
+        $errors = new MessageBag(['Crew' => ['That Crew doesn\'t exist.']]);
+        //return redirect()->route('not_found')->withErrors($errors);
     }
 
     /**
@@ -116,6 +121,24 @@ class CrewController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $crew_fields = array_except($request->input('crew'), ['helicopters']);
+        $helicopters = $request->input('crew')['helicopters'];
+
+        $crew = Crew::find($id);
+
+        if($request->hasFile('logo')) {
+            if($request->file('logo')->isValid()) {
+                echo "File Success";
+                $filename = "crew_".$id."_logo.jpg";
+                $request->file('logo')->move('logos', $filename);
+                $crew_fields['logo_filename'] = '/logos/'.$filename;
+                //echo "File Success";
+            }
+        }
+        $crew->update($crew_fields);
+
+        //Session::flash('alert', array('message' => 'Crew info saved!'));
+        return redirect()->route('edit_crew', $crew->id)->with('alert', array('message' => 'Crew info saved!', 'type' => 'success'));
     }
 
     /**
@@ -126,6 +149,12 @@ class CrewController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $crew = Crew::find($id);
+        $crew_name = $crew->name;
+
+        // Release all Helicopters from this crew (delete entries from the CrewsHelicopters table)
+        // Delete all Users associated with this crew?
+        $crew->delete();
+        return redirect()->route('crews_index')->with('alert', array('message' => "'".$crew_name."' was deleted.", 'type' => 'success'));
     }
 }

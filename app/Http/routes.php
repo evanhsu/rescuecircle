@@ -27,9 +27,9 @@ Route::get('/crews/new',            array('as' => 'new_crew',       'uses' => 'C
 Route::post('/crews/new',           array('as' => 'store_crew',     'uses' => 'CrewController@store'));
 
 // CREW IDENTITY
-Route::get('/crews/{id}',       array('as' => 'crew',       'uses' => 'CrewController@show'));
-Route::get('/crews/{id}/edit',  array('as' => 'edit_crew',  'uses' => 'CrewController@edit'));
-Route::post('/crews/{id}',      array('as' => 'update_crew','uses' => 'CrewController@update'));
+Route::get('/crews/{id}',       	array('as' => 'crew',       'uses' => 'CrewController@show'));
+Route::get('/crews/{id}/identity',  array('as' => 'edit_crew',  'uses' => 'CrewController@edit'));
+Route::post('/crews/{id}',			array('as' => 'update_crew','uses' => 'CrewController@update'));
 
 
 // CREWMEMBER ACCOUNTS
@@ -54,8 +54,8 @@ Route::get('/crews',                array('as' => 'crews_index',    'uses' => 'C
 
 
 
-Route::post('/crews/:id/destroy',   array('as' => 'destroy_crew',   'uses' => 'CrewController@destroy'));
+Route::post('/crews/{id}/destroy',  array('as' => 'destroy_crew',   'uses' => 'CrewController@destroy'));
 
 // Route::get('/accounts',    /* UserController@index */ );
 
-
+//Route::get('/404', array('as' => 'not_found', 'uses' => 'ErrorController@notFound'));
