@@ -101,10 +101,11 @@ class CrewController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         //
         if($crew = Crew::findorfail($id)) {
+            $request->session()->flash('active_menubutton','identity'); // Tell the menubar which button to highlight
             return view('crews.edit')->with('crew',$crew);
         }
         $errors = new MessageBag(['Crew' => ['That Crew doesn\'t exist.']]);
