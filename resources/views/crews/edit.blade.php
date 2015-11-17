@@ -94,7 +94,7 @@
                 <label for="logo" class="col-xs-12 col-sm-2 control-label">Logo</label>
 
                 <div class="col-xs-8 col-sm-6 col-md-4">
-                    <img src="{{ $crew->logo_filename }}" style="width:100px; height:100px;" />
+                    <img src="{{ $crew->logo_filename }}?={{ $crew->updated_at }}" style="width:100px; height:100px;" />
                     <input type="file" id="logo" name="logo" class="form-control" />
                 </div>
             </div>
@@ -106,13 +106,13 @@
                 <label for="add-helicopter-button" class="control-label sr-only">Add a Helicopter</label>
                 <button class="btn btn-default" id="add-helicopter-button">Add</button>
             </div>
-
-
+            <?php $i = 0; ?>
+            @foreach($crew->helicopters as $helicopter)
             <div class="crew-helicopter-form" data-helicopter-id="489239">
                 <div class="form-group">
                     <label for="helicopter-tailnumber" class="col-xs-12 col-sm-2 control-label">Tailnumber</label>
                     <div class="form-inline col-xs-8 col-sm-6">
-                        <span><input type="text" class="form-control helicopter-tailnumber" name="crew[helicopters][0][tailnumber]" value="N205RH" readonly /></span>
+                        <span><input type="text" class="form-control helicopter-tailnumber" name="crew[helicopters][{{ $i }}][tailnumber]" value="{{ $helicopter->tailnumber }}"  /></span>
                         <span><button class="btn btn-default" class="remove-helicopter-button">Release</button></span>
                     </div>
                 </div>
@@ -120,27 +120,12 @@
                 <div class="form-group">
                     <label for="helicopter-model" class="col-xs-12 col-sm-2 control-label">Make/Model</label>
                     <div class="form-inline col-xs-8 col-sm-6">
-                        <input type="text" class="form-control helicopter-model" name="crew[helicopters][0][model]" value="Bell 205" />
+                        <input type="text" class="form-control helicopter-model" name="crew[helicopters][{{ $i }}][model]" value="{{ $helicopter->model }}" />
                     </div>
                 </div>
             </div>
-
-            <div class="crew-helicopter-form" data-helicopter-id="">
-                <div class="form-group">
-                    <label for="helicopter-tailnumber" class="col-xs-12 col-sm-2 control-label">Tailnumber</label>
-                    <div class="form-inline col-xs-8 col-sm-6">
-                        <span><input type="text" class="form-control helicopter-tailnumber" name="crew[helicopters][1][tailnumber]" placeholder="i.e. N12345" /></span>
-                        <span><button class="btn btn-default" class="remove-helicopter-button">Cancel</button></span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="helicopter-model" class="col-xs-12 col-sm-2 control-label">Make/Model</label>
-                    <div class="form-inline col-xs-8 col-sm-6">
-                        <input type="text" class="form-control helicopter-model" name="crew[helicopters][1][model]" placeholder="i.e. Astar B350" />
-                    </div>
-                </div>
-            </div>
+            <?php $i++; ?>
+            @endforeach
 
             <div class="form-group">
                 <div class="col-sm-2">

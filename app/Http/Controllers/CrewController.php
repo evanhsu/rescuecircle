@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Form;
 use App\Crew;
+use App\Helicopter;
 
 class CrewController extends Controller
 {
@@ -121,24 +122,43 @@ class CrewController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // Grab the form input
         $crew_fields = array_except($request->input('crew'), ['helicopters']);
-        $helicopters = $request->input('crew')['helicopters'];
+        $helicopter_fields = $request->input('crew')['helicopters'];
 
         $crew = Crew::find($id);
 
+        // Deal with a logo file upload
         if($request->hasFile('logo')) {
             if($request->file('logo')->isValid()) {
-                echo "File Success";
                 $filename = "crew_".$id."_logo.jpg";
                 $request->file('logo')->move('logos', $filename);
                 $crew_fields['logo_filename'] = '/logos/'.$filename;
-                //echo "File Success";
+            }
+            // *** Add error handling for the file upload ***
+        }
+
+        // Save any changes to the Crew model
+        $crew->update($crew_fields);
+        // *** Add error handling/validation for the Crew model
+
+        // Deal with the Helicopter fields:
+        // For each Helicopter on the form, create new or update the existing Helicopter in the dB if necessary
+        // (don't update the model if nothing has changed)
+        foreach($helicopter_fields as $helicopter) {
+            if(!empty($helicopter['tailnumber'])) {
+                $temp_heli = Helicopter::firstOrNew(array('tailnumber' => $helicopter['tailnumber']));
+                $helicopter['crew_id'] = $id;
+                $temp_heli->updateIfChanged($helicopter);
+                // An error occurred during updateIfChanged()
+                // Go back to the form and display errors
+                // return redirect()->route('edit_crew', $crew->id)
+                            //->withErrors($temp_heli->errors())
+                //            ->withInput();
             }
         }
-        $crew->update($crew_fields);
 
-        //Session::flash('alert', array('message' => 'Crew info saved!'));
+        // Everything completed successfully
         return redirect()->route('edit_crew', $crew->id)->with('alert', array('message' => 'Crew info saved!', 'type' => 'success'));
     }
 

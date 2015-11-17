@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\User;
+use App\Helicopter;
 
 class Crew extends Model
 {
@@ -33,7 +34,7 @@ class Crew extends Model
      *
      */
     public function helicopters() {
-        //return $this->hasMany('App/Helicopter');
+        return $this->hasMany(Helicopter::class);
     }
 
     public function users() {
