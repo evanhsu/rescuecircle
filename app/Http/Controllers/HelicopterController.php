@@ -88,19 +88,24 @@ class HelicopterController extends Controller
         //
     }
 
-    public function releaseFromCrew($tailnumber) {
+    public function releaseFromCrew(Request $request, $tailnumber) {
         // Disassociate the specified helicopter with this Crew (set crew_id = null) if the current user has authorization
 
         $heli = Helicopter::where('tailnumber',$tailnumber)->first();
+        //echo ("Heli:".$heli.".");
 
-        if(is_null($tailnumber)) {
-            // Helicopter not found. Nothing to release.
-            abort(404, "Helicopter not found");
+        if(empty($heli)) {
+            // Helicopter not found. Nothing to release. Consider this success.
+            return response()->json(['status' => 'success']);
         }
         else {
             // Make sure the current user is authorized to release this helicopter
+            // Also make sure that this 'release' request was sent from the 'Edit Crew' form of the Crew that currently owns the helicopter
             $user = Auth::user();
-            if($user->isAdminForCrew($heli->crew_id)) {
+            $requesting_crew = $request->input('sent-from-crew');
+            $affected_crew = $heli->crew_id;
+
+            if($user->isAdminForCrew($heli->crew_id) && ($requesting_crew == $affected_crew)) {
                 if($heli->release()) return response()->json(['status' => 'success']);
                 else abort(500); //Something prevented the helicopter from being released
             }

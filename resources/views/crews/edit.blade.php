@@ -61,6 +61,7 @@ function drawOneHelicopterForm($index, $helicopter, $template = false) {
         <h2>Crew Identity</h2>
         <form action="{{ route('update_crew',$crew->id) }}" id="edit_crew_form" name="edit_crew_form" method="POST" class="form-horizontal" enctype="multipart/form-data">
             {{ csrf_field() }}
+            <input type="hidden" name="crew_id" value="{{ $crew->id }}" />
             <div class="form-group">
                 <label for="name" class="col-xs-12 col-sm-2 control-label">Crew Name</label>
 
@@ -143,7 +144,7 @@ function drawOneHelicopterForm($index, $helicopter, $template = false) {
             <div class="form-group">
                 <div class="col-sm-2">
                     <label for="add-helicopter-button" class="control-label sr-only">Add a Helicopter</label>
-                    <button class="btn btn-default" id="add-helicopter-button" type="button">Add a Helicopter</button>
+                    <button class="btn btn-default" id="add-helicopter-button" type="button" title="Assign another helicopter to this crew">Add a Helicopter</button>
                 </div>
             </div>
             <?php $i = 0; ?>
@@ -174,6 +175,29 @@ function drawOneHelicopterForm($index, $helicopter, $template = false) {
 @section('scripts-postload')
     @parent
     <script>
+        function withoutInvalidChars(str) {
+            return str.replace("/","").replace("\\","").replace("\"","").replace("'","").replace("?","").replace("=","").replace(" ","");
+        }
+
+        function setStatusForAddButton() {
+            // Disable the "Add a Helicopter" button if there are any blank "Tailnumber" fields on the helicopter form
+            // Enable the button if there are no blank "Tailnumber" fields
+            var blank_field_exists = false;
+            $(".form").children(".helicopter-tailnumber").each(function( i ) {
+
+                if($(this).val() == "") {
+                    blank_field_exists = true;
+                }
+            });
+
+            if(blank_field_exists) {
+                    $('#add-helicopter-button').attr("disabled",true).prop("title","Fill in the existing helicopter form before adding another.");
+            } else {
+                $('#add-helicopter-button').attr("disabled",false).prop("title","Assign another helicopter to this crew");
+            }
+        }
+    </script>
+    <script>
         (function() {
             // Add click behavior to the 'Add Helicopter' button
             $('#add-helicopter-button').click(function() {
@@ -197,12 +221,7 @@ function drawOneHelicopterForm($index, $helicopter, $template = false) {
             // Disable the "Add Helicopter" button if a blank "tailnumber" field exists anywhere in the form
             // Or enable the button if text is typed into a blank tailnumber field
             $("#edit_crew_form").on("keyup",".helicopter-tailnumber", function(event) {
-                if($(this).val() == "") {
-                    $('#add-helicopter-button').attr("disabled",true).prop("title","Fill in the existing helicopter form before adding another.");
-                }
-                else {
-                    $('#add-helicopter-button').attr("disabled",false).prop("title","");
-                }
+                setStatusForAddButton();
             });
 
             // Add click behavior to the "Release" helicopter button
@@ -210,20 +229,27 @@ function drawOneHelicopterForm($index, $helicopter, $template = false) {
                 
                 // Get the tailnumber of the helicopter to release
                 var parent = $(this).parents('.crew-helicopter-form');
-                var tailnumber = parent.find('.helicopter-tailnumber').val();
+                var tailnumber = withoutInvalidChars(parent.find('.helicopter-tailnumber').val().trim());
                 var csrf_token = $(this).parents('form').children("input[name='_token']").val();
+                var crew_id = $("input[name='crew_id']").val();
 
-                // Send AJAX request to release this helicopter from this crew
-                $.ajax({
-                    url: "/helicopters/"+tailnumber+"/release",
-                    type: "post",
-                    data: {"_token":csrf_token}
-                }).done(function() {
-                    // Success
+                if(tailnumber == "") {
+                    // If no tailnumber has been specified, simply remove this entry from the page
                     parent.hide(300,function(){ this.remove(); });
-                }).always(function(xhr,status) {
-                    console.log("AJAX status: "+status);
-                });
+                    setStatusForAddButton();
+                } else {
+                    // Send AJAX request to release this helicopter from this crew
+                    $.ajax({
+                        url: "/helicopters/"+encodeURIComponent(tailnumber)+"/release",
+                        type: "post",
+                        data: {"_token":csrf_token, "sent-from-crew":crew_id}
+                    }).done(function() {
+                        // Success
+                        parent.hide(300,function(){ this.remove(); });
+                    }).always(function(xhr,status) {
+                        console.log("AJAX status: "+status);
+                    });
+                }
                 
             });
 
