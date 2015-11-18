@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Crew;
 use App\User;
+use App\Auth;
 
 class Helicopter extends Model
 {
@@ -46,7 +47,9 @@ class Helicopter extends Model
 
     public function release() {
     	// Disassociate this helicopter from it's Crew (set Helicopter->crew_id to NULL)
-    	return $this->set('crew_id',null);
+    	$this->set('crew_id',null);
+        if($this->save()) return true;
+        else return false;
     }
 
     private function differences(Helicopter $helicopter) {
@@ -67,6 +70,7 @@ class Helicopter extends Model
 	    	return null;
 	    }
 	    else {
+	    	print_r($differences);
 	    	return $differences;
 	    }
     }

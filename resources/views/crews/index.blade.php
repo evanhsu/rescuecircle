@@ -41,6 +41,7 @@
 			@endforeach
 			</tbody>
 		</table>
+		<a href="{{ route('new_crew') }}">Create New Crew</a>
 	</div>
 </div>
 @endsection

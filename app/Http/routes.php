@@ -31,6 +31,7 @@ Route::get('/crews/{id}',       	array('as' => 'crew',       'uses' => 'CrewCont
 Route::get('/crews/{id}/identity',  array('as' => 'edit_crew',  'uses' => 'CrewController@edit'));
 Route::post('/crews/{id}',			array('as' => 'update_crew','uses' => 'CrewController@update'));
 
+Route::post('/helicopters/{tailnumber}/release', array('as' => 'release_helicopter','uses' => 'HelicopterController@releaseFromCrew'));
 
 // CREWMEMBER ACCOUNTS
 // Route::get('/crews/:id/accounts',        /* CrewController@accounts */);

@@ -64,7 +64,7 @@ class User extends Model implements AuthenticatableContract,
     *   @var boolean
     */
     public function isAdminForCrew($crew_id) {
-        if(($this->crew_id == $crew_id) || $this->is_global_admin) {
+        if( (!empty($crew_id) && ($this->crew_id == $crew_id)) || $this->isGlobalAdmin()) {
             return true;
         }
         else {

@@ -145,10 +145,13 @@ class CrewController extends Controller
         // Deal with the Helicopter fields:
         // For each Helicopter on the form, create new or update the existing Helicopter in the dB if necessary
         // (don't update the model if nothing has changed)
+
         foreach($helicopter_fields as $helicopter) {
             if(!empty($helicopter['tailnumber'])) {
-                $temp_heli = Helicopter::firstOrNew(array('tailnumber' => $helicopter['tailnumber']));
+                $temp_heli = Helicopter::firstOrCreate(array('tailnumber' => $helicopter['tailnumber']));               
+
                 $helicopter['crew_id'] = $id;
+
                 $temp_heli->updateIfChanged($helicopter);
                 // An error occurred during updateIfChanged()
                 // Go back to the form and display errors
@@ -161,6 +164,9 @@ class CrewController extends Controller
         // Everything completed successfully
         return redirect()->route('edit_crew', $crew->id)->with('alert', array('message' => 'Crew info saved!', 'type' => 'success'));
     }
+
+
+
 
     /**
      * Remove the specified resource from storage.
