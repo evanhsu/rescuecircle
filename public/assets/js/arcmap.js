@@ -8,6 +8,7 @@ var mapServer = "";
 
 
 // Test Data
+
 var heliLocations = {"helicopters":[
                     {"tailnumber":"N123AB", "crewName":"Crew #1", "latitude":"42.1",    "longitude":"-123.1",   "staffing_emts":"3",    "staffing_shorthaul":"6"},
                     {"tailnumber":"N456CD", "crewName":"Crew #2", "latitude":"43.2",    "longitude":"-116.2",   "staffing_emts":"4",    "staffing_shorthaul":"7"},
@@ -53,14 +54,13 @@ require([   "esri/map",
 
 var gl1 = new GraphicsLayer({ id: "helicopters" }); // This layer holds the helicopters
 var gl2 = new GraphicsLayer({ id: "circles" });     // This layer holds the 100nm distance rings
-var gl3 = new GraphicsLayer({ id: "lines" });       // This layer is a test of graphical line symbols
 
 //Add each point to the GraphicsLayer
 var p,heliGraphic,responseRingGraphic,c,heli;
 
 map.addLayer(gl1);
 map.addLayer(gl2);
-// map.addLayer(gl3);
+
 map.on("load", function() {
 
     // Draw each helicopter on the map and place a 100nm ring around it

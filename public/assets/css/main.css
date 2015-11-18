@@ -39,16 +39,17 @@
 .form-box {
     background-color: #ffffff;
     border: 1px solid #555555;
-    opacity:0.7;
-    filter:alpha(opacity=70); /* For IE8 and ealier */
+    opacity:0.8;
+    filter:alpha(opacity=80); /* For IE8 and ealier */
     margin:20px auto 0 auto;
     padding: 15px;
     text-align: left;
 }
 
 .background-container {
-    background: url('/assets/images/map-dim.jpg');
+    background: url('/assets/images/map-lg-dim.jpg') ;
     background-size:cover;
+    overflow-y: scroll;
     text-align:center;
 }
 

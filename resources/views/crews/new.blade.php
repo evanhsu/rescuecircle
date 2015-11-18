@@ -5,7 +5,7 @@
 
 
 @section('content')
-<div id="container-fluid" class="container-fluid" style="background: url('assets/images/map-dim.jpg'); background-size:cover;">
+<div id="container-fluid" class="container-fluid background-container">
     Create New Crew<br />
 
     @if (count($errors) > 0)

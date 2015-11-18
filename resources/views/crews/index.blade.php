@@ -5,7 +5,7 @@
 
 
 @section('content')
-<div id="container-fluid" class="container-fluid" style="background: url('assets/images/map-dim.jpg'); background-size:cover; text-align:center;">
+<div id="container-fluid" class="container-fluid background-container">
     <h1>Listing All Crews</h1>
 
     @if (count($errors) > 0)
