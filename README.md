@@ -6,7 +6,7 @@ The RESCUECIRCLE site displays the location of every short-haul helicopter curre
 
 * Getting set up for development
 	* This project includes a Vagrant file that will configure a virtual machine for you.
-	* Clone the project into its own folder: `git clone https://github.com/evanhsu/rescuecircle
+	* Clone the project into its own folder: `git clone https://github.com/evanhsu/rescuecircle`
 	* Create a `.env` file by copying `.env.example` (the default values will be sufficient for development)
 	* Run `vagrant up` in the project directory
 	* View the site in your browser at `http://localhost:8080`
