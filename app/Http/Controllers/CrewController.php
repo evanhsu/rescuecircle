@@ -51,6 +51,7 @@ class CrewController extends Controller
     {
         //
         $crews = Crew::orderBy('name', 'asc')->get();
+        $request->session()->flash('active_menubutton','crews'); // Tell the menubar which button to highlight
         return view('crews.index', ['crews' => $crews]);
     }
 

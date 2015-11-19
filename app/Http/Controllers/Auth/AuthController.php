@@ -151,6 +151,7 @@ Class AuthController extends Controller
                 ->orderBy('lastname','asc')
                 ->get();
 
+        $request->session()->flash('active_menubutton','accounts'); // Tell the menubar which button to highlight
         return view('auth.index', ['users' => $users]);
 
     } // End index()
