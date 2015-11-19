@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use App\Crew;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -203,8 +204,9 @@ Class AuthController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getRegister($id)
+    public function getRegister(Request $request, $id)
     {
+        $request->session()->flash('active_menubutton','accounts'); // Tell the menubar which button to highlight
         return view('auth.new_user')->with("crew_id",$id);
     }
 
@@ -214,12 +216,18 @@ Class AuthController extends Controller
         $users = User::orderBy('firstname', 'asc')
                 ->orderBy('lastname','asc')
                 ->get();
+        $crews = Crew::orderBy('name')->get();
 
         $request->session()->flash('active_menubutton','accounts'); // Tell the menubar which button to highlight
-        return view('auth.index', ['users' => $users]);
+        return view('auth.index', ['users' => $users,
+                                   'crews' => $crews ]);
 
     } // End index()
 
+
+    public function edit($id) {
+        return 'Edit account: '.$id;
+    } // End edit()
 
 
     public function destroy($id) {

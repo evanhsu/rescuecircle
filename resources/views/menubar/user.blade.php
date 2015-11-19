@@ -18,6 +18,7 @@
         <li><a href="/crews/{{ $user_crew_id }}/accounts">Accounts</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
+        <li class="active"><a href="{{ route('edit_user', Auth::user()->id) }}">{{ Auth::user()->email }}</a></li>
         <li><a href="/logout">Logout</a></li>
       </ul>
     </div><!--/.nav-collapse -->

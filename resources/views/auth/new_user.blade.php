@@ -21,7 +21,7 @@
         {{ csrf_field() }}
 
         <div class="form-group">
-            <label for="task" class="col-sm-3 control-label">First Name</label>
+            <label for="firstname" class="col-sm-3 control-label">First Name</label>
 
             <div class="col-sm-6">
                 <input type="text" name="firstname" id="firstname" class="form-control">
@@ -29,7 +29,7 @@
         </div>
 
         <div class="form-group">
-            <label for="task" class="col-sm-3 control-label">Last Name</label>
+            <label for="lastname" class="col-sm-3 control-label">Last Name</label>
 
             <div class="col-sm-6">
                 <input type="text" name="lastname" id="lastname" class="form-control">
@@ -37,7 +37,7 @@
         </div>
 
         <div class="form-group">
-            <label for="task" class="col-sm-3 control-label">Email</label>
+            <label for="email" class="col-sm-3 control-label">Email</label>
 
             <div class="col-sm-6">
                 <input type="text" name="email" id="email" class="form-control">
@@ -45,7 +45,7 @@
         </div>
 
         <div class="form-group">
-            <label for="task" class="col-sm-3 control-label">Password</label>
+            <label for="password" class="col-sm-3 control-label">Password</label>
 
             <div class="col-sm-6">
                 <input type="password" name="password" id="password" class="form-control">
@@ -54,7 +54,7 @@
 
 
 		<div class="form-group">
-            <label for="task" class="col-sm-3 control-label sr-only">Crew ID</label>
+            <label for="crew_id" class="col-sm-3 control-label sr-only">Crew ID</label>
             <input type="hidden" name="crew_id" id="crew_id" value="{{ $crew_id }}" class="form-control">
         </div>
 

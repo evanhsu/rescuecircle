@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Form;
 use App\Crew;
+use App\User;
 use App\Helicopter;
 
 class CrewController extends Controller
@@ -45,10 +46,17 @@ class CrewController extends Controller
     /**
      * Display all User Accounts for this Crew
      */
-    public function accounts($id) {
+    public function accounts(Request $request, $id) {
 
-        // Display the status update form
-        return "Index of user accounts for Crew #".$id;
+        $crew = Crew::findOrFail($id);
+        $users = User::orderBy('firstname', 'asc')
+                    ->orderBy('lastname','asc')
+                    ->get();
+
+        $request->session()->flash('active_menubutton','accounts'); // Tell the menubar which button to highlight
+        
+        return view('crews.accounts', [ 'crew'  => $crew,
+                                        'users' => $users ]);
     }
 
     /**

@@ -6,45 +6,32 @@
 @section('content')
 <div class="container-fluid background-container">
     
-    
-
-    @if (count($errors) > 0)
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
+	@if (count($errors) > 0)
+	<div class="alert alert-danger">
+	    <ul>
+	        @foreach ($errors->all() as $error)
+	            <li>{{ $error }}</li>
+	        @endforeach
+	    </ul>
+	</div>
+	@endif
 
 	<div class="container form-box">
-		<table class="table">
-			<thead>
-				<tr><th>ID</th>
-					<th>Name</th>
-					<th>Email</th>
-					<th>Crew</th>
-					<th>Delete</th>
-				</tr>
-			</thead>
-			<tbody>
-			@foreach($users as $user)
-				<tr>
-					<td>{{ $user->id }}</td>
-					<td>{{ $user->firstname }} {{ $user->lastname }}</td>
-					<td>{{ $user->email }}</td>
-					<td>{{ empty($user->crew_id) ? "" : substr($user->crew->name,0,25) }}</td>
-					<td><form action="{{ route('destroy_user',$user->id) }}" method="POST" class="form-inline">
-							{{ csrf_field() }}
-							<button type="submit" class="btn btn-sm btn-danger">X</button>
-						</form></td>
-				</tr>
+	    @include('auth._users_table')
 
-			@endforeach
-			</tbody>
-		</table>
-		<a href="{{ route('new_user_for_crew',2) }}">Create New User Account</a>
+	    <div class="dropdown">
+
+			<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				Create a New User for...
+				<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+				@foreach($crews as $crew)
+					<li><a href="{{ route('new_user_for_crew', $crew->id) }}">{{ $crew->name }}</a></li>
+				@endforeach
+			</ul>
+		</div>
+
 	</div>
 
 </div>

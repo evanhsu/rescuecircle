@@ -52,7 +52,6 @@ Route::post('/login', array(                    'uses' => 'Auth\AuthController@p
 
 // GLOBAL ADMIN ACCOUNT MANAGEMENT
 Route::get('/accounts',					array('as' => 'users_index',	'uses' => 'Auth\AuthController@index'));
-//Route::get('/accounts/new',				array('as' => 'new_user',		'uses' => 'Auth\AuthController@create'));
 Route::post('/accounts/new',			array('as' => 'register_user',	'uses' => 'Auth\AuthController@postRegister'));
 Route::get('/accounts/{id}',			array('as' => 'edit_user',		'uses' => 'Auth\AuthController@edit'));
 Route::post('/accounts/{id}',			array('as' => 'update_user',	'uses' => 'Auth\AuthController@update'));
