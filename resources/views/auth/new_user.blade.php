@@ -17,16 +17,8 @@
     </div>
     @endif
 
-    <form action="{{ route('store_user') }}" method="POST" class="form-horizontal">
+    <form action="{{ route('register_user') }}" method="POST" class="form-horizontal">
         {{ csrf_field() }}
-
-        <div class="form-group">
-            <label for="task" class="col-sm-3 control-label">Email</label>
-
-            <div class="col-sm-6">
-                <input type="text" name="email" id="email" class="form-control">
-            </div>
-        </div>
 
         <div class="form-group">
             <label for="task" class="col-sm-3 control-label">First Name</label>
@@ -44,9 +36,26 @@
             </div>
         </div>
 
+        <div class="form-group">
+            <label for="task" class="col-sm-3 control-label">Email</label>
+
+            <div class="col-sm-6">
+                <input type="text" name="email" id="email" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="task" class="col-sm-3 control-label">Password</label>
+
+            <div class="col-sm-6">
+                <input type="password" name="password" id="password" class="form-control">
+            </div>
+        </div>
+
+
 		<div class="form-group">
             <label for="task" class="col-sm-3 control-label sr-only">Crew ID</label>
-            <input type="hidden" name="crew_id" id="crew_id" class="form-control">
+            <input type="hidden" name="crew_id" id="crew_id" value="{{ $crew_id }}" class="form-control">
         </div>
 
         <div class="form-group">

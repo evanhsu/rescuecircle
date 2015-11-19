@@ -44,7 +44,7 @@
 			@endforeach
 			</tbody>
 		</table>
-		<a href="{{ route('new_user') }}">Create New User Account</a>
+		<a href="{{ route('new_user_for_crew',2) }}">Create New User Account</a>
 	</div>
 
 </div>

@@ -52,6 +52,13 @@ Class AuthController extends Controller
         $this->middleware('hasPermission:global_admin', ['only' => ['index']]);
     }
 
+    //Users who fail authentication on the login form will be redirected here.
+    protected $loginPath = '/login';
+
+    // Users who authenticate successfully will be redirected here:
+    protected $redirectTo = '/';
+
+
     /**
      * Get a validator for an incoming registration request.
      *
@@ -64,14 +71,15 @@ Class AuthController extends Controller
             'firstname' => 'required|max:255',
             'lastname' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|confirmed|min:6',
+            'password' => 'required|min:6',
         ]);
 
         // Confirm that the current user is a member of the same crew as the account being created
         // The 'crew_id' form field is auto-populated and hidden, but could be tampered with.
         // (Guests cannot create an account, only a logged-in user can create a new user account)
-        $v->after(function($v) {
-            if(Auth::user()->isAdminForCrew($data['crew_id']) == false) {
+        // Global Admins will always be allowed through this validation step by the 'isAdminForCrew()' function.
+        $v->after(function($v) use ($data) {
+            if(Auth::user()->isAdminForCrew($data['crew_id']) === false) {
                 $v->errors()->add('crew_id',"You can only create accounts for your own crew");
             }
         });
@@ -97,9 +105,14 @@ Class AuthController extends Controller
             );
         }
 
-        Auth::login($this->create($request->all()));
+        // Create and Store the new user
+        $this->create($request->all());
 
-        return redirect($this->redirectPath());
+        if(Auth::user()->isGlobalAdmin()) {
+            return redirect()->route('users_index');
+        } else {
+            return redirect()->route('users_for_crew', ["id" => $auth->user()->crew_id]);
+        }
     }
 
     /**
@@ -113,17 +126,13 @@ Class AuthController extends Controller
     {
         return User::create([
             'firstname' => $data['firstname'],
-            'lastname' => $data['lastname'],
-            'email' => $data['email'],
+            'lastname'  => $data['lastname'],
+            'email'     => $data['email'],
             'encrypted_password' => Hash::make($data['password']),
         ]);
     }
 
-    //Users who fail authentication on the login form will be redirected here.
-    protected $loginPath = '/login';
 
-    // Users who authenticate successfully will be redirected here:
-    protected $redirectTo = '/';
 
 
     public function getLogin(Request $request) {
@@ -181,9 +190,9 @@ Class AuthController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getRegister()
+    public function getRegister($id)
     {
-        return view('auth.new_user');
+        return view('auth.new_user')->with("crew_id",$id);
     }
 
 
