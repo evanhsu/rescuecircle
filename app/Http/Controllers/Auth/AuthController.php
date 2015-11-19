@@ -40,13 +40,11 @@ Class AuthController extends Controller
                         ]]);
 
         // Require the current user to have certain permission before allowing access
-       /* $this->middleware('hasPermission:crew_admin,true', ['only' => [ 'status',
-                                                                        'show',
-                                                                        'edit',
-                                                                        'update']]);
-        */
-        $this->middleware('hasPermission:global_admin', ['only' => ['index'
-                                                                            ]]);
+        $this->middleware('hasPermission:crew_admin,true', ['only' => [ 'destroy',
+                                                                        'create',
+                                                                        'store']]);
+        
+        $this->middleware('hasPermission:global_admin', ['only' => ['index']]);
     }
 
     /**
