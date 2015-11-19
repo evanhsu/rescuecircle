@@ -49,7 +49,8 @@ class CrewController extends Controller
     public function accounts(Request $request, $id) {
 
         $crew = Crew::findOrFail($id);
-        $users = User::orderBy('firstname', 'asc')
+        $users = User::where('crew_id',$id)
+                    ->orderBy('firstname', 'asc')
                     ->orderBy('lastname','asc')
                     ->get();
 
