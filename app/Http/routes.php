@@ -31,6 +31,7 @@ Route::get('/crews/new',            	array('as' => 'new_crew',       	'uses' => 
 Route::post('/crews/new',           	array('as' => 'store_crew',     	'uses' => 'CrewController@store'));
 Route::get('/crews/{id}',       		array('as' => 'crew',       		'uses' => 'CrewController@show'));
 Route::post('/crews/{id}',				array('as' => 'update_crew',		'uses' => 'CrewController@update'));
+Route::get('/crews/{id}/status',       	array('as' => 'status_for_crew',    'uses' => 'CrewController@status'));
 
 Route::get('/crews/{id}/identity',  	array('as' => 'edit_crew',  		'uses' => 'CrewController@edit'));
 

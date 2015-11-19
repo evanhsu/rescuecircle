@@ -13,9 +13,9 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="active"><a href="/">Map</a></li>
-        <li><a href="/crews/{{ $crew->id }}/status">Status</a></li>
-        <li><a href="/crews/{{ $crew->id }}">Identity</a></li>
-        <li><a href="/crews/{{ $crew->id }}/accounts">Accounts</a></li>
+        <li><a href="/crews/{{ $user_crew_id }}/status">Status</a></li>
+        <li><a href="/crews/{{ $user_crew_id }}/identity">Identity</a></li>
+        <li><a href="/crews/{{ $user_crew_id }}/accounts">Accounts</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="/logout">Logout</a></li>

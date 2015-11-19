@@ -39,15 +39,18 @@ class MenubarComposer {
             if(Auth::user()->isGlobalAdmin()) {
                 // User is a Global Admin
                 $this->menubar_type = 'admin';
+                $this->crew_id = null;
             }
             else {
                 // User is logged in, but not an admin
                 $this->menubar_type = 'user';
+                $this->crew_id = Auth::user()->crew_id;
             }
         }
         else {
             // User is not logged in
             $this->menubar_type = 'guest';
+            $this->crew_id = null;
         }
     }
 
@@ -60,7 +63,8 @@ class MenubarComposer {
     public function compose(View $view)
     {
         $view->with(array(  'menubar_type'      => $this->menubar_type,
-                            'active_menubutton' => $this->active_menubutton));
+                            'active_menubutton' => $this->active_menubutton,
+                            'user_crew_id'      => $this->crew_id));
     }
 
 }

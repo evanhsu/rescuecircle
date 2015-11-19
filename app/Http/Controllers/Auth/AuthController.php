@@ -106,7 +106,16 @@ Class AuthController extends Controller
         }
 
         // Create and Store the new user
+        // ****** Generate a random password for the new User
+        // $new_user_data['password'] = generatePassword();
+        // $new_user = $this->create($new_user_data);
+        //
+        // Send WELCOME email to new user, including the randomly-generated password
+        // sendEmail($new_user, $new_user_data['password']);
+
+
         $this->create($request->all());
+        
 
         if(Auth::user()->isGlobalAdmin()) {
             return redirect()->route('users_index');
@@ -124,6 +133,8 @@ Class AuthController extends Controller
      */
     protected function create(array $data)
     {
+        // ****** Change this to generate a random password and send it to the user in an email. ***********
+
         return User::create([
             'firstname' => $data['firstname'],
             'lastname'  => $data['lastname'],
@@ -212,7 +223,11 @@ Class AuthController extends Controller
 
     public function destroy($id) {
         // Delete the User with ID $id
+        User::findOrFail($id)->delete();
 
+        $redirectRoute = Auth::user()->isGlobalAdmin() ? route('users_index') : route('users_for_crew',Auth::user()->crew_id);
+
+        return redirect()->$redirectRoute->with('alert', array('message' => "That account was deleted.", 'type' => 'success'));
 
     } // End destroy()
 }

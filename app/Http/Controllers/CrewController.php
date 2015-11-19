@@ -24,7 +24,8 @@ class CrewController extends Controller
         $this->middleware('hasPermission:crew_admin,true', ['only' => [ 'status',
                                                                         'show',
                                                                         'edit',
-                                                                        'update']]);
+                                                                        'update',
+                                                                        'accounts']]);
         $this->middleware('hasPermission:global_admin', ['only' => ['index',
                                                                     'create',
                                                                     'store',
@@ -41,6 +42,14 @@ class CrewController extends Controller
         return "Crew Status update form: Crew #".$id;
     }
 
+    /**
+     * Display all User Accounts for this Crew
+     */
+    public function accounts($id) {
+
+        // Display the status update form
+        return "Index of user accounts for Crew #".$id;
+    }
 
     /**
      * Display a listing of all crews (requires a global_admin user)
