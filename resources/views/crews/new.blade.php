@@ -1,6 +1,5 @@
 @extends('../layouts.application_layout')
 
-
 @section('title','RescueCircle')
 
 

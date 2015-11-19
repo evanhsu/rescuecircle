@@ -6,7 +6,8 @@ use App\User;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
-use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+// use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;  // Using custom registration logic instead
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
@@ -20,12 +21,11 @@ Class AuthController extends Controller
     |--------------------------------------------------------------------------
     |
     | This controller handles the registration of new users, as well as the
-    | authentication of existing users. By default, this controller uses
-    | a simple trait to add these behaviors. Why don't you explore it?
+    | authentication of existing users.
     |
     */
 
-    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
+    use AuthenticatesUsers, ThrottlesLogins;
 
     /**
      * Create a new authentication controller instance.
@@ -35,11 +35,16 @@ Class AuthController extends Controller
     public function __construct()
     {
         // RedirectIfAuthenticated (users who are already logged in will be redirected before this controller takes action)
-        $this->middleware('guest', ['except' => [   'getLogout',
-                                                    'index'
+        $this->middleware('guest', ['only' => [ 'getLogin',
+                                                'postLogin',
                         ]]);
 
-        // Require the current user to have certain permission before allowing access
+        // Require a user to be logged in before accessing these actions:
+        $this->middleware('auth', ['except' => ['getLogin',
+                                                'postLogin',
+                        ]]);
+
+        // Require the current user to have certain permission before allowing access (in addition to being logged in)
         $this->middleware('hasPermission:crew_admin,true', ['only' => [ 'destroy',
                                                                         'create',
                                                                         'store']]);
@@ -74,7 +79,32 @@ Class AuthController extends Controller
     }
 
     /**
-     * Create a new user instance after a valid registration.
+     * Handle a New User request for the application.
+     * This Action accepts input from the "New User" form and passes it
+     * through the Validator.
+     * If validation passes, THEN the form input is passed to the CREATE action.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function postRegister(Request $request)
+    {
+        $validator = $this->validator($request->all());
+
+        if ($validator->fails()) {
+            $this->throwValidationException(
+                $request, $validator
+            );
+        }
+
+        Auth::login($this->create($request->all()));
+
+        return redirect($this->redirectPath());
+    }
+
+    /**
+     * Create a new user instance AFTER a valid registration.
+     * This action is protected and is called from the 'postRegister' action.
      *
      * @param  array  $data
      * @return User
@@ -145,6 +175,18 @@ Class AuthController extends Controller
         }
     } // End getLogout()
 
+
+    /**
+     * Show the "Create New User" form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getRegister()
+    {
+        return view('auth.new_user');
+    }
+
+
     public function index(Request $request) {
 
         $users = User::orderBy('firstname', 'asc')
@@ -156,10 +198,7 @@ Class AuthController extends Controller
 
     } // End index()
 
-    public function store(Request $request) {
 
-
-    } // End store()
 
     public function destroy($id) {
         // Delete the User with ID $id

@@ -35,7 +35,7 @@ Route::post('/crews/{id}',				array('as' => 'update_crew',		'uses' => 'CrewContr
 Route::get('/crews/{id}/identity',  	array('as' => 'edit_crew',  		'uses' => 'CrewController@edit'));
 
 Route::get('/crews/{id}/accounts',  	array('as' => 'users_for_crew',		'uses' => 'CrewController@accounts'));
-Route::get('/crews/{id}/accounts/new',  array('as' => 'new_user_for_crew',  'uses' => 'Auth\AuthController@new'));
+Route::get('/crews/{id}/accounts/new',  array('as' => 'new_user_for_crew',  'uses' => 'Auth\AuthController@getRegister'));
 Route::post('/crews/{id}/destroy',  	array('as' => 'destroy_crew',   	'uses' => 'CrewController@destroy'));
 
 
