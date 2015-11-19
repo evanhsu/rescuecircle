@@ -47,7 +47,8 @@ Class AuthController extends Controller
         // Require the current user to have certain permission before allowing access (in addition to being logged in)
         $this->middleware('hasPermission:crew_admin,true', ['only' => [ 'destroy',
                                                                         'create',
-                                                                        'store']]);
+                                                                        'getRegister',
+                                                                        'postRegister']]);
         
         $this->middleware('hasPermission:global_admin', ['only' => ['index']]);
     }
@@ -225,9 +226,13 @@ Class AuthController extends Controller
         // Delete the User with ID $id
         User::findOrFail($id)->delete();
 
-        $redirectRoute = Auth::user()->isGlobalAdmin() ? route('users_index') : route('users_for_crew',Auth::user()->crew_id);
-
-        return redirect()->$redirectRoute->with('alert', array('message' => "That account was deleted.", 'type' => 'success'));
+        $alert_message = array('message' => "That account was deleted.", 'type' => 'success');
+        if(Auth::user()->isGlobalAdmin()) {
+            return redirect()->route('users_index')->with('alert', $alert_message);
+        }
+        else {
+            return redirect()->route('users_for_crew',Auth::user()->crew_id)->with('alert', $alert_message);
+        }
 
     } // End destroy()
 }
