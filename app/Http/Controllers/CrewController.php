@@ -52,7 +52,6 @@ class CrewController extends Controller
         //
         $crews = Crew::orderBy('name', 'asc')->get();
         return view('crews.index', ['crews' => $crews]);
-        // return "Index of all crews";
     }
 
     /**

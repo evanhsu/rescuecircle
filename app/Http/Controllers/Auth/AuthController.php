@@ -34,7 +34,19 @@ Class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest', ['except' => 'getLogout']);
+        // RedirectIfAuthenticated (users who are already logged in will be redirected before this controller takes action)
+        $this->middleware('guest', ['except' => [   'getLogout',
+                                                    'index'
+                        ]]);
+
+        // Require the current user to have certain permission before allowing access
+       /* $this->middleware('hasPermission:crew_admin,true', ['only' => [ 'status',
+                                                                        'show',
+                                                                        'edit',
+                                                                        'update']]);
+        */
+        $this->middleware('hasPermission:global_admin', ['only' => ['index'
+                                                                            ]]);
     }
 
     /**
@@ -133,5 +145,26 @@ Class AuthController extends Controller
             // User wasn't logged in, just redirect to home
             return redirect('/');
         }
-    } // End postLogout()
+    } // End getLogout()
+
+    public function index(Request $request) {
+
+        $users = User::orderBy('firstname', 'asc')
+                ->orderBy('lastname','asc')
+                ->get();
+
+        return view('auth.index', ['users' => $users]);
+
+    } // End index()
+
+    public function store(Request $request) {
+
+
+    } // End store()
+
+    public function destroy($id) {
+        // Delete the User with ID $id
+
+
+    } // End destroy()
 }

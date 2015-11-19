@@ -43,7 +43,7 @@ class User extends Model implements AuthenticatableContract,
      *
      */
     public function crew() {
-        return $this->hasOne(Crew::class);
+        return $this->belongsTo(Crew::class);
     }
 
 

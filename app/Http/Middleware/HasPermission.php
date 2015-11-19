@@ -38,7 +38,7 @@ class HasPermission
             // Do not redirect - this user will be allowed through
         }
         elseif(!$request->user()->hasPermission($permission)) {
-            // This user did not has the $permission string in his User.permissions array
+            // This user did not have the $permission string in his User.permissions array
             return redirect()->route('map');
         }
         elseif($enforce_same_crew && (Route::current()->getParameter('id') != $request->user()->crew_id)) {
