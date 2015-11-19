@@ -129,6 +129,7 @@ Class AuthController extends Controller
             'lastname'  => $data['lastname'],
             'email'     => $data['email'],
             'encrypted_password' => Hash::make($data['password']),
+            'crew_id'   => $data['crew_id'],
         ]);
     }
 

@@ -34,7 +34,7 @@
 					<td>{{ $user->id }}</td>
 					<td>{{ $user->firstname }} {{ $user->lastname }}</td>
 					<td>{{ $user->email }}</td>
-					<td>{{ isset($user->crew) ? $user->crew->name : "" }}</td>
+					<td>{{ empty($user->crew_id) ? "" : substr($user->crew->name,0,25) }}</td>
 					<td><form action="{{ route('destroy_user',$user->id) }}" method="POST" class="form-inline">
 							{{ csrf_field() }}
 							<button type="submit" class="btn btn-sm btn-danger">X</button>
