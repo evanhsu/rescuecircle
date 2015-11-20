@@ -36,7 +36,7 @@ Route::get('/crews/{id}/status',       	array('as' => 'status_for_crew',    'use
 Route::get('/crews/{id}/identity',  	array('as' => 'edit_crew',  		'uses' => 'CrewController@edit'));
 
 Route::get('/crews/{id}/accounts',  	array('as' => 'users_for_crew',		'uses' => 'CrewController@accounts'));
-Route::get('/crews/{id}/accounts/new',  array('as' => 'new_user_for_crew',  'uses' => 'Auth\AuthController@getRegister'));
+Route::get( '/crews/{id}/accounts/new', array('as' => 'new_user_for_crew',  'uses' => 'Auth\AuthController@getRegister'));
 Route::post('/crews/{id}/destroy',  	array('as' => 'destroy_crew',   	'uses' => 'CrewController@destroy'));
 
 

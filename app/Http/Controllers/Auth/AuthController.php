@@ -46,11 +46,10 @@ Class AuthController extends Controller
                         ]]);
 
         // Require the current user to have certain permission before allowing access (in addition to being logged in)
-        /*$this->middleware('hasPermission:crew_admin,true', ['only' => [ 'destroy',
-                                                                        'create',
+        $this->middleware('hasPermission:crew_admin,true', ['only' => [ 'create',
                                                                         'getRegister',
-                                                                        'postRegister']]);
-        */
+                                                                        ]]);
+        
         $this->middleware('hasPermission:global_admin', ['only' => ['index']]);
     }
 
@@ -99,6 +98,9 @@ Class AuthController extends Controller
      */
     public function postRegister(Request $request)
     {
+        // Run the form input through the validator
+        // This validator replaces the functionality of the 'HasPermission' middleware specifically for registering new user account.
+        // That's why the middleware is NOT set to run during requests to this controller action.
         $validator = $this->validator($request->all());
 
         if ($validator->fails()) {
@@ -125,7 +127,7 @@ Class AuthController extends Controller
         if(Auth::user()->isGlobalAdmin()) {
             return redirect()->route('users_index');
         } else {
-            return redirect()->route('users_for_crew', ["id" => $auth->user()->crew_id]);
+            return redirect()->route('users_for_crew', ["id" => Auth::user()->crew_id]);
         }
     }
 
@@ -235,7 +237,15 @@ Class AuthController extends Controller
 
     public function destroy($id) {
         // Delete the User with ID $id
-        User::findOrFail($id)->delete();
+        $user_to_destroy = User::findOrFail($id);
+
+        if(Auth::user()->cannot('destroy_user', $user_to_destroy)) {
+            // The current user does not have permission to destroy the requested user
+            return redirect()->back()->withErrors("You're not authorized to destroy that Account!");
+        }
+
+        // Authorization complete - continue...
+        $user_to_destroy->delete();
 
         $alert_message = array('message' => "That account was deleted.", 'type' => 'success');
         if(Auth::user()->isGlobalAdmin()) {

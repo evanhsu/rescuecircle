@@ -39,11 +39,11 @@ class HasPermission
         }
         elseif(!$request->user()->hasPermission($permission)) {
             // This user did not have the $permission string in his User.permissions array
-            return redirect()->route('map');
+            return redirect()->back();
         }
         elseif($enforce_same_crew && (Route::current()->getParameter('id') != $request->user()->crew_id)) {
             // This user's crew_id does not match the crew_id of the requested page (AND the $enforce_same_crew flag was set to TRUE)
-            return redirect()->route('map');
+            return redirect()->back()->withErrors("You can't change data that belongs to a different crew");
         }
 
         // $request->session()->flash('perms',$permission); // Debugging output

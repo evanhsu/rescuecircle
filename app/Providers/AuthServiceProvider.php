@@ -26,6 +26,16 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies($gate);
 
+
+        $gate->define('destroy_user', function($current_user, $user_to_destroy) {
+            // The current user must be on the same crew as the user being destroyed, unless the current user is a Global Admin
+            return $current_user->crew_id === $user_to_destroy->crew_id;
+        })->before(function($current_user, $ability) {
+            if($current_user->isGlobalAdmin()) {
+                return true;
+            }
+        });
+
         //
     }
 }
