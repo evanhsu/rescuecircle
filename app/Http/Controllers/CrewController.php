@@ -57,7 +57,6 @@ class CrewController extends Controller
                     ->get();
 
         $request->session()->flash('active_menubutton','accounts'); // Tell the menubar which button to highlight
-        
         return view('crews.accounts', [ 'crew'  => $crew,
                                         'users' => $users ]);
     }

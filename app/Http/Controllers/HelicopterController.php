@@ -17,11 +17,12 @@ class HelicopterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
         $helicopters = Helicopter::orderBy('tailnumber','asc')->get();
 
+        $request->session()->flash('active_menubutton','helicopters'); // Tell the menubar which button to highlight
         return view('helicopters.index')->with('helicopters',$helicopters);
     }
 
