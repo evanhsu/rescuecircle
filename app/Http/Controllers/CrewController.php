@@ -20,17 +20,6 @@ class CrewController extends Controller
         // Use the 'auth' middleware to require users to log in
         // This applies to ALL actions within this controller
         $this->middleware('auth');
-
-        // Require the current user to have certain permission before allowing access
-        $this->middleware('hasPermission:crew_admin,true', ['only' => [ 'status',
-                                                                        'show',
-                                                                        'edit',
-                                                                        'update',
-                                                                        'accounts']]);
-        $this->middleware('hasPermission:global_admin', ['only' => ['index',
-                                                                    'create',
-                                                                    'store',
-                                                                    'destroy']]);
     }
 
     /**
@@ -38,8 +27,14 @@ class CrewController extends Controller
      * Note: this form POSTS its response to the CrewStatusController
      */
     public function status($id) {
-
         // Display the status update form
+
+        // Make sure this user is authorized...
+        if(Auth::user()->cannot('actAsAdminForCrew', $id)) {
+            // The current user does not have permission to perform admin functions for this crew
+            return redirect()->back()->withErrors("You're not authorized to access that crew!");
+        }
+        // Authorization complete - continue...
         return "Crew Status update form: Crew #".$id;
     }
 
@@ -48,6 +43,13 @@ class CrewController extends Controller
      */
     public function accounts(Request $request, $id) {
 
+        // Make sure this user is authorized...
+        if(Auth::user()->cannot('actAsAdminForCrew', $id)) {
+            // The current user does not have permission to perform admin functions for this crew
+            return redirect()->back()->withErrors("You're not authorized to access that crew!");
+        }
+
+        // Authorization complete - continue...
         $crew = Crew::findOrFail($id);
         $users = User::where('crew_id',$id)
                     ->orderBy('firstname', 'asc')
@@ -67,7 +69,11 @@ class CrewController extends Controller
      */
     public function index(Request $request)
     {
-        //
+        if(!Auth::user()->isGlobalAdmin()) {
+            // Only Global Admins can access this
+            return redirect()->back()->withErrors("Unauthorized");
+        }
+
         $crews = Crew::orderBy('name', 'asc')->get();
         $request->session()->flash('active_menubutton','crews'); // Tell the menubar which button to highlight
         return view('crews.index', ['crews' => $crews]);
@@ -80,7 +86,11 @@ class CrewController extends Controller
      */
     public function create()
     {
-        //
+        if(!Auth::user()->isGlobalAdmin()) {
+            // Only Global Admins can access this
+            return redirect()->back()->withErrors("Unauthorized");
+        }
+
         return view('crews.new');
     }
 
@@ -92,6 +102,12 @@ class CrewController extends Controller
      */
     public function store(Request $request)
     {
+
+        if(!Auth::user()->isGlobalAdmin()) {
+            // Only Global Admins can access this
+            return redirect()->back()->withErrors("Unauthorized");
+        }
+
         $this->validate($request, [
             'name' => 'required|unique:crews|max:255']);
 
@@ -124,6 +140,13 @@ class CrewController extends Controller
     {
         //
         if($crew = Crew::findorfail($id)) {
+            // Make sure this user is authorized...
+            if(Auth::user()->cannot('actAsAdminForCrew', $id)) {
+                // The current user does not have permission to perform admin functions for this crew
+                return redirect()->back()->withErrors("You're not authorized to access that crew!");
+            }
+
+            // Authorization complete - continue...
             $request->session()->flash('active_menubutton','identity'); // Tell the menubar which button to highlight
             return view('crews.edit')->with('crew',$crew);
         }
@@ -140,6 +163,15 @@ class CrewController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Make sure this user is authorized...
+        if(Auth::user()->cannot('actAsAdminForCrew', $id)) {
+            // The current user does not have permission to perform admin functions for this crew
+            return redirect()->back()->withErrors("You're not authorized to access that crew!");
+        }
+
+        // Authorization complete - continue...
+
+
         // Grab the form input
         $crew_fields = array_except($request->input('crew'), ['helicopters']);
         $helicopter_fields = $request->input('crew')['helicopters'];
@@ -194,6 +226,11 @@ class CrewController extends Controller
      */
     public function destroy($id)
     {
+        if(!Auth::user()->isGlobalAdmin()) {
+            // Only Global Admins can access this
+            return redirect()->back()->withErrors("Unauthorized");
+        }
+
         $crew = Crew::find($id);
         $crew_name = $crew->name;
 

@@ -44,13 +44,6 @@ Class AuthController extends Controller
         $this->middleware('auth', ['except' => ['getLogin',
                                                 'postLogin',
                         ]]);
-
-        // Require the current user to have certain permission before allowing access (in addition to being logged in)
-        $this->middleware('hasPermission:crew_admin,true', ['only' => [ 'create',
-                                                                        'getRegister',
-                                                                        ]]);
-        
-        $this->middleware('hasPermission:global_admin', ['only' => ['index']]);
     }
 
     //Users who fail authentication on the login form will be redirected here.
@@ -98,9 +91,13 @@ Class AuthController extends Controller
      */
     public function postRegister(Request $request)
     {
+        // Make sure this user is authorized...
+        if(Auth::user()->cannot('actAsAdminForCrew', $request->get('crew_id'))) {
+            // The current user does not have permission to create a user account for this crew
+            return redirect()->back()->withErrors("You're not authorized to register users for that crew!");
+        }
+        // Authorization complete - continue...
         // Run the form input through the validator
-        // This validator replaces the functionality of the 'HasPermission' middleware specifically for registering new user account.
-        // That's why the middleware is NOT set to run during requests to this controller action.
         $validator = $this->validator($request->all());
 
         if ($validator->fails()) {
@@ -211,6 +208,13 @@ Class AuthController extends Controller
      */
     public function getRegister(Request $request, $id)
     {
+        $crew = Crew::findOrFail($id);
+        if(Auth::user()->cannot('actAsAdminForCrew', $crew)) {
+            // The current user does not have permission to register a user for the specified crew
+            return redirect()->back()->withErrors("You're not authorized to register users for that crew!");
+        }
+
+        // Authorization complete - continue...
         $request->session()->flash('active_menubutton','accounts'); // Tell the menubar which button to highlight
         return view('auth.new_user')->with("crew_id",$id);
     }
@@ -218,6 +222,12 @@ Class AuthController extends Controller
 
     public function index(Request $request) {
 
+        if(!Auth::user()->isGlobalAdmin()) {
+            // Only Global Admins can access this
+            return redirect()->back()->withErrors("Unauthorized");
+        }
+
+        // Authorization complete - continue...
         $users = User::orderBy('firstname', 'asc')
                 ->orderBy('lastname','asc')
                 ->get();
@@ -231,6 +241,16 @@ Class AuthController extends Controller
 
 
     public function edit($id) {
+
+        $target_user = User::findOrFail($id);
+
+        // Make sure this user is authorized...
+        if(Auth::user()->cannot('actAsAdminForCrew', $target_user->crew_id)) {
+            // The current user does not have permission to perform admin functions for this crew
+            return redirect()->back()->withErrors("You're not authorized to access that crew!");
+        }
+
+        // Authorization complete - continue...
         return 'Edit account: '.$id;
     } // End edit()
 

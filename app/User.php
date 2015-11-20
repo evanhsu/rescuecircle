@@ -72,6 +72,7 @@ class User extends Model implements AuthenticatableContract,
         }
 
         // This could be changed to use the hasPermission method
+        // "crew_admin" would be inserted into the User->permission array
     }
 
     public function isGlobalAdmin() {
@@ -85,8 +86,9 @@ class User extends Model implements AuthenticatableContract,
         // This could be changed to use the hasPermission method
     }
 
-    public function hasPermission($permission) {
+    public function hasPermission($permission=null) {
         // Determine whether this user has the specified $permission in their User.permission array
+        // If $permission is null or "" (empty string), return TRUE
         //
         // INPUT:
         //  string $permission
