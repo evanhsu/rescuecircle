@@ -13,12 +13,12 @@ class ChangeHelicopterPrimaryKey extends Migration
     public function up()
     {
         Schema::table('helicopters', function (Blueprint $table) {
-            // Add a primary key to the 'tailnumber' field
-            $table->primary('tailnumber');
-
+            
             // Drop the existing primary key from the 'id' column
             $table->dropPrimary('helicopters_id_primary');
 
+            // Add a primary key to the 'tailnumber' field
+            $table->primary('tailnumber');
         });
     }
 
@@ -30,11 +30,12 @@ class ChangeHelicopterPrimaryKey extends Migration
     public function down()
     {
         Schema::table('helicopters', function (Blueprint $table) {
-            // Add a primary key to the 'id' field
-            $table->primary('id');
-
+            
             // Drop the existing primary key from the 'tailnumber' column
             $table->dropPrimary('helicopters_tailnumber_primary');
+
+            // Add a primary key to the 'id' field
+            $table->primary('id');
         });
     }
 }

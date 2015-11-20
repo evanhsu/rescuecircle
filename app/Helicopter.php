@@ -15,7 +15,7 @@ class Helicopter extends Model
      * @var string
      */
     protected $table = 'helicopters';
-    protected $primaryKey = 'tailnumber';
+    protected $primaryKey = 'tailnumber'; // The primary key is NOT 'id' !!
 
     /**
      * The attributes that are mass assignable.
