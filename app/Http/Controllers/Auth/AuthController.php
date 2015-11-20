@@ -267,7 +267,7 @@ Class AuthController extends Controller
         // Authorization complete - continue...
         $user_to_destroy->delete();
 
-        $alert_message = array('message' => "That account was deleted.", 'type' => 'success');
+        $alert_message = array('message' => "That account was deleted.", 'type' => "success");
         if(Auth::user()->isGlobalAdmin()) {
             return redirect()->route('users_index')->with('alert', $alert_message);
         }
