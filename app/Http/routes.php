@@ -16,16 +16,21 @@ Route::get('/', array('as' => 'map', 'uses' => 'MapController@getMap'));
 Route::get('/feed.json', array('uses' => 'MapController@getMapJSON'));
 
 
-// CREW STATUS
+// STATUS
 // A "Status" is an object that belongs to 'Helicopter'.  
 // A new Status is created when the Crew Status form is submitted.
 // A Status cannot be deleted, only superceded. This maintains a history log of statuses.
 Route::get('/helicopters/{tailnumber}/status',		array('as' => 'status_for_helicopter', 	'uses' => 'HelicopterController@status'));
 // Route::post('/helicopters/{tailnumber}/status', 	array('as' => 'create_status', 			'uses' => 'StatusController@create' ));
+
+
+// HELICOPTERS
+Route::get('/helicopters',	array('as' => 'helicopters_index', 	'uses' => 'HelicopterController@index'));
 Route::post('/helicopters/{tailnumber}/release', 	array('as' => 'release_helicopter', 	'uses' => 'HelicopterController@releaseFromCrew'));
+Route::post('/helicopters/{tailnumber}/destroy',  	array('as' => 'destroy_helicopter',   	'uses' => 'HelicopterController@destroy'));
 
 
-// CREW IDENTITY
+// CREWS
 Route::get('/crews',                	array('as' => 'crews_index',    	'uses' => 'CrewController@index'));
 Route::get('/crews/new',            	array('as' => 'new_crew',       	'uses' => 'CrewController@create'));
 Route::post('/crews/new',           	array('as' => 'store_crew',     	'uses' => 'CrewController@store'));
@@ -40,6 +45,12 @@ Route::get( '/crews/{id}/accounts/new', array('as' => 'new_user_for_crew',  'use
 Route::post('/crews/{id}/destroy',  	array('as' => 'destroy_crew',   	'uses' => 'CrewController@destroy'));
 
 
+// ACCOUNTS
+Route::get('/accounts',					array('as' => 'users_index',	'uses' => 'Auth\AuthController@index'));
+Route::post('/accounts/new',			array('as' => 'register_user',	'uses' => 'Auth\AuthController@postRegister'));
+Route::get('/accounts/{id}',			array('as' => 'edit_user',		'uses' => 'Auth\AuthController@edit'));
+Route::post('/accounts/{id}',			array('as' => 'update_user',	'uses' => 'Auth\AuthController@update'));
+Route::post('/accounts/{id}/destroy',	array('as' => 'destroy_user',	'uses' => 'Auth\AuthController@destroy'));
 // Route::post('/accounts/reset',           /* UserController@postReset */);    // Accepts an email as POST parameter
 // Route::get('/accounts/reset',            /* UserController@getReset */);     // Show password reset form
 
@@ -50,12 +61,5 @@ Route::get('/login',  array('as' => 'login',    'uses' => 'Auth\AuthController@g
 Route::post('/login', array(                    'uses' => 'Auth\AuthController@postLogin'));
 
 
-// GLOBAL ADMIN ACCOUNT MANAGEMENT
-Route::get('/accounts',					array('as' => 'users_index',	'uses' => 'Auth\AuthController@index'));
-Route::post('/accounts/new',			array('as' => 'register_user',	'uses' => 'Auth\AuthController@postRegister'));
-Route::get('/accounts/{id}',			array('as' => 'edit_user',		'uses' => 'Auth\AuthController@edit'));
-Route::post('/accounts/{id}',			array('as' => 'update_user',	'uses' => 'Auth\AuthController@update'));
-Route::post('/accounts/{id}/destroy',	array('as' => 'destroy_user',	'uses' => 'Auth\AuthController@destroy'));
-
-
+// ERRORS
 //Route::get('/404', array('as' => 'not_found', 'uses' => 'ErrorController@notFound'));

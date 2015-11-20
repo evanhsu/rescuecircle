@@ -20,6 +20,9 @@ class HelicopterController extends Controller
     public function index()
     {
         //
+        $helicopters = Helicopter::orderBy('tailnumber','asc')->get();
+
+        return view('helicopters.index')->with('helicopters',$helicopters);
     }
 
     /**
