@@ -46,11 +46,11 @@ Class AuthController extends Controller
                         ]]);
 
         // Require the current user to have certain permission before allowing access (in addition to being logged in)
-        $this->middleware('hasPermission:crew_admin,true', ['only' => [ 'destroy',
+        /*$this->middleware('hasPermission:crew_admin,true', ['only' => [ 'destroy',
                                                                         'create',
                                                                         'getRegister',
                                                                         'postRegister']]);
-        
+        */
         $this->middleware('hasPermission:global_admin', ['only' => ['index']]);
     }
 
@@ -102,9 +102,12 @@ Class AuthController extends Controller
         $validator = $this->validator($request->all());
 
         if ($validator->fails()) {
-            $this->throwValidationException(
+           /* $this->throwValidationException(
                 $request, $validator
-            );
+            );*/
+            return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
         }
 
         // Create and Store the new user

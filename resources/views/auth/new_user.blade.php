@@ -24,7 +24,7 @@
             <label for="firstname" class="col-sm-3 control-label">First Name</label>
 
             <div class="col-sm-6">
-                <input type="text" name="firstname" id="firstname" class="form-control">
+                <input type="text" name="firstname" id="firstname" value="{{ old('firstname') }}" class="form-control">
             </div>
         </div>
 
@@ -32,7 +32,7 @@
             <label for="lastname" class="col-sm-3 control-label">Last Name</label>
 
             <div class="col-sm-6">
-                <input type="text" name="lastname" id="lastname" class="form-control">
+                <input type="text" name="lastname" id="lastname" value="{{ old('lastname') }}" class="form-control">
             </div>
         </div>
 
@@ -40,7 +40,7 @@
             <label for="email" class="col-sm-3 control-label">Email</label>
 
             <div class="col-sm-6">
-                <input type="text" name="email" id="email" class="form-control">
+                <input type="text" name="email" id="email" value="{{ old('email') }}" class="form-control">
             </div>
         </div>
 
