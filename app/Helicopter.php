@@ -46,6 +46,16 @@ class Helicopter extends Model
         return $this->hasManyThrough(User::class, Crew::class);
     }
 
+    public function statuses() {
+        // Create a relationship with the polymorphic Status model
+        return $this->morphMany('App\Status', 'statusable');
+    }
+
+    public function status() {
+        // Get the MOST RECENT status for this Helicopter
+        return $this->statuses()->orderBy('created_at','desc')->first();
+    }
+
     public function release() {
     	// Disassociate this helicopter from it's Crew (set Helicopter->crew_id to NULL)
     	$this->set('crew_id',null);
@@ -85,8 +95,11 @@ class Helicopter extends Model
     	// Return TRUE otherwise
     	//    Note: this function will return TRUE even if no update is performed, as long as there are no errors.
 
-
+        // Convert tailnumber to all caps before storing - Laravel has no way of performing
+        // a case-insensitive search within the Eloquent ORM, so we must ensure all tailnumbers use consistent case.
+        $attributes['tailnumber'] = strtoupper($attributes['tailnumber']);
     	$proposed_helicopter = new Helicopter($attributes);
+
     	if(is_null($this->differences($proposed_helicopter))) {
     		// This helicopter already matches the proposed attributes. Do nothing.
     		return true;
@@ -101,6 +114,7 @@ class Helicopter extends Model
 			return false;
 		}
     }
+
 
     /**
      * Getters and Setters

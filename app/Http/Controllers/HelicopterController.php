@@ -12,6 +12,15 @@ use App\Helicopter;
 
 class HelicopterController extends Controller
 {
+    public function __construct()
+    {
+        // Use the 'CapitalizeTailnumber' middleware to make sure that all
+        // tailnumbers extracted from URLs are converted to all caps before
+        // they reach the controller logic.
+        $this->middleware('capitalizeTailnumber');
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -53,7 +62,7 @@ class HelicopterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($tailnumber)
     {
         //
     }
@@ -64,7 +73,7 @@ class HelicopterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($tailnumber)
     {
         //
     }
@@ -76,7 +85,7 @@ class HelicopterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $tailnumber)
     {
         //
     }
@@ -87,7 +96,7 @@ class HelicopterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($tailnumber)
     {
         //
     }
@@ -119,6 +128,41 @@ class HelicopterController extends Controller
             }
         }
 
+    }
+
+    /**
+     * Show the most recent Status for this Helicopter
+     */
+    public function showCurrentStatus($tailnumber) {
+
+        $helicopter = Helicopter::findOrFail($tailnumber);
+
+        // Make sure this user is authorized...
+        if(Auth::user()->cannot('actAsAdminForCrew', $helicopter->crew_id)) {
+            // The current user does not have permission to perform admin functions for this crew
+            return redirect()->back()->withErrors("You're not authorized to access that helicopter !");
+        }
+        // Authorization complete - continue...
+        return "Showing most recent Status for Helicopter ".$tailnumber;
+    }
+
+    /**
+     * Display the Helicopter Status update form
+     * Note: this form POSTS its response to the StatusController
+     */
+    public function newStatus($tailnumber) {
+        
+        $helicopter = Helicopter::findOrFail($tailnumber);
+        // Make sure this user is authorized...
+        if(Auth::user()->cannot('actAsAdminForCrew', $helicopter->crew_id)) {
+            // The current user does not have permission to perform admin functions for this crew
+            return redirect()->back()->withErrors("You're not authorized to access that helicopter!");
+        }
+        // Authorization complete - continue...
+
+        // Display the status update form
+        return "Helicopter Status update form: Helicopter ".$tailnumber;
+        // return view('helicopters.new_status');
     }
 }
 

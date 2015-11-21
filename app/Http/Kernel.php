@@ -30,5 +30,6 @@ class Kernel extends HttpKernel
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'hasPermission' => \App\Http\Middleware\HasPermission::class,
+        'capitalizeTailnumber' => \App\Http\Middleware\CapitalizeTailnumber::class,
     ];
 }

@@ -17,32 +17,35 @@ Route::get('/feed.json', array('uses' => 'MapController@getMapJSON'));
 
 
 // STATUS
-// A "Status" is an object that belongs to 'Helicopter'.  
-// A new Status is created when the Crew Status form is submitted.
-// A Status cannot be deleted, only superceded. This maintains a history log of statuses.
-Route::get('/helicopters/{tailnumber}/status',		array('as' => 'status_for_helicopter', 	'uses' => 'HelicopterController@status'));
-// Route::post('/helicopters/{tailnumber}/status', 	array('as' => 'create_status', 			'uses' => 'StatusController@create' ));
+// A "Status" is an object that belongs to 'Helicopter' or 'Crew'.  
+// A new Status is created when a "Status Update" form is submitted.
+// A Status cannot be deleted or edited, only superceded. This maintains a history log of statuses.
+//Route::get('/status/{id}',	array('as' => 'show_status', 		'uses' => 'StatusController@show' ));
+Route::post('/status', 		array('as' => 'create_status', 		'uses' => 'StatusController@create' ));
 
 
 // HELICOPTERS
-Route::get('/helicopters',	array('as' => 'helicopters_index', 	'uses' => 'HelicopterController@index'));
-Route::post('/helicopters/{tailnumber}/release', 	array('as' => 'release_helicopter', 	'uses' => 'HelicopterController@releaseFromCrew'));
-Route::post('/helicopters/{tailnumber}/destroy',  	array('as' => 'destroy_helicopter',   	'uses' => 'HelicopterController@destroy'));
+Route::get('/helicopters',							array('as' => 'helicopters_index', 				'uses' => 'HelicopterController@index'));
+Route::get('/helicopters/{tailnumber}/status',		array('as' => 'current_status_for_helicopter', 	'uses' => 'HelicopterController@showCurrentStatus'));
+Route::get('/helicopters/{tailnumber}/update',		array('as' => 'new_status_for_helicopter', 		'uses' => 'HelicopterController@newStatus'));
+Route::post('/helicopters/{tailnumber}/release', 	array('as' => 'release_helicopter', 			'uses' => 'HelicopterController@releaseFromCrew'));
+Route::post('/helicopters/{tailnumber}/destroy',  	array('as' => 'destroy_helicopter',   			'uses' => 'HelicopterController@destroy'));
 
 
 // CREWS
-Route::get('/crews',                	array('as' => 'crews_index',    	'uses' => 'CrewController@index'));
-Route::get('/crews/new',            	array('as' => 'new_crew',       	'uses' => 'CrewController@create'));
-Route::post('/crews/new',           	array('as' => 'store_crew',     	'uses' => 'CrewController@store'));
-Route::get('/crews/{id}',       		array('as' => 'crew',       		'uses' => 'CrewController@show'));
-Route::post('/crews/{id}',				array('as' => 'update_crew',		'uses' => 'CrewController@update'));
-Route::get('/crews/{id}/status',       	array('as' => 'status_for_crew',    'uses' => 'CrewController@status'));
+Route::get('/crews',                	array('as' => 'crews_index',    		'uses' => 'CrewController@index'));
+Route::get('/crews/new',            	array('as' => 'new_crew',       		'uses' => 'CrewController@create'));
+Route::post('/crews/new',           	array('as' => 'store_crew',     		'uses' => 'CrewController@store'));
+Route::get('/crews/{id}',       		array('as' => 'crew',       			'uses' => 'CrewController@show'));
+Route::post('/crews/{id}',				array('as' => 'update_crew',			'uses' => 'CrewController@update'));
+Route::get('/crews/{id}/status',       	array('as' => 'current_status_for_crew','uses' => 'CrewController@showCurrentStatus'));
+Route::get('/crews/{id}/update',       	array('as' => 'new_status_for_crew',    'uses' => 'CrewController@newStatus'));
 
-Route::get('/crews/{id}/identity',  	array('as' => 'edit_crew',  		'uses' => 'CrewController@edit'));
+Route::get('/crews/{id}/identity',  	array('as' => 'edit_crew',  			'uses' => 'CrewController@edit'));
 
-Route::get('/crews/{id}/accounts',  	array('as' => 'users_for_crew',		'uses' => 'CrewController@accounts'));
-Route::get( '/crews/{id}/accounts/new', array('as' => 'new_user_for_crew',  'uses' => 'Auth\AuthController@getRegister'));
-Route::post('/crews/{id}/destroy',  	array('as' => 'destroy_crew',   	'uses' => 'CrewController@destroy'));
+Route::get('/crews/{id}/accounts',  	array('as' => 'users_for_crew',			'uses' => 'CrewController@accounts'));
+Route::get( '/crews/{id}/accounts/new', array('as' => 'new_user_for_crew',  	'uses' => 'Auth\AuthController@getRegister'));
+Route::post('/crews/{id}/destroy',  	array('as' => 'destroy_crew',   		'uses' => 'CrewController@destroy'));
 
 
 // ACCOUNTS

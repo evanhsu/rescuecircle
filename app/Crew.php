@@ -41,6 +41,15 @@ class Crew extends Model
         return $this->hasMany(User::class);
     }
 
+    public function statuses() {
+        // Create a relationship with the polymorphic Status model
+        return $this->morphMany('App\Status', 'statusable');
+    }
+
+    public function status() {
+        // Get the MOST RECENT status for this Crew
+        return $this->statuses()->orderBy('created_at','desc')->first();
+    }
 
     /**
      * Getters and Setters

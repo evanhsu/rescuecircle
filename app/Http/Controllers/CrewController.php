@@ -23,10 +23,25 @@ class CrewController extends Controller
     }
 
     /**
-     * Display the Crew Status update form
-     * Note: this form POSTS its response to the CrewStatusController
+     * Show the most recent Status for this Crew
      */
-    public function status($id) {
+    public function showCurrentStatus($id) {
+
+        // Make sure this user is authorized...
+        if(Auth::user()->cannot('actAsAdminForCrew', $id)) {
+            // The current user does not have permission to perform admin functions for this crew
+            return redirect()->back()->withErrors("You're not authorized to access that crew!");
+        }
+        // Authorization complete - continue...
+        return "Showing most recent Status for Crew #".$id;
+    }
+
+
+    /**
+     * Display the Crew Status update form
+     * Note: this form POSTS its response to the StatusController
+     */
+    public function newStatus($id) {
         // Display the status update form
 
         // Make sure this user is authorized...
@@ -197,7 +212,8 @@ class CrewController extends Controller
 
         foreach($helicopter_fields as $helicopter) {
             if(!empty($helicopter['tailnumber'])) {
-                $temp_heli = Helicopter::firstOrCreate(array('tailnumber' => $helicopter['tailnumber']));               
+                // Instantiate a new Helicopter - CONVERT TAILNUMBER TO ALL CAPS IN THE DATABASE
+                $temp_heli = Helicopter::firstOrCreate(array('tailnumber' => strtoupper($helicopter['tailnumber'])));               
 
                 $helicopter['crew_id'] = $id;
 
