@@ -161,8 +161,8 @@ class HelicopterController extends Controller
         // Authorization complete - continue...
 
         // Display the status update form
-        return "Helicopter Status update form: Helicopter ".$tailnumber;
-        // return view('helicopters.new_status');
+        //return "Helicopter Status update form: Helicopter ".$tailnumber;
+        return view('helicopters.new_status')->with("helicopter",$helicopter);
     }
 }
 
