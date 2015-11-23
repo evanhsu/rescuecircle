@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Crew;
 use App\User;
 use App\Auth;
+use App\Status;
 
 class Helicopter extends Model
 {
@@ -53,7 +54,12 @@ class Helicopter extends Model
 
     public function status() {
         // Get the MOST RECENT status for this Helicopter
-        return $this->statuses()->orderBy('created_at','desc')->first();
+        // If none exist, return a blank Status object.
+        $status = $this->statuses()->orderBy('created_at','desc')->first();
+
+        if(is_null($status)) return new Status;
+        else return $status;
+        //return $status;
     }
 
     public function release() {
@@ -113,13 +119,6 @@ class Helicopter extends Model
 			// There was an error while updating the model
 			return false;
 		}
-    }
-
-    public function currentStatus() {
-        // Return a JSON object containing this Helicopter's most recent Status.
-        // If no Statuses exist, return a null object {}
-
-        
     }
 
     /**

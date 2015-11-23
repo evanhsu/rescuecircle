@@ -160,9 +160,14 @@ class HelicopterController extends Controller
         }
         // Authorization complete - continue...
 
+        // Retrieve the most recent status update to prepopulate the form
+        $last_status = $helicopter->status();
+
+
+
         // Display the status update form
         //return "Helicopter Status update form: Helicopter ".$tailnumber;
-        return view('helicopters.new_status')->with("helicopter",$helicopter);
+        return view('helicopters.new_status')->with("helicopter",$helicopter)->with("status",$last_status);
     }
 }
 
