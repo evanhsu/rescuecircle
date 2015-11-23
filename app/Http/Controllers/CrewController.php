@@ -161,7 +161,13 @@ class CrewController extends Controller
             }
 
             // Authorization complete - continue...
-            $request->session()->flash('active_menubutton','identity'); // Tell the menubar which button to highlight
+            if(Auth::user()->isGlobalAdmin()) {
+                $request->session()->flash('active_menubutton','crews'); // Tell the menubar which button to highlight
+            }
+            else {
+                $request->session()->flash('active_menubutton','identity'); // Tell the menubar which button to highlight
+            }
+
             return view('crews.edit')->with('crew',$crew);
         }
         $errors = new MessageBag(['Crew' => ['That Crew doesn\'t exist.']]);

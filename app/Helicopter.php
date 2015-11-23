@@ -115,6 +115,12 @@ class Helicopter extends Model
 		}
     }
 
+    public function currentStatus() {
+        // Return a JSON object containing this Helicopter's most recent Status.
+        // If no Statuses exist, return a null object {}
+
+        
+    }
 
     /**
      * Getters and Setters
