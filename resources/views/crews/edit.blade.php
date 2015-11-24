@@ -19,9 +19,11 @@ function drawOneHelicopterForm($index, $helicopter, $template = false) {
 
     if(!$template) $output .= "readonly ";
 
-    $output .= "/></span>
-                <span><button class=\"btn btn-default release-helicopter-button\" data-helicopter-id=\"".$index."\" type=\"button\">Release</button></span>
-            </div>
+    $output .= "/></span>\n";
+    
+    if(!$template) $output .= "<span><button class=\"btn btn-default release-helicopter-button\" data-helicopter-id=\"".$index."\" type=\"button\">Release</button></span>\n";
+     
+     $output .= "</div>
         </div>
 
         <div class=\"form-group\">
@@ -29,8 +31,15 @@ function drawOneHelicopterForm($index, $helicopter, $template = false) {
             <div class=\"form-inline col-xs-8 col-sm-6\">
                 <input type=\"text\" class=\"form-control helicopter-model\" name=\"crew[helicopters][".$index."][model]\" value=\"".$helicopter->model."\" />
             </div>
-        </div>
-    </div>\n";
+        </div>\n";
+
+    if(!$template) $output .= " <div class=\"form-group\">
+                                <div class=\"col-sm-2\"></div>
+                                <div class=\"col-sm-6\">
+                                    <a href=\"".route('new_status_for_helicopter',$helicopter->tailnumber)."\" class=\"btn btn-default\" role=\"button\">Go to the Status Page</a>
+                                </div></div>\n";
+
+    $output .= "</div>\n";
 
     echo $output;
 }

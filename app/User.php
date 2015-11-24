@@ -10,6 +10,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use App\Crew;
+use App\Status;
 
 class User extends Model implements AuthenticatableContract,
                                     AuthorizableContract,
@@ -56,6 +57,12 @@ class User extends Model implements AuthenticatableContract,
     public function getAuthPassword() {
         // This function is used by the Auth::attempt function to retrieve the custom-named password field
         return $this->encrypted_password;
+    }
+
+    public function lastStatus() {
+        // Returns the most recent Status submitted by this User
+        // If none are found, return NULL
+        return Status::where('created_by_id', $this->id)->orderBy('created_at','desc')->first();
     }
 
     public function fullname() {

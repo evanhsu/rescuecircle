@@ -150,7 +150,7 @@ class HelicopterController extends Controller
      * Display the Helicopter Status update form
      * Note: this form POSTS its response to the StatusController
      */
-    public function newStatus($tailnumber) {
+    public function newStatus(Request $request, $tailnumber) {
         
         $helicopter = Helicopter::where('tailnumber','=', $tailnumber)->first();
         if(is_null($helicopter)) return "Helicopter not found";
@@ -173,7 +173,12 @@ class HelicopterController extends Controller
         $last_status->longitude_min = ($last_status->longitude - $last_status->longitude_deg) * 60.0;
 
         // Display the status update form
-        //return "Helicopter Status update form: Helicopter ".$tailnumber;
+        if(Auth::user()->isGlobalAdmin()) {
+                $request->session()->flash('active_menubutton','helicopters'); // Tell the menubar which button to highlight
+            }
+            else {
+                $request->session()->flash('active_menubutton','status'); // Tell the menubar which button to highlight
+            }
         return view('helicopters.new_status')->with("helicopter",$helicopter)->with("status",$last_status);
 
         // return var_dump($helicopter);

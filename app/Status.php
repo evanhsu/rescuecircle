@@ -49,4 +49,39 @@ class Status extends Model
     	return $this->morphTo();	// Allow multiple other Models to claim a relationship to this model
     }
 
+    public function statusable_type_plain() {
+        // Returns the name of the Class that this Status belongs to, without any namespacing.
+        //   i.e. If this Status belongs to a Helicopter, then:
+        //           $this->statusable_type == "App\Helicopter"
+        //        and
+        //           $this->statusable_type_plain() == "helicopter"
+
+        if ($pos = strrpos($this->statusable_type, '\\')) {
+            return strtolower(substr($this->statusable_type, $pos + 1));
+        }
+        else {
+            return strtolower($this->statusable_type);
+        }
+    }
+
+    public function redirectToNewStatus() {
+        // Returns the RedirectResponse that should be used to submit a new Status that supercedes $this.
+        // For example, if $this is a Status for Helicopter 'N2345', then redirect to "route(status_for_helicopter,'N2345')"
+
+        $route_name = "new_status_for_".$this->statusable_type_plain();
+        $parent = $this->statusable;  // The instance of the parent class that owns this Status
+
+        switch($this->statusable_type_plain()) {
+            case 'helicopter':
+                $route_id = $parent->tailnumber; // Helicopters routes use the tailnumber rather than the ID
+                break;
+
+            default:
+                $route_id = $parent->id;
+                break;
+        }
+
+        return redirect()->route($route_name,$route_id);
+    }
+
 }

@@ -26,7 +26,8 @@
 					<th>Tailnumber</th>
 					<th>Make/Model</th>
 					<th>Crew</th>
-					<th>Delete</th>
+					<th style="width:30px;">Update</th>
+					<th style="width:30px;">Delete</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -40,6 +41,7 @@
 							<a href="{{ route('edit_crew', array('id' => $h->crew_id)) }}">{{ $h->crew->name }}</a>
 						@endif
 					</td>
+					<td><a href="{{ route('new_status_for_helicopter',$h->tailnumber) }}" class="btn btn-primary" role="button">!</td>
 					<td><form action="{{ route('destroy_helicopter',$h->id) }}" method="POST" class="form-inline">
 							{{ csrf_field() }}
 							<button type="submit" class="btn btn-sm btn-danger">X</button>

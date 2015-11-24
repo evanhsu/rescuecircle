@@ -174,8 +174,8 @@ Class AuthController extends Controller
                 return redirect()->route('crews_index');
             }
             else {
-                // If this user is NOT an Admin, land on the status update page for their crew
-                return redirect()->route('status_for_crew', [$user->crew_id]);
+                // If this user is NOT an Admin, decide which page to display:
+                return $this->redirectToLandingPage();
             }
         } else {
             // Authentication failed
@@ -186,6 +186,44 @@ Class AuthController extends Controller
                 ->withInput($request->only('email')); // Send back input to autopopulate fields;
         }
     } // End postLogin()
+
+    protected function redirectToLandingPage() {
+        // Determine what page the current user should land on after a successful login.
+        // Return a RedirectResponse to that page.
+        $user = Auth::user();
+
+        if($user->isGlobalAdmin()) {
+            // If this user is an Admin, land on the list of all Crews (Crews@getIndex)
+            return redirect()->route('crews_index');
+        }
+        else {
+            // If this user is NOT an Admin, decide which page to display:
+            //   1. Look for the most recent Status that this user has submitted
+            //   2. If found, go to the Status Update page for the Crew or Helicopter that this User last updated.
+            //   3. If not found, or this User no longer has permission, go to this User's Crew Identity page.
+
+            // Step 1
+            $last_status_from_user = $user->lastStatus();
+
+            // Step 2
+            if(!is_null($last_status_from_user)) {
+                return $last_status_from_user->redirectToNewStatus();
+            }
+            // Step 3
+            elseif(!is_null($user->crew)) {
+                return redirect()->route('edit_crew', $user->crew_id);
+            }
+            else {
+                // The $user is not a GlobalAdmin, nor does he belong to a Crew (this shouldn't happen).
+                // Delete the user and display a message.
+                // (If the User is not deleted, a new account using the same email will not be creatable).
+
+                $user->delete();
+                return redirect()->back()->withErrors("Your crew has been removed from the system. Contact an admin for support.");
+            }
+        }
+
+    }
 
     public function getLogout(Request $request) {
         if(Auth::check()) {

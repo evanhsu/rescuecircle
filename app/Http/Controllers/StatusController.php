@@ -86,8 +86,9 @@ class StatusController extends Controller
         // Form is valid, continue...
         $status = new Status(Input::all());
 
-        // Insert the name of the User who created this Status update (the CURRENT user):
-        $status->created_by = Auth::user()->fullname();
+        // Insert the identity of the User who created this Status update (the CURRENT user):
+        $status->created_by_name = Auth::user()->fullname();
+        $status->created_by_id = Auth::user()->id;
 
         // Insert the lat and lon in decimal-degree format
         $status->latitude = $latitude_dd;
