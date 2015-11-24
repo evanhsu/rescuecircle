@@ -216,7 +216,8 @@ Class AuthController extends Controller
             else {
                 // The $user is not a GlobalAdmin, nor does he belong to a Crew (this shouldn't happen).
                 // Delete the user and display a message.
-                // (If the User is not deleted, a new account using the same email will not be creatable).
+                // (If the User is not deleted, a new account using the same email cannot be created and a Global Admin
+                //  will need to intervene to change the Crew for an existing User).
 
                 $user->delete();
                 return redirect()->back()->withErrors("Your crew has been removed from the system. Contact an admin for support.");
