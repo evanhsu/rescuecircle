@@ -17,7 +17,17 @@
     @endif
 
     <div class="container form-box">
-        <div class="page-header">Status Update - Helicopter {{ $helicopter->tailnumber }}</div>
+        <h1>Helicopter Status Update</h1>
+
+        <nav>
+            <ul class="nav nav-tabs" role="tablist">
+                @foreach($helicopters as $h)
+                <li role="presentation"{!! ($h->id == $helicopter->id) ? " class=\"active\"" : "" !!}>
+                    <a href="{{ route('new_status_for_helicopter',$h->tailnumber) }}">{{ $h->tailnumber }}</a>
+                </li>
+                @endforeach
+            </ul>
+        </nav>
         <form action="{{ route('create_status') }}" method="POST" class="form-horizontal">
             {{ csrf_field() }}
             <input type="hidden" name="statusable_type" value="helicopter" />

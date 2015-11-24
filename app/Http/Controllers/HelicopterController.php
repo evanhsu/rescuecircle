@@ -162,15 +162,19 @@ class HelicopterController extends Controller
         }
         // Authorization complete - continue...
 
-        // Retrieve the most recent status update to prepopulate the form
+        // Retrieve the other Helicopters that are owned by the same Crew (to build a navigation menu)
+        $crew_helicopters = Helicopter::where('crew_id',$helicopter->crew_id)->orderBy('tailnumber')->get();
+
+        // Retrieve the most recent status update to prepopulate the form (returns a 'new Status' if none exist)
         $last_status = $helicopter->status();
 
         // Convert the lat and lon from decimal-degrees into decimal-minutes
-        $last_status->latitude_deg = floor($last_status->latitude);
-        $last_status->latitude_min = ($last_status->latitude - $last_status->latitude_deg) * 60.0;
+        // MOVE THIS FUNCTIONALITY INTO A COORDINATES CLASS
+        $last_status->latitude_deg = empty($last_status->latitude) ? "" : floor($last_status->latitude);
+        $last_status->latitude_min = empty($last_status->latitude) ? "" : ($last_status->latitude - $last_status->latitude_deg) * 60.0;
 
-        $last_status->longitude_deg = floor($last_status->longitude);
-        $last_status->longitude_min = ($last_status->longitude - $last_status->longitude_deg) * 60.0;
+        $last_status->longitude_deg = empty($last_status->longitude) ? "" : floor($last_status->longitude);
+        $last_status->longitude_min = empty($last_status->longitude) ? "" : ($last_status->longitude - $last_status->longitude_deg) * 60.0;
 
         // Display the status update form
         if(Auth::user()->isGlobalAdmin()) {
@@ -179,7 +183,7 @@ class HelicopterController extends Controller
             else {
                 $request->session()->flash('active_menubutton','status'); // Tell the menubar which button to highlight
             }
-        return view('helicopters.new_status')->with("helicopter",$helicopter)->with("status",$last_status);
+        return view('helicopters.new_status')->with("helicopter",$helicopter)->with("helicopters",$crew_helicopters)->with("status",$last_status);
 
         // return var_dump($helicopter);
         // return var_dump($last_status);
