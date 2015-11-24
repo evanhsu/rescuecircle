@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class status extends Model
+class Status extends Model
 {
     // This is a polymorphic model that is used to track the movements of different types of firefighting resources.
     // A Status can belong to either a Crew or a Helicopter, as defined by Status->

@@ -59,8 +59,14 @@ class StatusController extends Controller
                 $obj = Crew::findOrFail($request->get('statusable_id'));
                 $crew_id = $obj->id;
                 break;
+
+            default:
+                // The 'statusable_type' from the form is not one of the polymorphic 'statusable' classes.
+                // Add the 'morphMany()' function to the desired class to make it statusable.
+                return redirect()->back()->with('alert', array('message' => 'Status update failed! This status update is not linked to a statusable entity', 'type' => 'danger'));
         }
 
+        // Make sure current user is authorized
         if(Auth::user()->cannot('actAsAdminForCrew', $crew_id)) {
             // The current user does not have permission to perform admin functions for this crew
             return redirect()->back()->withErrors("You're not authorized to update that crew!");
@@ -80,12 +86,16 @@ class StatusController extends Controller
         // Form is valid, continue...
         $status = new Status(Input::all());
 
-        // Insert the name of the User who created this Status update:
+        // Insert the name of the User who created this Status update (the CURRENT user):
         $status->created_by = Auth::user()->fullname();
 
         // Insert the lat and lon in decimal-degree format
         $status->latitude = $latitude_dd;
         $status->longitude = $longitude_dd;
+
+        // Change the 'statusable_type' variable to a fully-namespaced class name.
+        // i.e. Change 'helicopter' to 'App\Helicopter'. This is required for the Status class to be able to retrieve the correct Helicopter (or Crew).
+        $status->statusable_type = "App\\".ucwords($status->statusable_type);
 
         // Attempt to save
         if($status->save()) {

@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\User;
 use App\Helicopter;
+use App\Status;
 
 class Crew extends Model
 {
@@ -48,7 +49,10 @@ class Crew extends Model
 
     public function status() {
         // Get the MOST RECENT status for this Crew
-        return $this->statuses()->orderBy('created_at','desc')->first();
+        $status = $this->statuses()->orderBy('created_at','desc')->first();
+
+        if(is_null($status)) return new Status;
+        else return $status;
     }
 
     /**

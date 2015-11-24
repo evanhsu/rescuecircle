@@ -16,7 +16,7 @@ class Helicopter extends Model
      * @var string
      */
     protected $table = 'helicopters';
-    protected $primaryKey = 'tailnumber'; // The primary key is NOT 'id' !!
+    //protected $primaryKey = 'tailnumber'; // The primary key is NOT 'id' !!
 
     /**
      * The attributes that are mass assignable.
@@ -50,16 +50,17 @@ class Helicopter extends Model
     public function statuses() {
         // Create a relationship with the polymorphic Status model
         return $this->morphMany('App\Status', 'statusable');
+        // return $this->morphMany(Status::class, 'statusable');
     }
 
     public function status() {
         // Get the MOST RECENT status for this Helicopter
         // If none exist, return a blank Status object.
+        // $status = $this->statuses()->orderBy('created_at','desc')->first();
         $status = $this->statuses()->orderBy('created_at','desc')->first();
 
         if(is_null($status)) return new Status;
         else return $status;
-        //return $status;
     }
 
     public function release() {
@@ -87,7 +88,7 @@ class Helicopter extends Model
 	    	return null;
 	    }
 	    else {
-	    	print_r($differences);
+	    	//print_r($differences);
 	    	return $differences;
 	    }
     }

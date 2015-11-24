@@ -152,7 +152,9 @@ class HelicopterController extends Controller
      */
     public function newStatus($tailnumber) {
         
-        $helicopter = Helicopter::findOrFail($tailnumber);
+        $helicopter = Helicopter::where('tailnumber','=', $tailnumber)->first();
+        if(is_null($helicopter)) return "Helicopter not found";
+
         // Make sure this user is authorized...
         if(Auth::user()->cannot('actAsAdminForCrew', $helicopter->crew_id)) {
             // The current user does not have permission to perform admin functions for this crew
@@ -163,11 +165,19 @@ class HelicopterController extends Controller
         // Retrieve the most recent status update to prepopulate the form
         $last_status = $helicopter->status();
 
+        // Convert the lat and lon from decimal-degrees into decimal-minutes
+        $last_status->latitude_deg = floor($last_status->latitude);
+        $last_status->latitude_min = ($last_status->latitude - $last_status->latitude_deg) * 60.0;
 
+        $last_status->longitude_deg = floor($last_status->longitude);
+        $last_status->longitude_min = ($last_status->longitude - $last_status->longitude_deg) * 60.0;
 
         // Display the status update form
         //return "Helicopter Status update form: Helicopter ".$tailnumber;
         return view('helicopters.new_status')->with("helicopter",$helicopter)->with("status",$last_status);
+
+        // return var_dump($helicopter);
+        // return var_dump($last_status);
     }
 }
 
