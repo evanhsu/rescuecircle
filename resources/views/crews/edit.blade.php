@@ -147,7 +147,7 @@ function drawOneHelicopterForm($index, $helicopter, $template = false) {
                 </div>
             </div>
 
-
+@if($crew->statusable_type == "helicopter")
             
             <h3>Helicopters</h3>
             <div class="form-group">
@@ -163,7 +163,7 @@ function drawOneHelicopterForm($index, $helicopter, $template = false) {
             @endforeach
 
             <div id="dynamic-form-insert-placeholder" style="display:none;"></div>
-
+@endif
             <div class="form-group">
                 <div class="col-sm-2">
                     <button type="submit" class="btn btn-default">Save</button>
@@ -171,10 +171,12 @@ function drawOneHelicopterForm($index, $helicopter, $template = false) {
             </div>
         </form>
 
+
+@if($crew->statusable_type == "helicopter")
         <?php drawOneHelicopterForm(null,null,true); ?>
 
         <div id="helicopter-index" style="display:none;">{{ $i }}</div>
-
+@endif
 
     </div>
 
