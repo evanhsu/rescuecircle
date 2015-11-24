@@ -21,10 +21,19 @@
         {{ csrf_field() }}
 
         <div class="form-group">
-            <label for="task" class="col-sm-3 control-label">Crew Name</label>
-
+            <label for="name" class="col-sm-3 control-label">Crew Name</label>
             <div class="col-sm-6">
                 <input type="text" name="name" id="name" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="statusable_type" class="col-sm-3 control-label">Crew Type</label>
+            <div class="col-sm-6">
+                <select name="statusable_type" id="statusable_type" class="form-control">
+                    <option value="helicopter">Helicopter</option>
+                    <option value="crew">Hotshots</option>
+                </select>
             </div>
         </div>
 

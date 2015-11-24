@@ -21,7 +21,16 @@ class Crew extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'address_street1', 'address_street2', 'address_city', 'address_state', 'address_zip', 'phone', 'fax', 'logo_filename'];
+    protected $fillable = [ 'name', 
+                            'address_street1', 
+                            'address_street2', 
+                            'address_city', 
+                            'address_state', 
+                            'address_zip', 
+                            'phone', 
+                            'fax', 
+                            'logo_filename',
+                            'statusable_type'];
 
     /**
      * The attributes excluded from the models JSON form.
