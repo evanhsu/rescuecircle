@@ -6,6 +6,12 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Form;
+use App\Crew;
+use App\Helicopter;
+use App\Status;
 
 class StatusController extends Controller
 {
@@ -27,6 +33,7 @@ class StatusController extends Controller
     public function create()
     {
         //
+
     }
 
     /**
@@ -37,7 +44,54 @@ class StatusController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Accept a form post from either the Helicopter Status Form (route: 'new_status_for_helicopter')
+        // or the Crew Status Form (route: 'new_status_for_crew')
+
+        // Determine whether this is a status update for a Helicopter or a Crew
+        // then store the ID of the Crew that owns this object.
+        switch($request->get('statusable_type')) {
+            case "helicopter":
+                $obj = Helicopter::findOrFail($request->get('statusable_id'));
+                $crew_id = $obj->crew_id;
+                break;
+
+            case "crew":
+                $obj = Crew::findOrFail($request->get('statusable_id'));
+                $crew_id = $obj->id;
+                break;
+        }
+
+        if(Auth::user()->cannot('actAsAdminForCrew', $crew_id)) {
+            // The current user does not have permission to perform admin functions for this crew
+            return redirect()->back()->withErrors("You're not authorized to update that crew!");
+        }
+        // This User is authorized - continue...
+
+        $this->validate($request, [
+            'latitude_deg' => 'required',
+            'latitude_min' => 'required',
+            'longitude_deg' => 'required',
+            'longitude_min' => 'required'
+            ]);
+
+        $latitude_dd = $this->decMinToDecDeg($request->get('latitude_deg'), $request->get('latitude_min'));
+        $longitude_dd = $this->decMinToDecDeg($request->get('longitude_deg'), $request->get('longitude_min'));
+
+        // Form is valid, continue...
+        $status = new Status(Input::all());
+
+        // Insert the name of the User who created this Status update:
+        $status->created_by = Auth::user()->fullname();
+
+        // Insert the lat and lon in decimal-degree format
+        $status->latitude = $latitude_dd;
+        $status->longitude = $longitude_dd;
+
+        // Attempt to save
+        if($status->save()) {
+            return redirect()->back()->with('alert', array('message' => 'Status update saved!', 'type' => 'success'));
+        }
+        return redirect()->back()->with('alert', array('message' => 'Status update failed!', 'type' => 'danger'));
     }
 
     /**
@@ -83,5 +137,11 @@ class StatusController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    protected function decMinToDecDeg($deg, $min) {
+        // Convert a latitude or longitude from DD MM.MMMM (decimal minutes)
+        // to DD.DDDDD (decimal degrees) format
+        return ($deg * 1.0) + ($min / 60.0);
     }
 }

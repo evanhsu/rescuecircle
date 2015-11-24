@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Form;
 use App\Crew;
 use App\User;
 use App\Helicopter;
+use App\Status;
 
 class CrewController extends Controller
 {

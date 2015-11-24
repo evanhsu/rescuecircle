@@ -58,6 +58,10 @@ class User extends Model implements AuthenticatableContract,
         return $this->encrypted_password;
     }
 
+    public function fullname() {
+        return $this->firstname." ".$this->lastname;
+    }
+
     /*
     *   Determine whether this User can alter user accounts for members of the specified crew
     *

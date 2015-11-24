@@ -23,6 +23,7 @@
             {{ csrf_field() }}
             <input type="hidden" name="statusable_type" value="helicopter" />
             <input type="hidden" name="statusable_id" value="{{ $helicopter->tailnumber }}" />
+            <input type="hidden" name="statusable_name" value="{{ $helicopter->tailnumber }}" />
             
             <div class="col-xs-12 col-md-6 form-inline">
                 <h2>Location</h2>
@@ -93,13 +94,13 @@
                 <div class="form-group">
                     <label for="staffing_value_1" class="col-xs-4 col-sm-2 control-label">Short-Haulers</label>
                     <div class="col-xs-4 col-sm-2 col-md-1">
-                        <input type="text" name="staffing_value_1" id="staffing_value_1" class="form-control" value="{{ $status->staffing_value_1 }}">
+                        <input type="text" name="staffing_value_1" id="staffing_value_1" class="form-control" value="{{ $status->staffing_value1 }}">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="staffing_value_2" class="col-xs-4 col-sm-2 control-label">EMTs</label>
                     <div class="col-xs-4 col-sm-2 col-md-1">
-                        <input type="text" name="staffing_value_2" id="staffing_value_2" class="form-control" value="{{ $status->staffing_value_2 }}">
+                        <input type="text" name="staffing_value_2" id="staffing_value_2" class="form-control" value="{{ $status->staffing_value2 }}">
                     </div>
                 </div>
                 <div class="form-group">
