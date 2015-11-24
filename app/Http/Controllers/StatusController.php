@@ -152,6 +152,6 @@ class StatusController extends Controller
     protected function decMinToDecDeg($deg, $min) {
         // Convert a latitude or longitude from DD MM.MMMM (decimal minutes)
         // to DD.DDDDD (decimal degrees) format
-        return ($deg * 1.0) + ($min / 60.0);
+        return round(($deg * 1.0) + ($min / 60.0), 5);
     }
 }
