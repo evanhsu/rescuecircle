@@ -19,7 +19,6 @@ public function run()
         'email'    => 'evanhsu@gmail.com',
         'encrypted_password' => Hash::make('password'),
         'global_admin' => 1
-        
     ));
 }
 
