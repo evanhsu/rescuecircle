@@ -57,6 +57,16 @@ return [
             'schema'   => 'public',
         ],
 
+        'smirk' => [      /* SmirkSoftware Dev server */
+            'driver'   => 'mysql',
+            'host'     => env('DB_HOST', 'mysql-dev.resourcestatus.smirksoftware.com'),
+            'database' => env('DB_DATABASE', 'resourcestatus_dev'),
+            'username' => env('DB_USERNAME', 'resourcestatus'),
+            'password' => env('DB_PASSWORD', 'Spinach-Anchor1'),
+            'charset'  => 'utf8',
+            'prefix'   => '',
+        ],
+
         'staging' => [      /* FAMWeb MS SQL Server 2012 */
             'driver'   => 'sqlsrv',
             'host'     => env('DB_HOST', 'unknown'),
