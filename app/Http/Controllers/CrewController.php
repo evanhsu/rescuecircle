@@ -34,6 +34,8 @@ class CrewController extends Controller
             return redirect()->back()->withErrors("You're not authorized to access that crew!");
         }
         // Authorization complete - continue...
+
+        // Determine whether to redirect to a Crews Status Update form or a Helicopter Status Update form
         return "Showing most recent Status for Crew #".$id;
     }
 
@@ -52,6 +54,62 @@ class CrewController extends Controller
         }
         // Authorization complete - continue...
         return "Crew Status update form: Crew #".$id;
+    }
+
+    /**
+     * Redirect to either:
+     *   - The Crew Status Update form (CrewController@newStatus)
+     *   - The Helicopter Status Update form for the most-recently updated helicopter that this Crew owns (HelicopterController@newStatus)
+     *
+     * $id  The ID of a Crew
+     */
+    public function redirectToStatusUpdate($id) {
+
+        // Make sure this user is authorized...
+    /*  if(Auth::user()->cannot('actAsAdminForCrew', $id)) {
+            // The current user does not have permission to perform admin functions for this crew
+            return redirect()->back()->withErrors("You're not authorized to access that crew!");
+        }
+    */
+        // Authorization complete - continue...
+        $crew = Crew::findOrFail($id);
+
+        // Decide where to redirect in the following order:
+        //   1. Go to a New Status for the resource that was most-recently updated by this user.
+        //   2. If the Crew is statusable, go to the New Status form for the crew.
+        //   3. If the Crew has helicopters that are statusable, go to the New Status form for the Helicopter with highest alphabetical priority.
+        //   4. If the Crew is supposed to have statusable helicopters but none are assigned, go to the Edit Crew form with an error message.
+
+        // Step 1
+        $user = Auth::user();
+        $last_status_from_user = $user->lastStatus();
+        if(!is_null($last_status_from_user)) {
+            return $last_status_from_user->redirectToNewStatus();
+        }
+
+        // Step 2
+        elseif($crew->statusable_type == 'crew') {
+            return redirect()->route('new_status_for_crew', $id);
+        }
+
+        // Step 3|4
+        elseif($crew->statusable_type == 'helicopter') { 
+            // Look for the first Helicopter owned by this Crew
+            $helicopter = $crew->helicopters()->orderBy('tailnumber')->first();
+            if(is_null($helicopter)) {
+                // Step 4 (This crew is supposed to have helicopters, but none were found)
+                return redirect()->route('edit_crew',$id)->withErrors("You must add a helicopter to your crew before you can post a status update.");
+            }
+            else {
+                // Step 3 (This crew has at least one helicopter)
+                return redirect()->route('new_status_for_helicopter',$helicopter->tailnumber);
+            }
+        }
+        else {
+            // This crew has a statusable_entity OTHER than 'crew' or 'helicopter'
+            // THIS FUNCTIONALITY STILL NEEDS TO BE CREATED
+            return redirect()->route('edit_crew',$id)->withErrors("This Crew type hasn't been implemented yet - CrewController@redirectToStatusUpdate");
+        }
     }
 
     /**

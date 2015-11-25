@@ -40,6 +40,7 @@ Route::get('/crews/{id}',       		array('as' => 'crew',       			'uses' => 'Crew
 Route::post('/crews/{id}',				array('as' => 'update_crew',			'uses' => 'CrewController@update'));
 Route::get('/crews/{id}/status',       	array('as' => 'current_status_for_crew','uses' => 'CrewController@showCurrentStatus'));
 Route::get('/crews/{id}/update',       	array('as' => 'new_status_for_crew',    'uses' => 'CrewController@newStatus'));
+Route::get('/crews/{id}/post',       	array('as' => 'status_form_selector_for_crew',    'uses' => 'CrewController@redirectToStatusUpdate'));
 
 Route::get('/crews/{id}/identity',  	array('as' => 'edit_crew',  			'uses' => 'CrewController@edit'));
 

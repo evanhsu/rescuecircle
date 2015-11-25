@@ -200,19 +200,38 @@ Class AuthController extends Controller
             // If this user is NOT an Admin, decide which page to display:
             //   1. Look for the most recent Status that this user has submitted
             //   2. If found, go to the Status Update page for the Crew or Helicopter that this User last updated.
-            //   3. If not found, or this User no longer has permission, go to this User's Crew Identity page.
+            //   3. If the Crew is statusable, go to the New Status form for the crew.
+            //   4. If the Crew has helicopters that are statusable, go to the New Status form for the Helicopter with highest alphabetical priority.
+            //   5. If not found, or this User no longer has permission, go to this User's Crew Identity page.
 
             // Step 1
             $last_status_from_user = $user->lastStatus();
+            //return var_dump($last_status_from_user);
 
             // Step 2
             if(!is_null($last_status_from_user)) {
                 return $last_status_from_user->redirectToNewStatus();
             }
+
             // Step 3
-            elseif(!is_null($user->crew)) {
-                return redirect()->route('edit_crew', $user->crew_id);
+            elseif($user->crew->statusable_type == 'crew') {
+                return redirect()->route('new_status_for_crew', $user->crew->id);
             }
+
+            // Step 4|5
+            elseif($user->crew->statusable_type == 'helicopter') { 
+                // Look for the first Helicopter owned by this Crew
+                $helicopter = $user->crew->helicopters()->orderBy('tailnumber')->first();
+                if(is_null($helicopter)) {
+                    // Step 5 (This crew is supposed to have helicopters, but none were found)
+                    return redirect()->route('edit_crew',$id);
+                }
+                else {
+                    // Step 4 (This crew has at least one helicopter)
+                    return redirect()->route('new_status_for_helicopter',$helicopter->tailnumber);
+                }
+            }
+
             else {
                 // The $user is not a GlobalAdmin, nor does he belong to a Crew (this shouldn't happen).
                 // Delete the user and display a message.
