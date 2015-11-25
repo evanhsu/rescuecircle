@@ -5,7 +5,8 @@
 
 @section('stylesheets')
     @parent
-    <link rel="stylesheet" href="http://js.arcgis.com/3.14/esri/css/esri.css">
+    <!-- <link rel="stylesheet" href="http://js.arcgis.com/3.14/esri/css/esri.css"> -->
+    <link rel="stylesheet" href="/assets/css/esri.css"> <!-- Use the local version for offline development -->
 @endsection
 
 
@@ -35,6 +36,7 @@
 
 @section('scripts-postload')
     @parent
-    <script src="http://js.arcgis.com/3.14/"></script>  <?php /* ArcGIS API - must load before other classes */?>
+    <!--<script src="http://js.arcgis.com/3.14/"></script> -->  <?php /* ArcGIS API - must load before other classes */?>
+    <script src="assets/js/esri/init.js"></script> <!-- Use the local version of "http://js.arcgis.com/3.14/" for offline development -->
     <script src="assets/js/arcmap.js"></script>         <?php /* Render the map and all layers - waits for the DOM to load so dependencies will always load first */?>
 @endsection
