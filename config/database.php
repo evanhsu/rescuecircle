@@ -65,6 +65,7 @@ return [
             'password' => env('DB_PASSWORD', 'Spinach-Anchor1'),
             'charset'  => 'utf8',
             'prefix'   => '',
+            'collation'=> 'utf8_general_ci',
         ],
 
         'staging' => [      /* FAMWeb MS SQL Server 2012 */
