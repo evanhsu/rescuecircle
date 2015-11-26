@@ -14,23 +14,18 @@ class CreateCrewsTable extends Migration
     {
         Schema::create('crews', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('name',100)->unique();
             
-            $table->string('address_street1');
-            $table->string('address_street2');
-            $table->string('address_city');
-            $table->string('address_state');
-            $table->string('zip');
+            $table->string('address_street1')->nullable();
+            $table->string('address_street2')->nullable();
+            $table->string('address_city')->nullable();
+            $table->string('address_state')->nullable();
+            $table->string('address_zip')->nullable();
 
-            $table->string('phone');
-            $table->string('fax');
+            $table->string('phone')->nullable();
+            $table->string('fax')->nullable();
 
-            $table->string('helicopter1_tailnumber');
-            $table->string('helicopter1_model');
-
-            $table->string('helicopter2_tailnumber');
-            $table->string('helicopter2_model');
-            
+            $table->string('logo_filename', 250)->nullable();
             $table->timestamps();
         });
     }
