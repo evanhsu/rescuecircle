@@ -253,7 +253,6 @@ class CrewController extends Controller
 
         // Grab the form input
         $crew_fields = array_except($request->input('crew'), ['helicopters']);
-        $helicopter_fields = $request->input('crew')['helicopters'];
 
         $crew = Crew::find($id);
 
@@ -271,10 +270,16 @@ class CrewController extends Controller
         $crew->update($crew_fields);
         // *** Add error handling/validation for the Crew model
 
+
         // Deal with the Helicopter fields:
         // For each Helicopter on the form, create new or update the existing Helicopter in the dB if necessary
         // (don't update the model if nothing has changed)
-
+        $helicopter_fields = array();
+        
+        if(isset($request->input('crew')['helicopters'])) {
+            $helicopter_fields = $request->input('crew')['helicopters'];
+        }
+        
         foreach($helicopter_fields as $helicopter) {
             if(!empty($helicopter['tailnumber'])) {
                 // Instantiate a new Helicopter - CONVERT TAILNUMBER TO ALL CAPS IN THE DATABASE
