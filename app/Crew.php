@@ -64,6 +64,12 @@ class Crew extends Model
         else return $status;
     }
 
+    public function statusable_type_plain() {
+        // This is a helper function that simply returns $this->statusable_type to emulate
+        // the functionality of the Status::statusable_type_plain() function.
+        return $this->statusable_type;
+    }
+
     /**
      * Getters and Setters
      *

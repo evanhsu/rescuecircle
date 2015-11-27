@@ -55,8 +55,7 @@ class Helicopter extends Model
 
     public function status() {
         // Get the MOST RECENT status for this Helicopter
-        // If none exist, return a blank Status object.
-        // $status = $this->statuses()->orderBy('created_at','desc')->first();
+        // If NONE are found, return a NEW, blank status to be filled in.
         $status = $this->statuses()->orderBy('created_at','desc')->first();
 
         if(is_null($status)) return new Status;

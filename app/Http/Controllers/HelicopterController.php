@@ -178,11 +178,11 @@ class HelicopterController extends Controller
 
         // Display the status update form
         if(Auth::user()->isGlobalAdmin()) {
-                $request->session()->flash('active_menubutton','helicopters'); // Tell the menubar which button to highlight
-            }
-            else {
-                $request->session()->flash('active_menubutton','status'); // Tell the menubar which button to highlight
-            }
+            $request->session()->flash('active_menubutton','helicopters'); // Tell the menubar which button to highlight
+        }
+        else {
+            $request->session()->flash('active_menubutton','status'); // Tell the menubar which button to highlight
+        }
         return view('helicopters.new_status')->with("helicopter",$helicopter)->with("helicopters",$crew_helicopters)->with("status",$last_status);
 
         // return var_dump($helicopter);

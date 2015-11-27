@@ -44,16 +44,37 @@ class CrewController extends Controller
      * Display the Crew Status update form
      * Note: this form POSTS its response to the StatusController
      */
-    public function newStatus($id) {
-        // Display the status update form
+    public function newStatus(Request $request, $id) {
+
+        // Retrieve the requested Crew
+        $crew = Crew::findOrFail($id);
 
         // Make sure this user is authorized...
         if(Auth::user()->cannot('actAsAdminForCrew', $id)) {
             // The current user does not have permission to perform admin functions for this crew
-            return redirect()->back()->withErrors("You're not authorized to access that crew!");
+            return redirect()->back()->withErrors("You're not authorized to update that crew's status!");
         }
+
+        // Retrieve the most recent status update to prepopulate the form (returns a 'new Status' if none exist)
+        $last_status = $crew->status();
+
+        // Convert the lat and lon from decimal-degrees into decimal-minutes
+        // MOVE THIS FUNCTIONALITY INTO A COORDINATES CLASS
+        $last_status->latitude_deg = empty($last_status->latitude) ? "" : floor($last_status->latitude);
+        $last_status->latitude_min = empty($last_status->latitude) ? "" : ($last_status->latitude - $last_status->latitude_deg) * 60.0;
+
+        $last_status->longitude_deg = empty($last_status->longitude) ? "" : floor($last_status->longitude);
+        $last_status->longitude_min = empty($last_status->longitude) ? "" : ($last_status->longitude - $last_status->longitude_deg) * 60.0;
+
         // Authorization complete - continue...
-        return "Crew Status update form: Crew #".$id;
+        // Display the status update form
+        if(Auth::user()->isGlobalAdmin()) {
+            $request->session()->flash('active_menubutton','crews'); // Tell the menubar which button to highlight
+        }
+        else {
+            $request->session()->flash('active_menubutton','status'); // Tell the menubar which button to highlight
+        }
+        return view('crews/new_status')->with('crew',$crew)->with('status',$last_status);
     }
 
     /**
