@@ -21,7 +21,8 @@ Route::get('/feed.json', array('uses' => 'MapController@getMapJSON'));
 // A new Status is created when a "Status Update" form is submitted.
 // A Status cannot be deleted or edited, only superceded. This maintains a history log of statuses.
 //Route::get('/status/{id}',	array('as' => 'show_status', 		'uses' => 'StatusController@show' ));
-Route::post('/status', 		array('as' => 'create_status', 		'uses' => 'StatusController@store' ));
+Route::post('/status',      array('as' => 'create_status',      'uses' => 'StatusController@store' ));
+Route::get('/status/all', 	array('as' => 'current_statuses',	'uses' => 'StatusController@currentForAllResources' ));
 
 
 // HELICOPTERS

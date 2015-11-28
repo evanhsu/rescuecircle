@@ -9,6 +9,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Form;
+use Carbon\Carbon;
+use DB;
 use App\Crew;
 use App\Helicopter;
 use App\Status;
@@ -23,6 +25,31 @@ class StatusController extends Controller
     public function index()
     {
         //
+    }
+
+    /**
+     * This function responds to AJAX requests from the map to update all resources
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function currentForAllResources()
+    {
+        // 1. Retrieve the most recent Status for each resource that's been updated within the last 30 days.
+        // 2. Package the response into a JSON object and return.
+
+        $max_age = Carbon::now()->subDays(30); // The oldest Status that will be displayed
+
+        $resources = DB::table('statuses as newest')
+                        ->leftjoin('statuses as newer', function($join) {
+                            $join->on('newer.statusable_id','=','newest.statusable_id');
+                            $join->on('newer.updated_at','>','newest.updated_at');
+                            })
+                        ->select('newest.*')
+                        ->whereNull('newer.updated_at')
+                        ->where('newest.updated_at','>=',$max_age)
+                        ->get();
+
+        return response()->json($resources);
     }
 
     /**
