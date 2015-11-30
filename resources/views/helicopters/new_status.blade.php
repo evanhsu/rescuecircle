@@ -194,10 +194,10 @@
         lon_deg = longitude < 0 ? lon_deg : (lon_deg * -1.0); // Switch from 'East' reference to 'West' reference (invert sign)
 
         $('#latitude_deg').val( lat_deg );
-        $('#latitude_min').val( toPrecision(lat_min,6) );
+        $('#latitude_min').val( lat_min.toPrecision(6) );
 
         $('#longitude_deg').val( lon_deg );
-        $('#longitude_min').val( toPrecision(lon_min,6) );
+        $('#longitude_min').val( lon_min.toPrecision(6) );
 
     } // End populatePositionFields()
 

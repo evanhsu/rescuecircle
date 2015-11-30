@@ -49,7 +49,17 @@ class StatusController extends Controller
                         ->where('newest.updated_at','>=',$max_age)
                         ->get();
 
-        return response()->json($resources);
+        // return response()->json($resources);
+        return json_encode($resources);
+    }
+
+    public function showMap(Request $request) {
+        // Display the main map page with all active resources plotted
+        $resources = $this->currentForAllResources();
+
+        // The menubar will be selected by the MenubarComposer (app/Http/ViewComposers/MenubarComposer.php)
+        $request->session()->flash('active_menubutton','map'); // Tell the menubar which button to highlight
+        return view('map')->with('resources',$resources);
     }
 
     /**
@@ -108,7 +118,7 @@ class StatusController extends Controller
             ]);
 
         $latitude_dd = $this->decMinToDecDeg($request->get('latitude_deg'), $request->get('latitude_min'));
-        $longitude_dd = $this->decMinToDecDeg($request->get('longitude_deg'), $request->get('longitude_min'));
+        $longitude_dd = $this->decMinToDecDeg($request->get('longitude_deg'), $request->get('longitude_min')) * -1.0; // Convert to 'Easting' (Western hemisphere is negative)
 
         // Form is valid, continue...
         $status = new Status(Input::all());
@@ -180,6 +190,6 @@ class StatusController extends Controller
     protected function decMinToDecDeg($deg, $min) {
         // Convert a latitude or longitude from DD MM.MMMM (decimal minutes)
         // to DD.DDDDD (decimal degrees) format
-        return round(($deg * 1.0) + ($min / 60.0), 5);
+        return round(($deg * 1.0) + ($min / 60.0), 6);
     }
 }
