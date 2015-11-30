@@ -210,12 +210,23 @@ Class AuthController extends Controller
 
             // Step 2
             if(!is_null($last_status_from_user)) {
-                return $last_status_from_user->redirectToNewStatus();
+                $route_params = $last_status_from_user->redirectToNewStatus();
+
+                // Make sure this user is authorized to access this Helicopter or Crew...
+                if(Auth::user()->can('actAsAdminForCrew', $last_status_from_user->crewToUpdate())) {
+                    // This User is authorized to access the same resource that was updated last time
+                    return redirect()->route('new_status_for_'.$route_params['class'], $route_params['id']);
+                }
+                else {
+                    // This helicopter/crew has changed owndership and this user can no longer access it
+                    // Redirect to the Crew Identity page
+                    return redirect()->route('edit_crew',$user->crew_id);
+                }
             }
 
             // Step 3
             elseif($user->crew->statusable_type == 'crew') {
-                return redirect()->route('new_status_for_crew', $user->crew->id);
+                return redirect()->route('new_status_for_crew', $user->crew_id);
             }
 
             // Step 4|5
@@ -224,7 +235,7 @@ Class AuthController extends Controller
                 $helicopter = $user->crew->helicopters()->orderBy('tailnumber')->first();
                 if(is_null($helicopter)) {
                     // Step 5 (This crew is supposed to have helicopters, but none were found)
-                    return redirect()->route('edit_crew',$id);
+                    return redirect()->route('edit_crew',$user->crew_id);
                 }
                 else {
                     // Step 4 (This crew has at least one helicopter)

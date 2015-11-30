@@ -41,7 +41,7 @@ class RedirectIfAuthenticated
                 return redirect()->route('crews_index');
             }
             else {
-                return redirect()->route('status_for_crew',[$this->auth->user()->crew_id]);
+                return redirect()->route('edit_crew',$this->auth->user()->crew_id);
             }
         }
 

@@ -68,6 +68,14 @@ class Status extends Model
         // Returns the RedirectResponse that should be used to submit a new Status for the same resource.
         // For example, if $this is a Status for Helicopter 'N2345', then redirect to "route(status_for_helicopter,'N2345')"
 
+        // Returns an array that can be used to build a redirect
+        // ['class' => 'helicopter',
+        //  'id'    => 'N2345' ]
+        //
+        // The calling function could do something like this:
+        //   routeParams = myStatus->redirectToNewStatus();
+        //   return redirect()->route('new_status_for_'.routePrams['class'], routePrams['id']);
+
         $route_name = "new_status_for_".$this->statusable_type_plain();
         $parent = $this->statusable;  // The instance of the parent class that owns this Status
 
@@ -81,7 +89,27 @@ class Status extends Model
                 break;
         }
 
-        return redirect()->route($route_name,$route_id);
+        // return redirect()->route($route_name,$route_id);
+        return array(   'class' => $this->statusable_type_plain(),
+                        'id'    => $route_id );
+    }
+
+    public function crewToUpdate() {
+        // Returns the ID of the Crew that CURRENTLY owns the Helicopter/Crew from $this Status.
+        
+        switch($this->statusable_type_plain()) {
+            case "helicopter":
+                return $this->statusable->crew_id;
+                break;
+
+            case "crew":
+                return $this->statusable->id;
+                break;
+
+            default:
+                return null;
+                break;
+        } // End switch()
     }
 
 }
