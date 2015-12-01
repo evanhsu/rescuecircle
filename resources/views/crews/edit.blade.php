@@ -257,8 +257,6 @@ function drawOneHelicopterForm($index, $helicopter, $template = false) {
                     }).done(function() {
                         // Success
                         parent.hide(300,function(){ this.remove(); });
-                    }).always(function(xhr,status) {
-                        console.log("AJAX status: "+status);
                     });
                 }
                 

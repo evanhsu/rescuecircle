@@ -50,6 +50,7 @@ class StatusController extends Controller
                         ->get();
 
         // return response()->json($resources);
+        // sleep(4); // Test asynchronous loading on the map view
         return json_encode($resources);
     }
 
