@@ -54,15 +54,6 @@ class StatusController extends Controller
         return json_encode($resources);
     }
 
-    public function showMap(Request $request) {
-        // Display the main map page with all active resources plotted
-        $resources = $this->currentForAllResources();
-
-        // The menubar will be selected by the MenubarComposer (app/Http/ViewComposers/MenubarComposer.php)
-        $request->session()->flash('active_menubutton','map'); // Tell the menubar which button to highlight
-        return view('map')->with('resources',$resources);
-    }
-
     /**
      * Show the form for creating a new resource.
      *
