@@ -57,6 +57,17 @@ return [
             'schema'   => 'public',
         ],
 
+        'smirk' => [
+            'driver'   => 'mysql',
+            'host'     => env('DB_HOST', 'unknown'),
+            'database' => env('DB_DATABASE', 'unknown'),
+            'username' => env('DB_USERNAME', 'unknown'),
+            'password' => env('DB_PASSWORD', 'unknown'),
+            'charset'  => 'utf8',
+            'prefix'   => '',
+            'collation'=> 'utf8_general_ci',
+        ],
+
         'production' => [
             'driver'   => 'sqlsrv',
             'host'     => env('DB_HOST', 'unknown'),
