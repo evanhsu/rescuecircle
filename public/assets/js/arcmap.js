@@ -77,8 +77,7 @@ require([   "esri/map",
 
     var gl1 = new GraphicsLayer({ id: "helicopters" }); // This layer holds the helicopters
     var gl2 = new GraphicsLayer({ id: "circles" });     // This layer holds the 100nm distance rings
-    var fl1 = new FeatureLayer("https://egp.nwcg.gov/arcgis/rest/services/FireCOP/ActiveResources/MapServer/6?token=nJMvzhC6-vp3dB1c4dwhZhrRcS_TpQBuf_KHOSpe9Rmw_ogPmZH3RlHQfM3SnzRR");
-    // Token TJ0LdtjR2pN_kC_rhkI7xnGBDYYHOvvRaYWuYkTgNHQ14_yIxo0PSJRLNoBm2xT0
+    //var fl1 = new FeatureLayer("https://egp.nwcg.gov/arcgis/rest/services/FireCOP/ActiveResources/MapServer/6?token=nJMvzhC6-vp3dB1c4dwhZhrRcS_TpQBuf_KHOSpe9Rmw_ogPmZH3RlHQfM3SnzRR");
     // {"token":"nJMvzhC6-vp3dB1c4dwhZhrRcS_TpQBuf_KHOSpe9Rmw_ogPmZH3RlHQfM3SnzRR","expires":1449167256305}
 
     //Add each point to the GraphicsLayer
@@ -91,7 +90,7 @@ require([   "esri/map",
             // Add our layers to the map
             map.addLayer(gl1);
             map.addLayer(gl2);
-            map.addLayer(fl1);
+            // map.addLayer(fl1);
 
             // Draw each helicopter on the map and place a 100nm ring around it
             for(var i=0; i < fireResources.length; i++) {
