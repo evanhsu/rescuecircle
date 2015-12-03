@@ -9,7 +9,16 @@ sudo composer self-update
 # Install PHP dependencies using Composer (Phinx, etc)
 sudo composer install
 
-# In order to connect to PostgreSQL from outside the VM, you'll need to manually add/uncomment the following line from
+
+# In order to connect to PostgreSQL from outside the VM, the PostgreSQL config files must be modified:
+#   /etc/postgresql/9.3/main/postgresql.conf
+#   /etc/postgresql/9.3/main/pg_hba.conf
+#
+# We'll attempt to overwrite the default copies with our own versions automatically:
+sudo cp -f /var/www/database/postgresql.conf /etc/postgresql/9.3/main/
+sudo cp -f /var/www/database/pg_hba.conf /etc/postgresql/9.3/main/
+
+# If the files cannot be overwritten automatically, you'll need to manually add/uncomment the following line from
 #  /etc/postgresql/9.3/main/postgresql.conf 
 #
 #  listen_addresses = '*'
