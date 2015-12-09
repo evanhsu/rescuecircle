@@ -14,6 +14,8 @@ use App\User;
 use App\Helicopter;
 use App\Status;
 
+use App\ArcServer;
+
 class CrewController extends Controller
 {
     public function __construct()
@@ -35,8 +37,14 @@ class CrewController extends Controller
         }
         // Authorization complete - continue...
 
+        $status = Status::first();
+        $response = ArcServer::featureExists($status);
+
+        // $j = json_decode($response,true);
+        var_dump($response);
+        return "Status: ".$status->statusable_name."\n";
         // Determine whether to redirect to a Crews Status Update form or a Helicopter Status Update form
-        return "Showing most recent Status for Crew #".$id;
+        // return "Showing most recent Status for Crew #".$id;
     }
 
 
