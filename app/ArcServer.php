@@ -17,11 +17,20 @@ class ArcServer {
 		// Returns FALSE if an error occurs (including errors returned by the ArcGIS server).
 
 		$type = explode("\\",$status->statusable_type)[1]; // App\Helicopter ==> Helicopter
+
+		// Choose which layer to query on the Feature Server (i.e. Helicopters are on Layer 0, Crews are on Layer 1, etc.)
+		switch($type) {
+			case "Helicopter":
+			default:
+				$layer = 0;
+				break;
+		}
+
 		$params = array();
 		// $params['layerDefs']= "{\"0\":\"statusable_type like '%$type' AND statusable_name='".$status->statusable_name."'\"}";
-		$params['layerDefs']= "{\"0\":\"statusable_name='".$status->statusable_name."'\"}";
+		$params['layerDefs']= "{\"$layer\":\"statusable_name='".$status->statusable_name."'\"}";
 		$params['token']	= self::$token_for_evanhsu;
-		$params['returnIdsOnly']	= 'true';
+		$params['returnIdsOnly']	= 'false';
 		$params['f']		= 'json';
 
 		$url = self::$base_url."/query";
@@ -29,11 +38,17 @@ class ArcServer {
 		$response = self::callAPI("GET",$url,$params);
 		$json_response = json_decode($response,true);
 		
-		// var_dump($response);
+		
+		var_dump($response);
+		echo "<br /><br />\n\n";
+		var_dump($json_response);
+		echo "<br /><br />\n\n";
+		var_dump($json_response['layers'][0]);
+		
 
-		if(isset($json_response["layers"])) {
-			if(isset($json_response['layers']['objectIds'])) {
-				$object_ids = $json_response["layers"]["objectIds"];
+		if(isset($json_response["layers"]) && isset($json_response["layers"][$layer])) {
+			if(isset($json_response['layers'][$layer]['objectIds'])) {
+				$object_ids = $json_response["layers"][$layer]["objectIds"];
 			}
 			else $object_ids = null;
 		}
@@ -48,12 +63,37 @@ class ArcServer {
 		// Add a new Feature to the ArcGIS server using the the AddFeatures REST endpoint
 		// (docs: https://egp.nwcg.gov/arcgis/sdk/rest/index.html#/Add_Features/02ss0000009m000000/)
 		//
-		$url = self::$base_url."/0/addFeatures";
+
+		// Choose which layer to use on the Feature Server (i.e. Helicopters are on Layer 0, Crews are on Layer 1, etc.)
+		switch($type) {
+			case "Helicopter":
+			default:
+				$layer = 0;
+				break;
+		}
+		$url = self::$base_url."/$layer/addFeatures";
+		
 
 		$attributes = $status->to_json(); // Convert this Status object into a JSON string
 
-		$geometry = json_encode(array())
+		$geometry = array("x"=>230857,"y"=>-293768529738);
+		$attributes =  array();
 
+/*
+		features = [
+						0 =>[
+								geometry =>	[
+												x => 92738654798623,
+												y => -2973868709549
+											],
+								attributes=>[
+												OBJECTID => 1,
+												id 		 => 23,
+												statusabel_name	=> "App\Helicopter"
+											]
+							]
+					]
+*/
 		$params = array();
 		$params['token']		= self::$token_for_evanhsu;
 		$params['features'][]	= "{ 
@@ -92,7 +132,7 @@ class ArcServer {
 	        default:
 	            // if ($data) $url = sprintf("%s?%s", $url, http_build_query($data));
 		        if($data) {
-			        $q = "?";
+			        $q = "";
 		        	foreach($data as $key=>$val) {
 		        		$q .= "$key=$val&";
 		        	}
@@ -114,7 +154,7 @@ class ArcServer {
 		}
 	    curl_close($curl);
 
-	    // echo $url;
+	   // echo $url;
 
 	   return $result;
 	}

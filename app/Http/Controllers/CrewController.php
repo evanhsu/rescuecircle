@@ -38,13 +38,14 @@ class CrewController extends Controller
         // Authorization complete - continue...
 
         $status = Status::first();
-        $status->Distance = 100;
+        echo "Looking for: ".$status->statusable_name."<br />\n";
+        // $status->Distance = 100;
         // $status = new Status;
-        //$response = ArcServer::featureExists($status);
-        // var_dump($response);
-
+        $response = ArcServer::featureExists($status);
+        var_dump($response);
+        return 1;
         // return "Status: ".$status->statusable_name."\n";
-        return json_encode($status)."<br /><br />".$status->toJson()."     (".$status->distance.")";
+        // return json_encode($status)."<br /><br />(".$status->Distance.")";
 
         // Determine whether to redirect to a Crews Status Update form or a Helicopter Status Update form
         // return "Showing most recent Status for Crew #".$id;
