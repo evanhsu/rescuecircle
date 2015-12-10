@@ -62,8 +62,9 @@ class ArcServer {
 									}";
 
 		$response = callAPI("POST", $url, $params);
-		
+
 		// Check for errors, process response
+		var_dump($response);
 		return $response;
 	}
 
