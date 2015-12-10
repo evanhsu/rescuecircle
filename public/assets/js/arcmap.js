@@ -3,16 +3,10 @@
 
 // Configuration variables
 var mapDiv = "mapDiv";
-var mapServer = "";
+var arcServerUrl = "https://egp.nwcg.gov/arcgis/rest/services/FireCOP/ShortHaul/FeatureServer/0";
 
-// Test Data
-/*
-var heliLocations = {"helicopters":[
-                    {"tailnumber":"N123AB", "crewName":"Crew #1", "latitude":"42.1",    "longitude":"-123.1",   "staffing_emts":"3",    "staffing_shorthaul":"6"},
-                    {"tailnumber":"N456CD", "crewName":"Crew #2", "latitude":"43.2",    "longitude":"-116.2",   "staffing_emts":"4",    "staffing_shorthaul":"7"},
-                    {"tailnumber":"N789EF", "crewName":"Crew #3", "latitude":"44.3",    "longitude":"-110.3",   "staffing_emts":"5",    "staffing_shorthaul":"6"},
-                ]};
-*/
+var token = "S1R9f4LzYbjxAxAXY96fQeEiFTfC6jCnzmHSC8LKStyZwjr7gnwpvB75PNzD4xC9"; // evanhsu (expires 1/8/2016)
+
 // Send AJAX request to retrieve all active Fire Resources
 
 // Create a jQuery Deferred to notify when the map has finished loading
@@ -33,7 +27,18 @@ var loadingFireResources = $.ajax({
                                     // An error occurred
                                     console.error("Status Code: "+e.status+",  Text: "+e.statusText+",  Status: "+e.status);
                                 });
-
+/*var fireResourcesArcLayer;
+$.ajax({
+    url: arcServerUrl,
+    type: "get",
+    dataType: "json"
+}).done(function(o) {
+    fireResourcesArcLayer = o;
+    console.log(o);
+}).fail(function(e) {
+    // An error occurred
+    console.error("Status Code: "+e.status+",  Text: "+e.statusText+",  Status: "+e.status);
+});*/
 
 // Assemble and render the entire map
 var map;    // Accessible in the global scope
@@ -45,8 +50,11 @@ require([   "esri/map",
             "esri/symbols/PictureMarkerSymbol",
             "esri/symbols/SimpleFillSymbol",
             "esri/symbols/SimpleLineSymbol",
+            "esri/symbols/TextSymbol",
             "esri/graphic",
             "esri/layers/GraphicsLayer",
+            "esri/layers/FeatureLayer",
+            "esri/layers/LabelClass",
             "esri/units",
             "assets/js/Helicopter",
             "dojo/domReady!",
@@ -58,23 +66,44 @@ require([   "esri/map",
                         PictureMarkerSymbol, 
                         SimpleFillSymbol,
                         SimpleLineSymbol,
+                        TextSymbol,
                         Graphic, 
                         GraphicsLayer,
+                        FeatureLayer,
+                        LabelClass,
                         Units,
                         Helicopter
                     ) { 
     map = new Map(mapDiv, {
       center: [-113, 45],
       zoom: 6,
-      basemap: "topo"
+      basemap: "topo",
+      showLabels: true
     });
 
     map.on('load',function() {
         loadingMap.resolve(); // Resolve this deferred object (mark this task as complete and fire callbacks)
     });
 
-    var gl1 = new GraphicsLayer({ id: "helicopters" }); // This layer holds the helicopters
-    var gl2 = new GraphicsLayer({ id: "circles" });     // This layer holds the 100nm distance rings
+    // var gl1 = new GraphicsLayer({ id: "helicopters" }); // This layer holds the helicopters
+    // var gl2 = new GraphicsLayer({ id: "circles" });     // This layer holds the 100nm distance rings
+    var fl1 = new FeatureLayer(arcServerUrl+"?token="+token, {
+                                                                id: "helicopters",
+                                                                outFields: ["*"],
+                                                                showLabels: true
+                                                            });
+    var resourceLabelSymbol = new TextSymbol().setColor(new Color("#555"));
+        resourceLabelSymbol.font.setSize("14pt");
+        resourceLabelSymbol.font.setFamily("arial");
+
+    //this is the very least of what should be set within the JSON  
+    var resourceLabelContent = {
+      "labelExpressionInfo": {"value": "{statusable_name}"}
+    };
+
+    var resourceLabel = new LabelClass(resourceLabelContent);
+    resourceLabel.symbol = resourceLabelSymbol;
+    
 
     //Add each point to the GraphicsLayer
     var p,heliGraphic,responseRingGraphic,c,heli;
@@ -84,9 +113,11 @@ require([   "esri/map",
             loadingFireResources).then(
         function() {
             // Add our layers to the map
-            map.addLayer(gl1);
-            map.addLayer(gl2);
-
+            // map.addLayer(gl1);
+            // map.addLayer(gl2);
+            fl1.setLabelingInfo([resourceLabel]);
+            map.addLayer(fl1);
+/*
             // Draw each helicopter on the map and place a 100nm ring around it
             for(var i=0; i < fireResources.length; i++) {
                 heli = new Helicopter(fireResources[i]);
@@ -97,6 +128,7 @@ require([   "esri/map",
                 gl2.add(heli.mapResponseRingGraphic());  // Add a circle to a different GraphicsLayer to represent the response range for this helicopter
 
             }
+*/
         /*
             // Add 'click' behavior to the map
             map.on("click", function(e) {

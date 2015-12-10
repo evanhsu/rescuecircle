@@ -1,0 +1,9 @@
+2015-12-09T17:05:54+00:00: ArcServer.php experienced a cURL error at https://egpz.nwcg.gov/arcgis/rest/services/FireCOP/ShortHaul/FeatureServer/query?layerDefs=%7B%220%22%3A%22statusable_type+like+%27%25Helicopter%27+AND+statusable_name%3D%27N1111%27%22%7D&token=ZbIpxHzxRH6xaRqUClS2ZHQodQfSgQnc1BbrWk2d6Wo7bULVhO4A6HvP5zsWQqBI&returnIdsOnly=true&f=json
+Could not resolve host: egpz.nwcg.gov
+
+2015-12-09T17:05:56+00:00: ArcServer.php experienced a cURL error at https://egpz.nwcg.gov/arcgis/rest/services/FireCOP/ShortHaul/FeatureServer/query?layerDefs=%7B%220%22%3A%22statusable_type+like+%27%25Helicopter%27+AND+statusable_name%3D%27N1111%27%22%7D&token=ZbIpxHzxRH6xaRqUClS2ZHQodQfSgQnc1BbrWk2d6Wo7bULVhO4A6HvP5zsWQqBI&returnIdsOnly=true&f=json
+Could not resolve host: egpz.nwcg.gov
+
+2015-12-09T17:14:13+00:00: ArcServer.php experienced a cURL error at https://egpz.nwcg.gov/arcgis/rest/services/FireCOP/ShortHaul/FeatureServer/query?layerDefs=%7B%220%22%3A%22statusable_type+like+%27%25Helicopter%27+AND+statusable_name%3D%27N1111%27%22%7D&token=ZbIpxHzxRH6xaRqUClS2ZHQodQfSgQnc1BbrWk2d6Wo7bULVhO4A6HvP5zsWQqBI&returnIdsOnly=true&f=json
+Could not resolve host: egpz.nwcg.gov
+
