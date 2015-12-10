@@ -31,7 +31,8 @@ class Status extends Model
     						'assigned_fire_number',
     						'assigned_supervisor',
     						'assigned_supervisor_phone',
-                            'distance',
+                            'Distance',
+                            'LabelText',
     						'statusable_name',
     						'statusable_type',
     						'statusable_id',
@@ -44,12 +45,13 @@ class Status extends Model
      */
     // Consider hiding 'created_by'...
     protected $hidden = [];
-
-    public function __construct() {
-        $this->distance = 100;  // This is the radius of the 'response ring' around a helicopter in nautical miles.  Default: 100;
-        $this->labelText= ".";  // This is a workaround to help ArcGIS server render the helicopter symbol in the center of its response circle. This should ALWAYS BE "."
+/*
+    function __construct() {
+        parent::__construct();
+        $this->Distance = 100;  // This is the radius of the 'response ring' around a helicopter in nautical miles.  Default: 100;
+        $this->LabelText= ".";  // This is a workaround to help ArcGIS server render the helicopter symbol in the center of its response circle. This should ALWAYS BE "."
     }
-
+*/
     public function statusable() {
     	return $this->morphTo();	// Allow multiple other Models to claim a relationship to this model
     }
@@ -115,18 +117,6 @@ class Status extends Model
                 return null;
                 break;
         } // End switch()
-    }
-
-    public function to_json() {
-        // Convert this instance into a JSON string
-        //
-        /***
-            {
-                "id"                :   3843,
-                "statusable_type"   : "App\Helicopter",
-                ""
-            }
-        ***/
     }
 
 }

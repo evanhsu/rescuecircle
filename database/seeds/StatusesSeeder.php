@@ -37,6 +37,8 @@ public function run()
         'assigned_fire_number'=>"WA-FRE-150038",
         'assigned_supervisor' =>"John Thompson",
         'assigned_supervisor_phone'=>"333-444-5555",
+        'Distance'          => 100,
+        'LabelText'         => ".",
         'created_by_name'   => $user->firstname." ".$user->lastname,
         'created_by_id'     => $user->id,
         'created_at'        => $oldtime,
@@ -57,7 +59,9 @@ public function run()
         'assigned_fire_name'=> "Gasquet Complex",
         'assigned_fire_number'=>"WA-FRE-150038",
         'assigned_supervisor' =>"John Thompson",
-        'assigned_supervisor_phone'=>"333-444-5555",
+        'assigned_supervisor_phone'=>"333-444-5555",        
+        'Distance'          => 100,
+        'LabelText'         => ".",
         'created_by_name'   => $user->firstname." ".$user->lastname,
         'created_by_id'     => $user->id,
     ));
@@ -83,6 +87,8 @@ public function run()
         'assigned_fire_number'=>"OR-RSF-150208",
         'assigned_supervisor' =>"Bill Newman",
         'assigned_supervisor_phone'=>"333-444-5555",
+        'Distance'          => 100,
+        'LabelText'         => ".",
         'created_by_name'   => $user->firstname." ".$user->lastname,
         'created_by_id'     => $user->id,
     ));
@@ -103,6 +109,8 @@ public function run()
         'manager_phone'     => "334-998-6756",
         'comments1'         => "This is update 1 of 1 from the db seeder",
         'comments2'         => "This is upcoming",
+        'Distance'          => 100,
+        'LabelText'         => ".",
         'created_by_name'   => $user->firstname." ".$user->lastname,
         'created_by_id'     => $user->id,
     ));
