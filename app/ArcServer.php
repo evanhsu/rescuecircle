@@ -7,7 +7,8 @@ use Log;
 class ArcServer {
 	private static $base_url = "https://egp.nwcg.gov/arcgis/rest/services/FireCOP/ShortHaul/FeatureServer";
 	private static $token_for_evanhsu = array(	"token"		=> "MkWG8SSDzY3KwP7Becy_Muv5Mu3LeDWC7pEo93Ra8jsb5oGzYkyj-iaoe1Z-Ku2WdoFAl6e0YH9e1YqF4a3KRXzm1AnalAZea58vc1UCUQU.",
-												"expires"	=> 1449914879082); // evanhsu, referer: http://resourcestatus.smirksoftware.com Expires 12/18/2016
+												"expires"	=> 1449914879082,	// Expires 12/18/2016
+												"referer"	=> "http://resourcestatus.smirksoftware.com");
 
 
 
@@ -150,16 +151,13 @@ class ArcServer {
 	    }
 
 	    curl_setopt($curl, CURLOPT_URL, $url);
-	    curl_setopt($curl, CURLOPT_REFERER, 'http://resourcestatus.smirksoftware.com'); //Needed to accompany the token for authentication
+	    curl_setopt($curl, CURLOPT_REFERER, self::$token_for_evanhsu['referer']); //Needed to accompany the token for authentication
 
 	    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 	    curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 ); // Use IPv4 (not IPv6)
 
 		curl_setopt($curl, CURLOPT_HEADER, false);
-
-		//curl_setopt($curl, CURLOPT_HTTPGET, 1);
-		//curl_setopt($curl, CURLINFO_HEADER_OUT, true);
-		curl_setopt($curl, CURLOPT_VERBOSE, true); // Verbose for debugging
+		curl_setopt($curl, CURLINFO_HEADER_OUT, true);
 
 	    $result = curl_exec($curl);
 		if (curl_errno($curl)) {
