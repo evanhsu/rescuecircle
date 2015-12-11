@@ -131,7 +131,10 @@ class StatusController extends Controller
         // Attempt to save
         if($status->save()) {
             // Changes have been saved to the local database, now initiate an update on the ArcGIS Server...
-            ArcServer::addFeature($status);
+            $objectids = ArcServer::findFeature($status);
+            $objectid = $objectids[0];
+            ArcServer::updateFeature($objectid,$status);
+            // ArcServer::addFeature($status);
             // ArcServer::updateOrCreateFeature($status);
             return redirect()->back()->with('alert', array('message' => 'Status update saved!', 'type' => 'success'));
         }

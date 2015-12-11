@@ -44,11 +44,17 @@ class CrewController extends Controller
         // Authorization complete - continue...
 
         $status = Status::first();
-        echo "Feature tailnumber: ".$status->statusable_name."<br />\n";
+        $response = ArcServer::findFeature($status);
+
+        echo "Looking for tailnumber: ".$status->statusable_name."<br />\n";
         
-        $response = ArcServer::featureExists($status);
-        var_dump($response);
-        
+        if($response === false) {
+            echo "An error prevented this query from completing";
+        }
+        else {
+            //This 
+            echo "OBJECT_IDs => [".implode(",",$response)."]";
+        }
         // Determine whether to redirect to a Crews Status Update form or a Helicopter Status Update form
         // return "Showing most recent Status for Crew #".$id;
     }
