@@ -15,6 +15,7 @@ use App\Helicopter;
 use App\Status;
 
 use App\ArcServer;
+use Log;
 
 class CrewController extends Controller
 {
@@ -25,10 +26,11 @@ class CrewController extends Controller
         $this->middleware('auth');
     }
 
-    public function test(Request $request) {
-        Log::error($request);
+    public function testtoken(Request $request) {
+        ArcServer::testToken();
         return;
     }
+
     /**
      * Show the most recent Status for this Crew
      */
@@ -42,10 +44,9 @@ class CrewController extends Controller
         // Authorization complete - continue...
 
         $status = Status::first();
-        echo "Feature tailnumbe: ".$status->statusable_name."<br />\n";
+        echo "Feature tailnumber: ".$status->statusable_name."<br />\n";
         
         $response = ArcServer::featureExists($status);
-        // $response = ArcServer::addFeature($status);
         var_dump($response);
         
         // Determine whether to redirect to a Crews Status Update form or a Helicopter Status Update form

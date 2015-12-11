@@ -12,6 +12,29 @@ class ArcServer {
 
 
 
+	public static function testToken() {
+		// This will make a query to the ArcGIS server to test the token.
+		$params = array();
+		$params['layerDefs']= "{\"0\":\"statusable_name!='uNlIkElYnaME'\"}";
+		$params['token']	= self::$token_for_evanhsu['token'];
+		$params['returnIdsOnly']	= 'true';
+		$params['f']		= 'json';
+
+		$url = self::$base_url."/query";
+
+		$response = self::callAPI("GET",$url,$params);
+		$json_response = json_decode($response,true);
+		if(array_key_exists("error",$json_response)) {
+			echo "Token is invalid (token:".self::$token_for_evanhsu['token'].")<br />\n";
+		}
+		else {
+			echo "Token appears to be working (token:".self::$token_for_evanhsu['token'].")<br />\n";
+		}
+		var_dump($response);
+		return;
+	}
+
+
 	public static function featureExists($status) {
 		// Check the ArcGIS server for an existing Feature Object that matches this tailnumber (or Crew ID)
 		// Returns the ArcGIS Server OBJECT_ID if found.

@@ -24,7 +24,7 @@ Route::get('/feed.json', array('uses' => 'MapController@getMapJSON'));
 Route::post('/status',      array('as' => 'create_status',      'uses' => 'StatusController@store' ));
 Route::get('/status/all', 	array('as' => 'current_statuses',	'uses' => 'StatusController@currentForAllResources' ));
 
-Route::post('/crews/test',				array('as' => 'test',			'uses' => 'CrewController@test')); //Debug
+Route::get('/testtoken',	array('as' => 'testtoken',			'uses' => 'CrewController@testtoken')); // This will tell you if the application token is working (this is housed in the CrewController for no particular reason)
 
 // HELICOPTERS
 Route::get('/helicopters',							array('as' => 'helicopters_index', 				'uses' => 'HelicopterController@index'));
