@@ -6,8 +6,9 @@ use Log;
 
 class ArcServer {
 	private static $base_url = "https://egp.nwcg.gov/arcgis/rest/services/FireCOP/ShortHaul/FeatureServer";
-	// private static $token_for_evanhsu = "ZbIpxHzxRH6xaRqUClS2ZHQodQfSgQnc1BbrWk2d6Wo7bULVhO4A6HvP5zsWQqBI"; // Expires 1/8/2016
-	private static $token_for_evanhsu = "S1R9f4LzYbjxAxAXY96fQeEiFTfC6jCnzmHSC8LKStyZwjr7gnwpvB75PNzD4xC9"; // Expires 1/8/2016
+	private static $token_for_evanhsu = array(	"token"		=> "MkWG8SSDzY3KwP7Becy_Muv5Mu3LeDWC7pEo93Ra8jsb5oGzYkyj-iaoe1Z-Ku2WdoFAl6e0YH9e1YqF4a3KRXzm1AnalAZea58vc1UCUQU.",
+												"expires"	=> 1449914879082); // evanhsu, referer: http://resourcestatus.smirksoftware.com Expires 12/18/2016
+
 
 
 	public static function featureExists($status) {
@@ -28,8 +29,8 @@ class ArcServer {
 
 		$params = array();
 		// $params['layerDefs']= "{\"0\":\"statusable_type like '%$type' AND statusable_name='".$status->statusable_name."'\"}";
-		$params['layerDefs']= "{\"$layer\":\"statusable_name='".$status->statusable_name."'\"}";
-		$params['token']	= self::$token_for_evanhsu;
+		$params['layerDefs']= "{\"".$layer."\":\"statusable_name='".$status->statusable_name."'\"}";
+		$params['token']	= self::$token_for_evanhsu['token'];
 		$params['returnIdsOnly']	= 'false';
 		$params['f']		= 'json';
 
@@ -40,19 +41,24 @@ class ArcServer {
 		
 		
 		var_dump($response);
-		echo "<br /><br />\n\n";
-		var_dump($json_response);
-		echo "<br /><br />\n\n";
-		var_dump($json_response['layers'][0]);
+		// echo "<br /><br />\n\n";
+		// var_dump($json_response);
+		// echo "<br /><br />\n\n";
+		// var_dump($json_response['layers'][$layer]);
 		
-
+		// Check the server response for success or failure
 		if(isset($json_response["layers"]) && isset($json_response["layers"][$layer])) {
 			if(isset($json_response['layers'][$layer]['objectIds'])) {
+				// The server found some matches
 				$object_ids = $json_response["layers"][$layer]["objectIds"];
 			}
-			else $object_ids = null;
+			else {
+				// The server did NOT find any matching features, but there were no errors
+				$object_ids = null;
+			}
 		}
 		elseif(array_key_exists("error",$json_response)) {
+			// The ArcGIS server returned an error code - log it and return FALSE
 			Log::error('ArcGIS server error: '.$json_response['error']['message'],["File"=>__FILE__,"Method"=>__METHOD__,"URL"=>$url, "URL_params"=>$params, "ArcGIS Error Code"=>$json_response['error']['code']]);
 			$object_ids = false;
 		}
@@ -65,46 +71,42 @@ class ArcServer {
 		//
 
 		// Choose which layer to use on the Feature Server (i.e. Helicopters are on Layer 0, Crews are on Layer 1, etc.)
+		$type = explode("\\",$status->statusable_type)[1]; // App\Helicopter ==> Helicopter
 		switch($type) {
 			case "Helicopter":
 			default:
 				$layer = 0;
 				break;
 		}
+
+		// Construct the URL to send the POST request to.
 		$url = self::$base_url."/$layer/addFeatures";
-		
 
-		$attributes = $status->to_json(); // Convert this Status object into a JSON string
+		// Build a JSON representation of the Status update that we're going to send
+		$attributes = $status->toArray(); // Convert this Status object into a JSON string
 
-		$geometry = array("x"=>230857,"y"=>-293768529738);
-		$attributes =  array();
+		// 'geometry' is required by the ArcGIS server to actually plot the point on the map.
+		// (docs: https://egp.nwcg.gov/arcgis/sdk/rest/index.html#/Geometry_Objects/02ss0000008m000000/)
+		// $geometry = array("x"=>230857,"y"=>-293768529738);
+		// wkid: 4326 (GCS_WGS_1984) - geographic coordinate system (lat/lon)
+		// wkid: 3857 (WGS_1984_Web_Mercator_Auxiliary_Sphere) - Projected coordinate system (x/y projected onto flat globe)
+		$geometry = array(	
+							"x"					=>floatval($status->longitude),
+							"y"					=>floatval($status->latitude),
+							"spatialReference"	=> array(
+															"wkid"		=> 4326
+														)
+						);
 
-/*
-		features = [
-						0 =>[
-								geometry =>	[
-												x => 92738654798623,
-												y => -2973868709549
-											],
-								attributes=>[
-												OBJECTID => 1,
-												id 		 => 23,
-												statusabel_name	=> "App\Helicopter"
-											]
-							]
-					]
-*/
 		$params = array();
-		$params['token']		= self::$token_for_evanhsu;
-		$params['features'][]	= "{ 
-									\"geometry\"	: $geometry, 
-									\"attributes\"	: $attributes
-									}";
+		$params['token']	= self::$token_for_evanhsu['token'];
+		$params['features'] = json_encode(array(array("geometry" => $geometry, "attributes" => $attributes)));
 
-		$response = callAPI("POST", $url, $params);
+		$response = self::callAPI("POST", $url, $params);
 
 		// Check for errors, process response
-		var_dump($response);
+		//var_dump($response);
+		
 		return $response;
 	}
 
@@ -123,8 +125,15 @@ class ArcServer {
 	        case "POST":
 	            curl_setopt($curl, CURLOPT_POST, 1);
 
-	            if ($data)
-	                curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+	            if ($data) {
+	            	// $data is an array of key=>value pairs
+	            	$params = "";
+	            	foreach($data as $key=>$val) {
+	            		if($params != "") $params .= "&";
+	            		$params .= $key."=".$val;
+	            	}
+	                curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
+	            }
 	            break;
 	        case "PUT":
 	            curl_setopt($curl, CURLOPT_PUT, 1);
@@ -141,17 +150,27 @@ class ArcServer {
 	    }
 
 	    curl_setopt($curl, CURLOPT_URL, $url);
+	    curl_setopt($curl, CURLOPT_REFERER, 'http://resourcestatus.smirksoftware.com'); //Needed to accompany the token for authentication
+
 	    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 	    curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 ); // Use IPv4 (not IPv6)
 
 		curl_setopt($curl, CURLOPT_HEADER, false);
-		curl_setopt($curl, CURLOPT_HTTPGET, 1);
+
+		//curl_setopt($curl, CURLOPT_HTTPGET, 1);
+		//curl_setopt($curl, CURLINFO_HEADER_OUT, true);
+		curl_setopt($curl, CURLOPT_VERBOSE, true); // Verbose for debugging
 
 	    $result = curl_exec($curl);
 		if (curl_errno($curl)) {
 		    $result = false;
 		    Log::error('cURL Error: '.curl_error($curl),["File"=>__FILE__,"Method"=>__METHOD__,"URL"=>$url]);
 		}
+
+		//Debugging
+		$info = curl_getinfo($curl);
+		Log::error($info);
+
 	    curl_close($curl);
 
 	   // echo $url;

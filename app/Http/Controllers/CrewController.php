@@ -25,6 +25,10 @@ class CrewController extends Controller
         $this->middleware('auth');
     }
 
+    public function test(Request $request) {
+        Log::error($request);
+        return;
+    }
     /**
      * Show the most recent Status for this Crew
      */
@@ -38,15 +42,12 @@ class CrewController extends Controller
         // Authorization complete - continue...
 
         $status = Status::first();
-        echo "Looking for: ".$status->statusable_name."<br />\n";
-        // $status->Distance = 100;
-        // $status = new Status;
+        echo "Feature tailnumbe: ".$status->statusable_name."<br />\n";
+        
         $response = ArcServer::featureExists($status);
+        // $response = ArcServer::addFeature($status);
         var_dump($response);
-        return 1;
-        // return "Status: ".$status->statusable_name."\n";
-        // return json_encode($status)."<br /><br />(".$status->Distance.")";
-
+        
         // Determine whether to redirect to a Crews Status Update form or a Helicopter Status Update form
         // return "Showing most recent Status for Crew #".$id;
     }

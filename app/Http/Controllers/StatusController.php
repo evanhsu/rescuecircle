@@ -14,6 +14,7 @@ use DB;
 use App\Crew;
 use App\Helicopter;
 use App\Status;
+use App\ArcServer;
 
 class StatusController extends Controller
 {
@@ -130,7 +131,7 @@ class StatusController extends Controller
         // Attempt to save
         if($status->save()) {
             // Changes have been saved to the local database, now initiate an update on the ArcGIS Server...
-            // updateArcFeature($status);
+            ArcServer::addFeature($status);
             // ArcServer::updateOrCreateFeature($status);
             return redirect()->back()->with('alert', array('message' => 'Status update saved!', 'type' => 'success'));
         }

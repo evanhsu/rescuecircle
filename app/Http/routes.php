@@ -24,6 +24,7 @@ Route::get('/feed.json', array('uses' => 'MapController@getMapJSON'));
 Route::post('/status',      array('as' => 'create_status',      'uses' => 'StatusController@store' ));
 Route::get('/status/all', 	array('as' => 'current_statuses',	'uses' => 'StatusController@currentForAllResources' ));
 
+Route::post('/crews/test',				array('as' => 'test',			'uses' => 'CrewController@test')); //Debug
 
 // HELICOPTERS
 Route::get('/helicopters',							array('as' => 'helicopters_index', 				'uses' => 'HelicopterController@index'));
