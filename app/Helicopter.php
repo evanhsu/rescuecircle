@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 use App\Crew;
 use App\User;
 use App\Auth;
@@ -65,15 +66,21 @@ class Helicopter extends Model
     public function freshness() {
         // Check the timestamp of the most recent update for this helicopter.
         // Return 'fresh', 'stale', or 'expired' depending on age thresholds.
-
+        $max_fresh_age = 24;        // Hours
+        $expiration_age= 24 * 30;   // 30 days
+/*
         $now = new DateTime('now');
         $last_update = $this->status()->created_at;
 
         $age = $now->diff($last_update);
         $hours = $age->format('h');
-
-        if($hour <= $max_fresh_age) $freshness = "fresh";
-        elseif(($hour > $max_fresh_age) && ($hour < $expiration_age)) $freshness = "stale";
+*/  
+        $now = Carbon::now();
+        $last_update = $this->status()->created_at;
+        $hours = $now->diffInHours($last_update);
+        
+        if($hours <= $max_fresh_age) $freshness = "fresh";
+        elseif(($hours > $max_fresh_age) && ($hours < $expiration_age)) $freshness = "stale";
         else $freshness = "expired";
     }
 

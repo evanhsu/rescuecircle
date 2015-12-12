@@ -41,14 +41,29 @@ function drawOneHelicopterForm($index, $helicopter, $template = false) {
 
     if(!$template) {
         $output .= "<a href=\"".route('new_status_for_helicopter',$helicopter->tailnumber)."\" class=\"btn btn-default\" role=\"button\">Go to the Status Page</a>\n";
+        
     } else {
         $output .= "<div class=\"alert alert-warning\"><strong>Remember:</strong> this new helicopter won't show up on the map until you submit a Status Update!</div>";
     }
     $output .= "                </div></div>\n";
 
+    $output .= freshnessNotify($helicopter->freshness());
+
     $output .= "</div>\n";
 
     echo $output;
+}
+
+function freshnessNotify($freshness) {
+    // Return a string that will draw a Bootstrap alert for an aging helicopter (no recent updates)
+    if($freshness == "fresh") $output = ""; // No alert needed, this is fresh
+    elseif($freshness == "stale") {
+        $output = "<div class=\"alert alert-warning\"><strong>Stale Info!</strong> This helicopter is grayed out on the map because it hasn't been updated in over 24 hours.</div>";
+    }
+    else {
+        $output = "<div class=\"alert alert-danger\"><strong>Expired Info!</strong> This helicopter has been removed from the map because it hasn't been updated in over 30 days.  Just submit a new Status Update to get it back!</div>";
+    }
+    return $output;
 }
 ?>
 
