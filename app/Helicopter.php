@@ -62,6 +62,36 @@ class Helicopter extends Model
         else return $status;
     }
 
+    public function freshness() {
+        // Check the timestamp of the most recent update for this helicopter.
+        // Return 'fresh', 'stale', or 'expired' depending on age thresholds.
+
+        $now = new DateTime('now');
+        $last_update = $this->status()->created_at;
+
+        $age = $now->diff($last_update);
+        $hours = $age->format('h');
+
+        if($hour <= $max_fresh_age) $freshness = "fresh";
+        elseif(($hour > $max_fresh_age) && ($hour < $expiration_age)) $freshness = "stale";
+        else $freshness = "expired";
+    }
+
+    public function is_fresh() {
+        if($this->freshness() == "fresh") return true;
+        else return false;
+    }
+
+    public function is_stale() {
+        if($this->freshness() == "stale") return true;
+        else return false;
+    }
+
+    public function is_expired() {
+        if($this->freshness() == "expired") return true;
+        else return false;
+    }
+
     public function release() {
     	// Disassociate this helicopter from it's Crew (set Helicopter->crew_id to NULL)
     	$this->set('crew_id',null);
