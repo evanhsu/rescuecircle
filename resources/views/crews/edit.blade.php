@@ -21,7 +21,9 @@ function drawOneHelicopterForm($index, $helicopter, $template = false) {
 
     $output .= "/></span>\n";
     
-    if(!$template) $output .= "<span><button class=\"btn btn-default release-helicopter-button\" data-helicopter-id=\"".$index."\" type=\"button\">Release</button></span>\n";
+    if(!$template) {
+        $output .= "<span><button class=\"btn btn-default release-helicopter-button\" data-helicopter-id=\"".$index."\" type=\"button\">Release</button></span>\n";
+    }
      
      $output .= "</div>
         </div>
@@ -33,11 +35,16 @@ function drawOneHelicopterForm($index, $helicopter, $template = false) {
             </div>
         </div>\n";
 
-    if(!$template) $output .= " <div class=\"form-group\">
+    $output .= " <div class=\"form-group\">
                                 <div class=\"col-sm-2\"></div>
-                                <div class=\"col-sm-6\">
-                                    <a href=\"".route('new_status_for_helicopter',$helicopter->tailnumber)."\" class=\"btn btn-default\" role=\"button\">Go to the Status Page</a>
-                                </div></div>\n";
+                                <div class=\"col-sm-6\">\n";
+
+    if(!$template) {
+        $output .= "<a href=\"".route('new_status_for_helicopter',$helicopter->tailnumber)."\" class=\"btn btn-default\" role=\"button\">Go to the Status Page</a>\n";
+    } else {
+        $output .= "<div class=\"alert alert-warning\"><strong>Remember:</strong> this new helicopter won't show up on the map until you submit a Status Update!</div>";
+    }
+    $output .= "                </div></div>\n";
 
     $output .= "</div>\n";
 
