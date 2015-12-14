@@ -24,7 +24,12 @@ Route::get('/feed.json', array('uses' => 'MapController@getMapJSON'));
 Route::post('/status',      array('as' => 'create_status',      'uses' => 'StatusController@store' ));
 Route::get('/status/all', 	array('as' => 'current_statuses',	'uses' => 'StatusController@currentForAllResources' ));
 
-Route::get('/testtoken',	array('as' => 'testtoken',			'uses' => 'CrewController@testtoken')); // This will tell you if the application token is working (this is housed in the CrewController for no particular reason)
+// DEBUGGING ONLY
+if(env("APP_DEBUG")) {
+	// These routes are only enabled for debugging to test internal functionality
+	Route::get('/test/token',		array('as' => 'test_token',			'uses' => 'TestController@testtoken')); // This will tell you if the application token is working with the ArcGIS server
+	Route::get('/test/findfeature',	array('as' => 'test_find_feature',	'uses' => 'TestController@findFeature')); 
+}
 
 // HELICOPTERS
 Route::get('/helicopters',							array('as' => 'helicopters_index', 				'uses' => 'HelicopterController@index'));
