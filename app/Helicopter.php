@@ -68,20 +68,20 @@ class Helicopter extends Model
         // Return 'fresh', 'stale', or 'expired' depending on age thresholds.
         $max_fresh_age = 24;        // Hours
         $expiration_age= 24 * 30;   // 30 days
-/*
-        $now = new DateTime('now');
-        $last_update = $this->status()->created_at;
 
-        $age = $now->diff($last_update);
-        $hours = $age->format('h');
-*/  
         $now = Carbon::now();
-        $last_update = $this->status()->created_at;
-        $hours = $now->diffInHours($last_update);
-        
-        if($hours <= $max_fresh_age) $freshness = "fresh";
-        elseif(($hours > $max_fresh_age) && ($hours < $expiration_age)) $freshness = "stale";
-        else $freshness = "expired";
+        $last_status = $this->status();
+        if($last_status->exists() != true) $freshness = "missing"; // No Status has ever been created for this Helicopter
+        else {
+            $last_update = $last_status->created_at;
+            $age_hours = $now->diffInHours($last_update);  // The number of hours between NOW and the last update
+            
+            if($age_hours <= $max_fresh_age) $freshness = "fresh";
+            elseif(($age_hours > $max_fresh_age) && ($age_hours < $expiration_age)) $freshness = "stale";
+            else $freshness = "expired";
+        }
+
+        return $freshness;
     }
 
     public function is_fresh() {
@@ -96,6 +96,11 @@ class Helicopter extends Model
 
     public function is_expired() {
         if($this->freshness() == "expired") return true;
+        else return false;
+    }
+
+    public function has_no_updates() {
+        if($this->freshness() == "missing") return true;
         else return false;
     }
 

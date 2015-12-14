@@ -26,11 +26,6 @@ class CrewController extends Controller
         $this->middleware('auth');
     }
 
-    public function testtoken(Request $request) {
-        ArcServer::testToken();
-        return;
-    }
-
     /**
      * Show the most recent Status for this Crew
      */

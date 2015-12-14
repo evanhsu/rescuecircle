@@ -4,8 +4,7 @@
 // Configuration variables
 var mapDiv = "mapDiv";
 var arcServerUrl = "https://egp.nwcg.gov/arcgis/rest/services/FireCOP/ShortHaul/FeatureServer/0";
-
-var token = "RIWfM77CGFKvsk7PGTqfI0_M2BvaD5LMEs8LqeYQJG6FsCTOwUGgqOOFdje2uVdk"; // evanhsu@96.41.152.69 (expires 12/17/2016)
+var token = "plkW-xQBhEAwNZ3khFRhstHblJdy_3gL-ysjYt0A7q6uBdLzkEOWk_-BwRNcAniT"; // evanhsu@96.41.152.69 (expires 12/21/2015)
 
 // Send AJAX request to retrieve all active Fire Resources
 
