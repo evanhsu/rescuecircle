@@ -1,0 +1,34 @@
+/*
+	This stylesheet provides a few extra classes to augment the esri.css stylesheet.
+	The classes below affect the popup windows on the map view page when an icon is clicked on.
+*/
+
+.esriPopup .popuptable {
+
+}
+.esriPopup .popup-table td {
+	vertical-align: top;
+	padding: 4px;
+	width:250px;
+}
+
+.esriPopup .popup-table .logo-cell {
+	width:75px;
+	padding:0;
+}
+.esriPopup .popup-table img {
+	width:75px;
+	height:75px;
+}
+
+.esriPopup .popup-table .popup-col-header {
+	text-align:center;
+	width:100%;
+	font-size: 1.3em;
+	border-bottom: 2px solid #888888;
+}
+
+.esriPopup .popup-table .timestamp-cell {
+	width: 100%;
+	text-align: right;
+}

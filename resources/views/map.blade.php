@@ -6,6 +6,7 @@
 @section('stylesheets')
     @parent
     <link rel="stylesheet" href="http://js.arcgis.com/3.14/esri/css/esri.css">
+    <link rel="stylesheet" href="/assets/css/map-popup.css">
     <!-- <link rel="stylesheet" href="/assets/css/esri.css">--> <!-- Use the local version for offline development -->
 @endsection
 
