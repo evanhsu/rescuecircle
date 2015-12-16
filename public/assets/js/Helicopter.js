@@ -10,7 +10,8 @@ define([	"dojo/_base/declare",
             "esri/symbols/SimpleFillSymbol",
             "esri/symbols/SimpleLineSymbol",
             "esri/graphic",
-            "esri/units"
+            "esri/units",
+
 		],
 	function(declare) {
     	return declare(null, {

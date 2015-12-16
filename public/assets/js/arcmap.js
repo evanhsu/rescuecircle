@@ -4,7 +4,7 @@
 // Configuration variables
 var mapDiv = "mapDiv";
 var arcServerUrl = "https://egp.nwcg.gov/arcgis/rest/services/FireCOP/ShortHaul/FeatureServer/0";
-var token = "plkW-xQBhEAwNZ3khFRhstHblJdy_3gL-ysjYt0A7q6uBdLzkEOWk_-BwRNcAniT"; // evanhsu@96.41.152.69 (expires 12/21/2015)
+var token = "s-y9e0VGlILUm5TCdnY1c6aaIzbcSGJWC99LdLja8GtV4BgYCpIjZHBGmxsq7VL7"; // evanhsu@96.41.152.69 (expires 12/21/2015)
 
 // Send AJAX request to retrieve all active Fire Resources
 
@@ -21,10 +21,10 @@ var loadingFireResources = $.ajax({
 
                                 }).done(function(o) {
                                     fireResources = o;
-                                    //console.log(o);
+                                    // console.log(o);
                                 }).fail(function(e) {
                                     // An error occurred
-                                    console.error("Status Code: "+e.status+",  Text: "+e.statusText+",  Status: "+e.status);
+                                    console.error("Status Code: "+e.status+",  Text: "+e.statusText);
                                 });
 /*var fireResourcesArcLayer;
 $.ajax({
@@ -42,47 +42,23 @@ $.ajax({
 // Assemble and render the entire map
 var map;    // Accessible in the global scope
 require([   "esri/map",
-            "esri/dijit/Popup", "esri/dijit/PopupTemplate",
+            "esri/dijit/Popup", "esri/dijit/PopupMobile", "esri/dijit/PopupTemplate",
             "dojo/dom-construct",
-            "esri/Color",
-            "esri/geometry/Point",
-            "esri/geometry/Circle",
-            "esri/symbols/SimpleMarkerSymbol",
-            "esri/symbols/PictureMarkerSymbol",
-            "esri/symbols/SimpleFillSymbol",
-            "esri/symbols/SimpleLineSymbol",
-            "esri/symbols/TextSymbol",
-            "esri/graphic",
-            "esri/layers/GraphicsLayer",
-            "esri/layers/FeatureLayer",
-            "esri/layers/LabelClass",
-            "esri/units",
-            "assets/js/Helicopter",
+            
+            "assets/js/ShortHaulFeatureLayer",
             "dojo/domReady!",
         ], function(    Map, 
-                        Popup, PopupTemplate,
+                        Popup, PopupMobile, PopupTemplate,
                         domConstruct,
-                        Color,
-                        Point, 
-                        Circle, 
-                        SimpleMarkerSymbol, 
-                        PictureMarkerSymbol, 
-                        SimpleFillSymbol,
-                        SimpleLineSymbol,
-                        TextSymbol,
-                        Graphic, 
-                        GraphicsLayer,
-                        FeatureLayer,
-                        LabelClass,
-                        Units,
-                        Helicopter
+                        
+                        ShortHaulFeatureLayer
                     ) { 
     var popup = new Popup({
         fillSymbol: false,
         titleInBody: false
     }, domConstruct.create("div"));
     popup.resize(450,200);
-
+    
     map = new Map(mapDiv, {
       center: [-113, 45],
       zoom: 6,
@@ -95,72 +71,25 @@ require([   "esri/map",
         loadingMap.resolve(); // Resolve this deferred object (mark this task as complete and fire callbacks)
     });
 
-    // Create the popup to be displayed when a SHORT HAUL HELICOPTER is clicked on
-    var shortHaulPopup = new PopupTemplate({
-        title: "Helicopter {STATUSABLE_NAME}",
-        fieldInfos: [{
-            fieldName: "created_at",
-            visible: true,
-            format: {
-                dateFormat: 'shortDateShortTime24'
-            }
-        }]
-    });
 
-    shortHaulPopup.setContent("<table class=\"popup-table\"><tr>"
-                                    +"<td class=\"logo-cell\" aria-label=\"Logo\">"
-                                        +"<img src=\"logos/crew_2_logo.jpg\"/></td>"
-
-                                    +"<td aria-label=\"Crew Contact Info\">"
-                                        +"<div class=\"popup-col-header\"><span class=\"glyphicon glyphicon-home\"></span></div>"
-                                        +"This should be left-aligned text<br />Line 2</td>"
-
-                                    +"<td aria-label=\"Helicopter Info\">"
-                                        +"<div class=\"popup-col-header\"><span class=\"glyphicon glyphicon-info-sign\"></span></div>"
-                                        +"${statusable_name}</td>"
-
-                                    +"<td aria-label=\"Current Assignment\">"
-                                        +"<div class=\"popup-col-header\"><span class=\"glyphicon glyphicon-map-marker\"></span></div>"
-                                        +"${assigned_fire_name}<br />"
-                                        +"${assigned_supervisor}</td>"
-                                +"</tr>"
-                                +"<tr><td class=\"timestamp-cell\" colspan=\"4\">${created_at}</td></tr></table>");
     // var gl1 = new GraphicsLayer({ id: "helicopters" }); // This layer holds the helicopters
     // var gl2 = new GraphicsLayer({ id: "circles" });     // This layer holds the 100nm distance rings
-    var fl1 = new FeatureLayer(arcServerUrl+"?token="+token, {
-                                                                id: "helicopters",
-                                                                outFields: ["*"],
-                                                                showLabels: true,
-                                                                infoTemplate: shortHaulPopup
-                                                            });
+    var fl = new ShortHaulFeatureLayer(arcServerUrl+"?token="+token);
 
-    // Build a symbol to use for labeling each helicopter (font settings)
-    var resourceLabelSymbol = new TextSymbol().setColor(new Color("#555"));
-        resourceLabelSymbol.font.setSize("14pt");
-        resourceLabelSymbol.font.setFamily("arial");
-
-    // Define the content of each feature label (which dB field to use, etc)
-    var resourceLabelContent = {
-      "labelExpressionInfo": {"value": "{statusable_name}"}
-    };
-
-    // Apply the font settings to the label content
-    var resourceLabel = new LabelClass(resourceLabelContent);
-    resourceLabel.symbol = resourceLabelSymbol;
-    
 
     //Add each Feature point to the GraphicsLayer
     var p,heliGraphic,responseRingGraphic,c,heli;
     
     // Wait for the map to load AND the fireResource data to load, THEN draw icons on the map...
-    $.when( loadingMap,
+    $.when( loadingMap,//).then(
             loadingFireResources).then(
+            
         function() {
             // Add our layers to the map
+            map.addLayer(fl.featureLayer);
             // map.addLayer(gl1);
             // map.addLayer(gl2);
-            fl1.setLabelingInfo([resourceLabel]);
-            map.addLayer(fl1);
+            
 /*
             // Draw each helicopter on the map and place a 100nm ring around it
             for(var i=0; i < fireResources.length; i++) {
@@ -173,6 +102,7 @@ require([   "esri/map",
 
             }
 */
+            
 /*
             // Add 'click' behavior to the map
             map.on("click", function(e) {

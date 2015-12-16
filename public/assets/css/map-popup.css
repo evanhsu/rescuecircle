@@ -22,10 +22,29 @@
 }
 
 .esriPopup .popup-table .popup-col-header {
-	text-align:center;
+	text-align:left;
+	font-weight: bold;
 	width:100%;
 	font-size: 1.3em;
 	border-bottom: 2px solid #888888;
+}
+
+.esriPopup .popup-table td ul {
+	list-style: none;
+	text-indent: none;
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+.esriPopup .popup-table .staffing_table {
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+.esriPopup .popup-table .staffing_table td {
+	width:4em;
+	margin: 0;
+	padding: 0;
 }
 
 .esriPopup .popup-table .timestamp-cell {
