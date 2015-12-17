@@ -10,6 +10,7 @@ var token = "s-y9e0VGlILUm5TCdnY1c6aaIzbcSGJWC99LdLja8GtV4BgYCpIjZHBGmxsq7VL7"; 
 
 // Create a jQuery Deferred to notify when the map has finished loading
 var loadingMap = $.Deferred(); 
+var loadingFeatures = $.Deferred(); 
 
 // Retrieve all FireResources to plot on the map
 // Track completion of the ajax request with the 'loadingFireResources' deferred
@@ -43,22 +44,24 @@ $.ajax({
 var map;    // Accessible in the global scope
 require([   "esri/map",
             "esri/dijit/Popup", "esri/dijit/PopupMobile", "esri/dijit/PopupTemplate",
-            "dojo/dom-construct",
-            
+            "esri/dijit/Legend",
+            "dojo/dom-construct", "dojo/dom-style",
             "assets/js/ShortHaulFeatureLayer",
             "dojo/domReady!",
         ], function(    Map, 
                         Popup, PopupMobile, PopupTemplate,
-                        domConstruct,
-                        
+                        Legend,
+                        domConstruct, domStyle,
                         ShortHaulFeatureLayer
-                    ) { 
+                    ) {
+    // Define the default popup settings and size for every feature that is clicked on
     var popup = new Popup({
         fillSymbol: false,
         titleInBody: false
     }, domConstruct.create("div"));
     popup.resize(450,200);
     
+    // Grab the basemap, set the initial map view, and load the map into the specified DOM element ("mapDiv")
     map = new Map(mapDiv, {
       center: [-113, 45],
       zoom: 6,
@@ -75,6 +78,10 @@ require([   "esri/map",
     // var gl1 = new GraphicsLayer({ id: "helicopters" }); // This layer holds the helicopters
     // var gl2 = new GraphicsLayer({ id: "circles" });     // This layer holds the 100nm distance rings
     var fl = new ShortHaulFeatureLayer(arcServerUrl+"?token="+token);
+    fl.featureLayer.on('load',function(layer) {
+        loadingFeatures.resolve();
+        console.error(layer.layer.graphics);
+    });
 
 
     //Add each Feature point to the GraphicsLayer
@@ -82,11 +89,18 @@ require([   "esri/map",
     
     // Wait for the map to load AND the fireResource data to load, THEN draw icons on the map...
     $.when( loadingMap,//).then(
-            loadingFireResources).then(
+            loadingFireResources,
+            loadingFeatures).then(
             
         function() {
             // Add our layers to the map
             map.addLayer(fl.featureLayer);
+            var legend = new Legend({
+                map: map
+            }, "legendDiv");
+            legend.startup();
+            domStyle.set("legendDiv", "position", ""); // The Legend widget automatically adds 'position: relative' to the legend div. This gets rid of that.
+
             // map.addLayer(gl1);
             // map.addLayer(gl2);
             

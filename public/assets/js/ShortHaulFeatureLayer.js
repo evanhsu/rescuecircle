@@ -91,7 +91,7 @@ define([	"dojo/_base/declare",
 				var size = this.settings.icons.shortHaulHelicopter.size;
 				var freshSymbol 	= new esri.symbol.PictureMarkerSymbol(this.settings.icons.shortHaulHelicopter.fresh,size,size);
 			    var staleSymbol 	= new esri.symbol.PictureMarkerSymbol(this.settings.icons.shortHaulHelicopter.stale,size,size);
-			    var expiredSymbol 	= new esri.symbol.PictureMarkerSymbol(null,size,size);
+			    var expiredSymbol 	= new esri.symbol.PictureMarkerSymbol(this.settings.icons.shortHaulHelicopter.expired,size,size);
 
 			    var that = this;
 				this.renderer = new esri.renderer.UniqueValueRenderer(freshSymbol, function(feature) {
@@ -145,7 +145,8 @@ define([	"dojo/_base/declare",
 
 			    // Define the content of each feature label (which dB field to use, etc)
 			    var resourceLabelContent = {
-			      "labelExpressionInfo": {"value": "{statusable_name}"}
+			      "labelExpressionInfo" : {"value": "{statusable_name}"},
+			      "labelPlacement"		: "above-center" //"below-center" "center-center"
 			    };
 
 			    // Apply the font settings to the label content
@@ -154,7 +155,9 @@ define([	"dojo/_base/declare",
 
 			    this.labelClass = resourceLabel;
 			    return;
-			}
+			},
+
+			legend
 
 
 	    }); // End return declare()

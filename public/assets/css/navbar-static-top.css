@@ -20,3 +20,14 @@ html {
 #mapDiv {
     height: 100%;
 }
+
+#legendDiv {
+	height:200px;
+	position: fixed;
+	bottom:0;
+	right:0;
+	border: 1px solid #000000;
+	background-color: white;
+	opacity: .9;
+	padding:5px;
+}
