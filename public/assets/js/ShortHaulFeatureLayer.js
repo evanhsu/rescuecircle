@@ -4,6 +4,7 @@
 define([	"dojo/_base/declare",
 			"assets/js/Helicopter",
 			"esri/dijit/Popup", "esri/dijit/PopupMobile", "esri/dijit/PopupTemplate",
+			"esri/dijit/Legend",
             "dojo/dom-construct",
             "esri/symbols/TextSymbol",
             "esri/layers/FeatureLayer",
@@ -157,7 +158,7 @@ define([	"dojo/_base/declare",
 			    return;
 			},
 
-			legend
+			// legend
 
 
 	    }); // End return declare()

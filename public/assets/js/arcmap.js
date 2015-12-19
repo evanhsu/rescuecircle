@@ -4,7 +4,7 @@
 // Configuration variables
 var mapDiv = "mapDiv";
 var arcServerUrl = "https://egp.nwcg.gov/arcgis/rest/services/FireCOP/ShortHaul/FeatureServer/0";
-var token = "s-y9e0VGlILUm5TCdnY1c6aaIzbcSGJWC99LdLja8GtV4BgYCpIjZHBGmxsq7VL7"; // evanhsu@96.41.152.69 (expires 12/21/2015)
+var token = "H6tuSLegDZxV7CRg8XNckFyqK9Bp7MkfVYwiI84reggc-yndfa4-sNRUq0Y662Pr"; // evanhsu@96.41.152.69 (expires 12/21/2015)
 
 // Send AJAX request to retrieve all active Fire Resources
 
@@ -95,11 +95,13 @@ require([   "esri/map",
         function() {
             // Add our layers to the map
             map.addLayer(fl.featureLayer);
+
+            // Add the Legend to the map - this must be done AFTER all of the data layers have been added
+            // so that it knows which symbols to describe.
             var legend = new Legend({
                 map: map
             }, "legendDiv");
             legend.startup();
-            domStyle.set("legendDiv", "position", ""); // The Legend widget automatically adds 'position: relative' to the legend div. This gets rid of that.
 
             // map.addLayer(gl1);
             // map.addLayer(gl2);

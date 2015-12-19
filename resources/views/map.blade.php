@@ -32,7 +32,9 @@
         <div id="mapDiv">
         <!-- ArcMap gets placed here -->
         </div> <!-- /mapDiv -->
-        <div id="legendDiv"></div>
+        <div id="legendContainer">
+            <div id="legendDiv"></div>
+        </div>
     </div>
 @endsection
 

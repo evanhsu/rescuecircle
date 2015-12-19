@@ -14,7 +14,8 @@
 // HOME
 Route::get('/', array('as' => 'map', 'uses' => 'MapController@getMap'));
 Route::get('/feed.json', array('uses' => 'MapController@getMapJSON'));
-
+Route::get('/proxy', array('as' => 'proxy', 'uses' => 'ProxyController@proxy'));
+Route::get('/proxyverify', array('as' => 'proxy', 'uses' => 'ProxyController@proxyVerify'));
 
 // STATUS
 // A "Status" is an object that belongs to 'Helicopter' or 'Crew'.  

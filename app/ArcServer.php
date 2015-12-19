@@ -6,10 +6,10 @@ use Log;
 
 class ArcServer {
 	private static $base_url = "https://egp.nwcg.gov/arcgis/rest/services/FireCOP/ShortHaul/FeatureServer";
-	private static $token = array(	"token"		=> "s-y9e0VGlILUm5TCdnY1c6aaIzbcSGJWC99LdLja8GtV4BgYCpIjZHBGmxsq7VL7",
-									"expires"	=> 1450381918277,	// Expires 12/21/2016
+	private static $token = array(	"token"		=> "H6tuSLegDZxV7CRg8XNckFyqK9Bp7MkfVYwiI84reggc-yndfa4-sNRUq0Y662Pr",
+									"expires"	=> 1450541655362,	// Expires 12/21/2016
 									//"referer"	=> "http://resourcestatus.smirksoftware.com");
-									"referer"	=> "96.41.152.69"); 
+									"referer"	=> "208.101.226.130"); 
 
 
 
