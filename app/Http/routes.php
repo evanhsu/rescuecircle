@@ -15,7 +15,6 @@
 Route::get('/', array('as' => 'map', 'uses' => 'MapController@getMap'));
 Route::get('/feed.json', array('uses' => 'MapController@getMapJSON'));
 Route::get('/proxy', array('as' => 'proxy', 'uses' => 'ProxyController@proxy'));
-Route::get('/proxyverify', array('as' => 'proxy', 'uses' => 'ProxyController@proxyVerify'));
 
 // STATUS
 // A "Status" is an object that belongs to 'Helicopter' or 'Crew'.  
@@ -30,6 +29,7 @@ if(env("APP_DEBUG")) {
 	// These routes are only enabled for debugging to test internal functionality
 	Route::get('/test/token',		array('as' => 'test_token',			'uses' => 'TestController@testtoken')); // This will tell you if the application token is working with the ArcGIS server
 	Route::get('/test/findfeature',	array('as' => 'test_find_feature',	'uses' => 'TestController@findFeature')); 
+	Route::get('/proxyverify', array('as' => 'proxy', 'uses' => 'ProxyController@proxyVerify')); // Test that the environment will support the ESRI proxy script
 }
 
 // HELICOPTERS
