@@ -845,13 +845,19 @@ class Proxy {
     public function runProxy()
     {
         //If 1) token is NOT stored in the session and 2) token is NOT provided along the request, we need to request it up-front.
-        if(!$this->useSessionToken() && !$this->hasTokeninRequest())
+        // if(!$this->useSessionToken() && !$this->hasTokeninRequest())
+        if(!$this->hasTokeninRequest())
         {
-            $token = $this->getNewTokenIfCredentialsAreSpecified();
+            $token = $this->useTokenFromConfigIfPresent();
+
+            if(empty($token)) {
+                // A token was not specified in the proxy.config file for this host
+                $token = $this->getNewTokenIfCredentialsAreSpecified();
+            }
 
             if(!empty($token) || isset($token))
             {
-                $this->addTokenToSession($token);
+                //$this->addTokenToSession($token);
 
                 $this->appendToken($token);
             }
@@ -886,6 +892,10 @@ class Proxy {
                 $this->proxyLog->log("Retry attempt " . $this->attemptsCount . " of " . $this->allowedAttempts);
 
                 $token = $this->getNewTokenIfCredentialsAreSpecified();
+
+                if(empty($token)) {
+                    $token = $this->useTokenFromConfigIfPresent();
+                }
 
                 if(!empty($token) || isset($token)) {
 
@@ -1320,9 +1330,22 @@ class Proxy {
                 $token = $this->doUserPasswordLogin();
             }
 
-        }else{
+        }else {
 
             $this->proxyLog->log("Can not determine if OAuth or ArcGIS Server means of authentication.  Check config for errors.");
+        }
+
+        return $token;
+    }
+
+    function useTokenFromConfigIfPresent() {
+        // If a token is specified in the 'proxy.config' file for this host, then append it to the request
+        $token = null;
+
+        if(isset($this->resource['token']) && !empty($this->resource['token'])) {
+            
+            $token = $this->resource['token']; // Use the token specified in the proxy.config file for this serverURL
+
         }
 
         return $token;
@@ -1639,7 +1662,7 @@ class ProxyLog {
 
             $this->addLogLevel();
 
-            if($this->proxyConfig['loglevel'] != 3){
+            if($this->Config['loglevel'] != 3){
 
                 $this->attemptWriteToLog();
             }

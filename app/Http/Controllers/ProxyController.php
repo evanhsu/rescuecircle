@@ -8,20 +8,16 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
-//use App\Proxy; // Provided by ESRI, modified to work with Laravel MVC architecture. Contains multiple Class definitions.
-
-
+// Provided by ESRI, modified to work with Laravel MVC architecture. Contains multiple Class definitions.
 require(dirname(__FILE__).'/../../Proxy.php');
+// Settings are defined in app/proxy.config
 
 
 class ProxyController extends Controller
 {
     public function __construct()
     {
-        // Use the 'auth' middleware to require users to log in
-        // This applies to ALL actions within this controller
-
-        // $this->middleware('auth');
+        // Nothing
     }
 
     public function proxy(Request $request) {
@@ -30,7 +26,8 @@ class ProxyController extends Controller
         //$proxyDataValid = new \App\DataValidUtil();
 
         $proxyConfig = new \App\ProxyConfig();
-        $proxyConfig->useJSON();  // $proxyConfig->useXML();
+        $proxyConfig->useJSON();  
+        // $proxyConfig->useXML();
 
         $proxyLog = new \App\ProxyLog($proxyConfig);
 

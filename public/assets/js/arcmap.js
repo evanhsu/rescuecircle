@@ -4,7 +4,7 @@
 // Configuration variables
 var mapDiv = "mapDiv";
 var arcServerUrl = "https://egp.nwcg.gov/arcgis/rest/services/FireCOP/ShortHaul/FeatureServer/0";
-var token = "H6tuSLegDZxV7CRg8XNckFyqK9Bp7MkfVYwiI84reggc-yndfa4-sNRUq0Y662Pr"; // evanhsu@96.41.152.69 (expires 12/21/2015)
+
 
 // Send AJAX request to retrieve all active Fire Resources
 
@@ -43,17 +43,28 @@ $.ajax({
 // Assemble and render the entire map
 var map;    // Accessible in the global scope
 require([   "esri/map",
+            "esri/config", "esri/urlUtils",
             "esri/dijit/Popup", "esri/dijit/PopupMobile", "esri/dijit/PopupTemplate",
             "esri/dijit/Legend",
             "dojo/dom-construct", "dojo/dom-style",
             "assets/js/ShortHaulFeatureLayer",
             "dojo/domReady!",
         ], function(    Map, 
+                        esriConfig, urlUtils,
                         Popup, PopupMobile, PopupTemplate,
                         Legend,
                         domConstruct, domStyle,
                         ShortHaulFeatureLayer
                     ) {
+
+    // esriConfig.defaults.io.proxyUrl = "/proxy";
+    // esriConfig.defaults.io.alwaysUseProxy = true;
+    urlUtils.addProxyRule({
+      urlPrefix: "egp.nwcg.gov",
+      proxyUrl: "/proxy"
+    });
+
+
     // Define the default popup settings and size for every feature that is clicked on
     var popup = new Popup({
         fillSymbol: false,
@@ -77,7 +88,8 @@ require([   "esri/map",
 
     // var gl1 = new GraphicsLayer({ id: "helicopters" }); // This layer holds the helicopters
     // var gl2 = new GraphicsLayer({ id: "circles" });     // This layer holds the 100nm distance rings
-    var fl = new ShortHaulFeatureLayer(arcServerUrl+"?token="+token);
+    // var fl = new ShortHaulFeatureLayer(arcServerUrl+"?token="+token);
+    var fl = new ShortHaulFeatureLayer(arcServerUrl);
     fl.featureLayer.on('load',function(layer) {
         loadingFeatures.resolve();
         console.error(layer.layer.graphics);
