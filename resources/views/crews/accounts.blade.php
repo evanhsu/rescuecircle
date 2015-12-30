@@ -17,8 +17,9 @@
 	@endif
 
 	<div class="container form-box">
+		<h1>Accounts for {{ $crew->name }}</h1>
 	    @include('auth._users_table')
-	    <a href="{{ route('new_user_for_crew',$crew->id) }}">Create New User Account</a>
+	    <a role="button" class="btn btn-default" href="{{ route('new_user_for_crew',$crew->id) }}">Create New User Account</a>
 	</div>
 
 </div>

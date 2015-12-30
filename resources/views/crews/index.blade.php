@@ -1,6 +1,5 @@
 @extends('../layouts.application_layout')
 
-
 @section('title','Crews - RescueCircle')
 
 
@@ -41,7 +40,7 @@
 			@endforeach
 			</tbody>
 		</table>
-		<a href="{{ route('new_crew') }}">Create New Crew</a>
+		<a role="button" class="btn btn-default" href="{{ route('new_crew') }}">Create New Crew</a>
 	</div>
 </div>
 @endsection
