@@ -51,7 +51,7 @@ define([	"dojo/_base/declare",
 			setPopupTemplate: function() {
 				// 
 			    this.popupTemplate = new esri.dijit.PopupTemplate({
-			        title: "Helicopter {STATUSABLE_NAME}",
+			        title: "{CREW_NAME}",
 			        fieldInfos: [{
 			            fieldName: "created_at",
 			            visible: true,
@@ -62,9 +62,6 @@ define([	"dojo/_base/declare",
 			    });
 
 			    this.popupTemplate.setContent("<table class=\"popup-table\"><tr>"
-			                                    +"<td class=\"logo-cell\" aria-label=\"Logo\" title=\"Crew Logo\">"
-			                                        +"<img src=\"logos/crew_2_logo.jpg\"/></td>"
-
 			                                    +"<td aria-label=\"Helicopter Info\" title=\"Current manager & aircraft info\">"
 			                                        +"<div class=\"popup-col-header\"><span class=\"glyphicon glyphicon-plane\"></span> HMGB</div>"
 			                                        +"${manager_name}<br />"
@@ -94,17 +91,27 @@ define([	"dojo/_base/declare",
 			    var staleSymbol 	= new esri.symbol.PictureMarkerSymbol(this.settings.icons.shortHaulHelicopter.stale,size,size);
 			    var expiredSymbol 	= new esri.symbol.PictureMarkerSymbol(this.settings.icons.shortHaulHelicopter.expired,size,size);
 
+			    // The following text values will appear on the Legend along with the symbology
+			    var freshText = "Fresh (within "+this.settings.freshness.hoursUntilStale+" hours)";
+			    var staleText = "Stale";
+
 			    var that = this;
-				this.renderer = new esri.renderer.UniqueValueRenderer(freshSymbol, function(feature) {
+				this.renderer = new esri.renderer.UniqueValueRenderer(null, function(feature) {
 			        // Determine the age of this status update so that a different symbol can be used for stale data
 			        // This function will return "fresh", "stale", or "expired" for each Feature on the Layer
 			        // Then, the renderer.addValue() method will be used to assign a symbol to each Feature based on its 'freshness'
-			        return that.checkFreshness(feature.attributes.created_at);
+			        var freshness = that.checkFreshness(feature.attributes.created_at);
+			        if(freshness == "fresh") {
+			        	return freshText;
+			        } else {
+			        	// This will both 'stale' and 'expired' data - but 'expired' data should be removed from the dataset before this point
+			        	return staleText;
+			        }
 			    });
 
-			    this.renderer.addValue("fresh",freshSymbol);
-			    this.renderer.addValue("stale",staleSymbol);
-			    this.renderer.addValue("expired",expiredSymbol);
+			    this.renderer.addValue(freshText,freshSymbol);
+			    this.renderer.addValue(staleText,staleSymbol);
+			    // this.renderer.addValue("expired",expiredSymbol); // Expired data should not be loaded at all, and does not need a symbol
 
 			    return;
 			},
@@ -121,7 +128,7 @@ define([	"dojo/_base/declare",
 				if(hoursAgo < this.settings.freshness.hoursUntilStale) freshness = "fresh";
 				else if(	(hoursAgo >= this.settings.freshness.hoursUntilStale) && 
 							(hoursAgo / 24 < this.settings.freshness.daysUntilExpired)) freshness = "stale";
-				else freshness = "expired";
+				else freshness = "expired"; // Expired data should be removed from the dataset
 
 				return freshness;
 			},

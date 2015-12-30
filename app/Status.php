@@ -128,11 +128,11 @@ class Status extends Model
         //
         // All properties must be defined before calling this method.
 
-        $popupinfo = "<table class=\"popup-table\"><tr>"
-                        ."<td class=\"logo-cell\" aria-label=\"Logo\" title=\"Crew Logo\">"
-                            ."<img src=\"logos/crew_2_logo.jpg\"/></td>"
-
-                        ."<td aria-label=\"Helicopter Info\" title=\"Current manager & aircraft info\">"
+        $popupinfo = "<table class=\"popup-table\"><tr>";
+       /* $popupinfo .=   "<td class=\"logo-cell\" aria-label=\"Logo\" title=\"Crew Logo\">"
+                            ."<img src=\"logos/crew_2_logo.jpg\"/></td>";
+*/
+        $popupinfo .=   "<td aria-label=\"Helicopter Info\" title=\"Current manager & aircraft info\">"
                             ."<div class=\"popup-col-header\"><span class=\"glyphicon glyphicon-plane\"></span> HMGB</div>"
                             .$this->manager_name."<br />"
                             .$this->manager_phone."<br >"

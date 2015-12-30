@@ -75,7 +75,7 @@ class TestController extends Controller
         }
         else {
             // Success!
-            //The ArcGIS Server responded with an array of OBJECT_IDs, as expected (the array could be empty empty though)
+            //The ArcGIS Server responded with an array of OBJECT_IDs, as expected (the array could be empty though)
             echo var_dump($response);
         }
         return;
