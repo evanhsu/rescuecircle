@@ -120,6 +120,9 @@ class StatusController extends Controller
         $status->created_by_name = Auth::user()->fullname();
         $status->created_by_id = Auth::user()->id;
 
+        // Insert the name of the Crew that owns this Status update (if this Status refers to a Crew, then 'crew_name' will be the same as 'statusable_name')
+        $status->crew_name = Crew::find($crew_id)->name;
+
         // Insert the lat and lon in decimal-degree format
         $status->latitude = $latitude_dd;
         $status->longitude = $longitude_dd;
@@ -128,15 +131,34 @@ class StatusController extends Controller
         // i.e. Change 'helicopter' to 'App\Helicopter'. This is required for the Status class to be able to retrieve the correct Helicopter (or Crew).
         $status->statusable_type = "App\\".ucwords($status->statusable_type);
 
+        // Build the HTML popup that will be displayed when this feature is clicked
+        $status->updatePopup();
+
         // Attempt to save
         if($status->save()) {
             // Changes have been saved to the local database, now initiate an update on the ArcGIS Server...
             $objectids = ArcServer::findFeature($status);
-            $objectid = $objectids[0];
-            ArcServer::updateFeature($objectid,$status);
-            // ArcServer::addFeature($status);
-            // ArcServer::updateOrCreateFeature($status);
-            return redirect()->back()->with('alert', array('message' => 'Status update saved!', 'type' => 'success'));
+            if($objectids === false) {
+                // An error occurred in findFeature() - check 'laravel.log' for details
+                return redirect()->back()->with('alert', array('message' => 'Status update was saved locally, but could not be sent to the EGP (findFeature error).', 'type' => 'danger'));
+            }
+            elseif(!isset($objectids[0]) || ($objectids[0] == '')) {
+                // The server responded, but the request feature was not found - add it.
+                $result = ArcServer::addFeature($status);
+            }
+            else {
+                // The Feature being updated was found on the ArcGIS server - now update it.
+                $objectid = $objectids[0];
+                $result = ArcServer::updateFeature($objectid,$status);
+            }
+            
+            // Check the ArcGIS server response to determine if the operation was successful or not.
+            if(empty($result->error)) {
+                return redirect()->back()->with('alert', array('message' => 'Status update saved!', 'type' => 'success'));
+            }
+            else {
+                return redirect()->back()->with('alert', array('message' => 'Status update was saved locally, but could not be sent to the EGP: '.$result->error, 'type' => 'danger'));
+            }
         }
         return redirect()->back()->with('alert', array('message' => 'Status update failed!', 'type' => 'danger'));
     }

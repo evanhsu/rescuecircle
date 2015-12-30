@@ -61,6 +61,25 @@ class TestController extends Controller
         }
         return;
     }
+
+
+    public function deleteFeature($id) {
+        // INPUT $id    The OBJECTID of a feature on the ArcGIS server
+
+        $response = ArcServer::deleteFeature($id);
+        echo "Attempting to delete feature with OBJECTID = ".$id."<br />\n";
+
+        if($response === false) {
+            echo "An error prevented this query from completing";
+            // Log the error, if desired
+        }
+        else {
+            // Success!
+            //The ArcGIS Server responded with an array of OBJECT_IDs, as expected (the array could be empty empty though)
+            echo var_dump($response);
+        }
+        return;
+    }
 }// END class()
 
 

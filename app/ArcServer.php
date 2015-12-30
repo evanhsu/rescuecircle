@@ -6,7 +6,7 @@ use Log;
 
 class ArcServer {
 	private static $base_url = "https://egp.nwcg.gov/arcgis/rest/services/FireCOP/ShortHaul/FeatureServer";
-	private static $token = array(	"token"		=> "H6tuSLegDZxV7CRg8XNckFyqK9Bp7MkfVYwiI84reggc-yndfa4-sNRUq0Y662Pr",
+	private static $token = array(	"token"		=> "SpvE91TwwP5_I32kEmQrGFndu2kdXC5zepKLBOF-cJY3ZlLLLU0tyaaiMsceXcVB",
 									"expires"	=> 1450541655362,	// Expires 12/21/2016
 									//"referer"	=> "http://resourcestatus.smirksoftware.com");
 									"referer"	=> "208.101.226.130"); 
@@ -127,14 +127,42 @@ class ArcServer {
 		$params = array();
 		$params['token']	= self::$token['token'];
 		$params['features'] = json_encode(array(array("geometry" => $geometry, "attributes" => $attributes)));
+		$params['f']		= 'json';
 
 		$response = self::callAPI("POST", $url, $params);
 
 		// Check for errors, process response
 		$json_response = json_decode($response);
-		if($json_response["addResults"][0])
-		
-		return $response;
+		$output = new \stdClass();
+
+		if(isset($json_response->addResults[0])) {
+			// Inspect the response to determine if any errors occurred
+			$result = $json_response->addResults[0];
+
+			if(empty($result) || $result == "''") {
+				$output->response = "";
+				$output->error = "The server did not respond to 'addFeature'";
+			}
+			elseif(isset($result->success) && ($result->success == true)) {
+				$output->response = $json_response;
+				$output->error = "";
+			}
+			elseif(!is_null($result->success) && ($result->success === false)) {
+				$output->response = $result;
+				$output->error = $result->error->description;
+			}
+			else {
+				$output->response = $json_response;
+				$output->error = "The ArcGIS server returned an unexpected response to 'addFeature'";
+			}
+		}
+		else {
+			// The server response did not include a 'updateResults' index
+			$output->response = $json_response;
+			$output->error = "The ArcGIS server returned an empty response to 'addFeature'";
+		}
+
+		return $output;
 	}
 
 	public static function updateFeature($objectid,$status) {
@@ -171,13 +199,59 @@ class ArcServer {
 		$params = array();
 		$params['token']	= self::$token['token'];
 		$params['features'] = json_encode(array(array("geometry" => $geometry, "attributes" => $attributes)));
+		$params['f']		= 'json';
 
 		$response = self::callAPI("POST", $url, $params);
 
 		// Check for errors, process response
 		$json_response = json_decode($response);
-		if($json_response["updateResults"][0])
+		$output = new \stdClass();
+
+		if(isset($json_response->updateResults[0])) {
+			// Inspect the response to determine if any errors occurred
+			$result = $json_response->updateResults[0];
+
+			if(empty($result) || $result == "''") {
+				$output->response = "";
+				$output->error = "The server did not respond to 'updateFeature'";
+			}
+			elseif(isset($result->success) && ($result->success == true)) {
+				$output->response = $json_response;
+				$output->error = "";
+			}
+			elseif(!is_null($result->success) && ($result->success === false)) {
+				$output->response = $result;
+				$output->error = $result->error->description;
+			}
+			else {
+				$output->response = $json_response;
+				$output->error = "The ArcGIS server returned an unexpected response to 'updateFeature'";
+			}
+		}
+		else {
+			// The server response did not include a 'updateResults' index
+			$output->response = $json_response;
+			$output->error = "The ArcGIS server returned an empty response to 'updateFeature'";
+		}
+
+		return $output;
 		
+	}
+
+	public static function deleteFeature($objectid) {
+		// Delete the feature on the ArcGIS server with the OBJECTID specified by $objectid
+
+		$layer = 0; // Helicopters are drawn on layer 0
+		$url = self::$base_url."/$layer/deleteFeatures";
+
+
+		$params = array();
+		$params['token']	= self::$token['token'];
+		$params['objectIds'] = $objectid;
+		$params['f']		= 'json';
+
+		$response = self::callAPI("POST", $url, $params);
+
 		return $response;
 	}
 
