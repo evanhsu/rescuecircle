@@ -848,10 +848,16 @@ class Proxy {
         // if(!$this->useSessionToken() && !$this->hasTokeninRequest())
         if(!$this->hasTokeninRequest())
         {
-            $token = $this->useTokenFromConfigIfPresent();
+            // Check for an ArcGIS server token in the specified environment variable (defined in the '.env' file)
+            $token = $this->useTokenFromEnvIfPresent("ARCGIS_TOKEN");
+            
+            if(empty($token)) {
+                // A token was not specified in the environment value above, check for a token in the 'proxy.config' file
+                $token = $this->useTokenFromConfigIfPresent();
+            }
 
             if(empty($token)) {
-                // A token was not specified in the proxy.config file for this host
+                // A token was not specified in the proxy.config file for this host, attempt to use credentials to get a new token from the ArcGIS server
                 $token = $this->getNewTokenIfCredentialsAreSpecified();
             }
 
@@ -1347,6 +1353,13 @@ class Proxy {
             $token = $this->resource['token']; // Use the token specified in the proxy.config file for this serverURL
 
         }
+
+        return $token;
+    }
+
+    function useTokenFromEnvIfPresent($var_name) {
+        // If a token is specified in the specified environment variable, then append it to the request
+        $token = env($var_name, null);
 
         return $token;
     }

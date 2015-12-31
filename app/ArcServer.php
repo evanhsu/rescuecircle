@@ -6,11 +6,13 @@ use Log;
 
 class ArcServer {
 	private static $base_url = "https://egp.nwcg.gov/arcgis/rest/services/FireCOP/ShortHaul/FeatureServer";
+	private static $token = env("ARCGIS_TOKEN");
+	/*
 	private static $token = array(	"token"		=> "SpvE91TwwP5_I32kEmQrGFndu2kdXC5zepKLBOF-cJY3ZlLLLU0tyaaiMsceXcVB",
 									"expires"	=> 1450541655362,	// Expires 12/21/2016
 									//"referer"	=> "http://resourcestatus.smirksoftware.com");
 									"referer"	=> "208.101.226.130"); 
-
+	*/
 
 
 	public static function testToken() {

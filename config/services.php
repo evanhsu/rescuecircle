@@ -29,10 +29,10 @@ return [
         'region' => 'us-east-1',
     ],
 
-    'stripe' => [
-        'model'  => App\User::class,
-        'key'    => env('STRIPE_KEY'),
-        'secret' => env('STRIPE_SECRET'),
+    'arcgis' => [
+        'username'  => env('ARCGIS_USERNAME'),
+        'password'  => env('ARCGIS_PASSWORD'),
+        'token'     => env('ARCGIS_TOKEN'),
     ],
 
 ];
