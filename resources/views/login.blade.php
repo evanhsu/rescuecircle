@@ -30,7 +30,7 @@
             <div class="form-group">
                 <label class="control-label sr-only" for="password">Password:</label>
                 <input type="password" class="form-control" id="password" name="password" placeholder="Password" />
-                <div id="forgot-password"><a href="/users/reset">Forgot Password</a></div>
+                <div id="forgot-password"><a href="/resetpassword">Forgot Password</a></div>
             </div>
 
             <div class="form-group">

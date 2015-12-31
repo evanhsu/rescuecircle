@@ -43,6 +43,7 @@ Class AuthController extends Controller
         // Require a user to be logged in before accessing these actions:
         $this->middleware('auth', ['except' => ['getLogin',
                                                 'postLogin',
+                                                'getEmail', // The password reset form
                         ]]);
     }
 

@@ -64,8 +64,15 @@ Route::post('/accounts/new',			array('as' => 'register_user',	'uses' => 'Auth\Au
 Route::get('/accounts/{id}',			array('as' => 'edit_user',		'uses' => 'Auth\AuthController@edit'));
 Route::post('/accounts/{id}',			array('as' => 'update_user',	'uses' => 'Auth\AuthController@update'));
 Route::post('/accounts/{id}/destroy',	array('as' => 'destroy_user',	'uses' => 'Auth\AuthController@destroy'));
-// Route::post('/accounts/reset',           /* UserController@postReset */);    // Accepts an email as POST parameter
-// Route::get('/accounts/reset',            /* UserController@getReset */);     // Show password reset form
+
+
+// PASSWORD RESET
+// Password reset link request routes...
+Route::get('resetpassword', 			array('as' => 'password_link_request_form', 	'uses' => 'Auth\PasswordController@getEmail'));
+Route::post('resetpassword', 			array('as' => 'process_password_link_request',	'uses' => 'Auth\PasswordController@postEmail'));
+// Password reset routes...
+Route::get('password/reset/{token}', 	array('as' => 'password_reset_form', 'uses' => 'Auth\PasswordController@getReset'));
+Route::post('password/reset', 			array('as' => 'reset_password', 'uses' => 'Auth\PasswordController@postReset'));
 
 
 // SESSIONS
