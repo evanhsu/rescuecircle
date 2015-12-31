@@ -18,6 +18,28 @@
 
     <div class="container form-box">
         <h1>Crew Status Update</h1>
+        <div class="freshness_notification">
+        <?php
+            switch($crew->freshness()) {
+                case "missing":
+                    echo "No updates have ever been posted for this Crew!";
+                    break;
+                case "fresh":
+                    echo "Your status is currently fresh";
+                    break;
+                case "stale":
+                    echo "Your status is currently stale";
+                    break;
+                case "expired":
+                    echo "Your status is currently expired!";
+                    break;
+            }
+            if($crew->freshness() != "missing") {
+                echo "(".$crew->status()->id.")<br />Last update posted by ".$status->created_by." at ".$status->created_at;
+            }
+        ?>
+        </div>
+
 
         <form action="{{ route('create_status') }}" method="POST" class="form-horizontal">
             {{ csrf_field() }}
