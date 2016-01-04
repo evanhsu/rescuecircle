@@ -63,11 +63,6 @@ class Helicopter extends Model
         else return $status;
     }
 
-    public function crew_id() {
-        // This is simply an alias for this->crew->id to provide a consistent notation for querying the crew id for all resource types
-        return $this->crew_id;
-    }
-
     public function freshness() {
         // Check the timestamp of the most recent update for this Helicopter.
         // Return 'fresh', 'stale', 'expired', or 'missing' depending on age thresholds.

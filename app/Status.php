@@ -75,7 +75,7 @@ class Status extends Model
 
     public function redirectToNewStatus() {
         // Returns the RedirectResponse that should be used to submit a new Status for the same resource.
-        // For example, if $this is a Status for Helicopter 'N2345', then redirect to "route(status_for_helicopter,'N2345')"
+        // For example, if $this is a Status for Helicopter 'N2345', then redirect to "route(new_status_for_helicopter,'N2345')"
 
         // Returns an array that can be used to build a redirect
         // ['class' => 'helicopter',

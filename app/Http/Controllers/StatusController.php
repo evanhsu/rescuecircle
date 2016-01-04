@@ -38,7 +38,8 @@ class StatusController extends Controller
         // 1. Retrieve the most recent Status for each resource that's been updated within the last 30 days.
         // 2. Package the response into a JSON object and return.
 
-        $max_age = Carbon::now()->subDays(30); // The oldest Status that will be displayed
+        $max_age = config('days_until_updates_expire');
+        $earliest_date = Carbon::now()->subDays($max_age); // The oldest Status that will be displayed
 
         $resources = DB::table('statuses as newest')
                         ->leftjoin('statuses as newer', function($join) {
@@ -47,7 +48,7 @@ class StatusController extends Controller
                             })
                         ->select('newest.*')
                         ->whereNull('newer.updated_at')
-                        ->where('newest.updated_at','>=',$max_age)
+                        ->where('newest.updated_at','>=',$earliest_date)
                         ->get();
 
         // return response()->json($resources);
@@ -132,7 +133,7 @@ class StatusController extends Controller
         $status->statusable_type = "App\\".ucwords($status->statusable_type);
 
         // Build the HTML popup that will be displayed when this feature is clicked
-        $status->setPopup($obj->popupText());
+        $status->updatePopup();
 
         // Attempt to save
         if($status->save()) {

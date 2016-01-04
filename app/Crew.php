@@ -73,6 +73,11 @@ class Crew extends Model
         return $this->statusable_type;
     }
 
+    public function crew_id() {
+        // This is simply an alias for crew->id to provide a consistent notation for querying the crew id for all resource types
+        return $this->id;
+    }
+
     public function resource_type() {
         // Returns a human-friendly text string that describes this crew's fire resource type (i.e. Short Haul Crew or Hotshot Crew)
         switch($this->statusable_type) {

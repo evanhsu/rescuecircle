@@ -5,19 +5,20 @@
 
 @section('content')
 <div id="container-fluid" class="container-fluid background-container">
-    <h1>Create New Crew</h1>
-
-    @if (count($errors) > 0)
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
-
     <div class="container form-box">
+        <h1>Create New Crew</h1>
+
+        @if (count($errors) > 0)
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
+    
         <form action="{{ route('store_crew') }}" method="POST" class="form-horizontal">
             {{ csrf_field() }}
 
@@ -32,8 +33,10 @@
                 <label for="statusable_type" class="col-sm-3 control-label">Crew Type</label>
                 <div class="col-sm-6">
                     <select name="statusable_type" id="statusable_type" class="form-control">
-                        <option value="helicopter">Helicopter</option>
-                        <option value="crew">Hotshots</option>
+                        <option value="hotshotcrew">Hotshots</option>
+                        <option value="rappelhelicopter">Rappel</option>
+                        <option value="shorthaulhelicopter">Short Haul</option>
+                        <option value="smokejumperairplane">Smokejumpers</option>
                     </select>
                 </div>
             </div>
