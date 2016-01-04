@@ -64,10 +64,11 @@ class Helicopter extends Model
     }
 
     public function freshness() {
-        // Check the timestamp of the most recent update for this helicopter.
-        // Return 'fresh', 'stale', or 'expired' depending on age thresholds.
-        $max_fresh_age = 24;        // Hours
-        $expiration_age= 24 * 30;   // 30 days
+        // Check the timestamp of the most recent update for this Helicopter.
+        // Return 'fresh', 'stale', 'expired', or 'missing' depending on age thresholds.
+
+        $max_fresh_age = config('hours_until_updates_go_stale');
+        $expiration_age= config('days_until_updates_expire') * 24; // Converted to hours
 
         $now = Carbon::now();
         $last_status = $this->status();

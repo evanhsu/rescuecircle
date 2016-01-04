@@ -18,27 +18,35 @@
 
     <div class="container form-box">
         <h1>Crew Status Update</h1>
-        <div class="freshness_notification">
         <?php
-            switch($crew->freshness()) {
-                case "missing":
-                    echo "No updates have ever been posted for this Crew!";
-                    break;
-                case "fresh":
-                    echo "Your status is currently fresh";
-                    break;
-                case "stale":
-                    echo "Your status is currently stale";
-                    break;
-                case "expired":
-                    echo "Your status is currently expired!";
-                    break;
-            }
-            if($crew->freshness() != "missing") {
-                echo "(".$crew->status()->id.")<br />Last update posted by ".$status->created_by." at ".$status->created_at;
-            }
-        ?>
-        </div>
+                $freshness = $crew->freshness();
+                switch($freshness) {
+                    case "missing":
+                        $alert = array( 'msg'   => "No updates have ever been posted for this Crew!<br />\nThis Crew won't show up on the map until a Status Update is submitted.",
+                                        'type'  => 'warning');
+                        break;
+                    case "fresh":
+                        $alert = array( 'msg'   => "This crew's status is still fresh",
+                                        'type'  => 'success');
+                        break;
+                    case "stale":
+                        $alert = array( 'msg'   => "This crew's status is out of date",
+                                        'type'  => 'warning');
+                        break;
+                    case "expired":
+                        $alert = array( 'msg'   => "This crew's status is expired!",
+                                        'type'  => 'danger');
+                        break;
+                }
+                if($freshness != "missing") {
+                    $alert['msg'] .= "<br />Last update posted by ".$status->created_by_name." ".$status->created_at->diffForHumans(); // Function provided by the Carbon date/time library
+                }
+
+                echo "<div class=\"freshness_notification alert alert-".$alert['type']."\" role=\"alert\">\n"
+                    .$alert['msg']
+                    ."</div>\n";
+
+            ?>
 
 
         <form action="{{ route('create_status') }}" method="POST" class="form-horizontal">
@@ -49,7 +57,7 @@
             
             <div class="col-xs-12 col-md-6 form-inline">
                 <h2>Location</h2>
-             
+            
                     <div class="form-static-control col-xs-12 col-sm-2 col-md-3">Latitude</div>
                     <div class="form-group">
                         <label for="latitude_deg" class="control-label sr-only">Degrees of Latitude</label>

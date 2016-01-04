@@ -6,20 +6,19 @@
 
 @section('content')
 <div id="container-fluid" class="container-fluid background-container">
+    <div class="container form-box">
     <h1>Listing All Helicopters</h1>
 
-    @if (count($errors) > 0)
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
+	    @if (count($errors) > 0)
+	    <div class="alert alert-danger">
+	        <ul>
+	            @foreach ($errors->all() as $error)
+	                <li>{{ $error }}</li>
+	            @endforeach
+	        </ul>
+	    </div>
+	    @endif
 
-
-	<div class="container form-box">
 		<table class="table">
 			<thead>
 				<tr><th>ID</th>
@@ -41,7 +40,7 @@
 							<a href="{{ route('edit_crew', array('id' => $h->crew_id)) }}">{{ $h->crew->name }}</a>
 						@endif
 					</td>
-					<td><a href="{{ route('new_status_for_helicopter',$h->tailnumber) }}" class="btn btn-primary" role="button">!</td>
+					<td><a href="{{ route('new_status_for_helicopter',$h->tailnumber) }}" class="btn btn-primary" role="button">!<a/></td>
 					<td><form action="{{ route('destroy_helicopter',$h->id) }}" method="POST" class="form-inline">
 							{{ csrf_field() }}
 							<button type="submit" class="btn btn-sm btn-danger">X</button>

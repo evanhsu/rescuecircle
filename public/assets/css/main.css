@@ -75,3 +75,8 @@ h2 {
 h3 {
     font-size: 1.7em;
 }
+
+.freshness_notification {
+    margin-top:5px;
+    margin-bottom:0px;
+}

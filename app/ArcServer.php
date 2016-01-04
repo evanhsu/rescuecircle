@@ -6,13 +6,12 @@ use Log;
 
 class ArcServer {
 	private static $base_url = "https://egp.nwcg.gov/arcgis/rest/services/FireCOP/ShortHaul/FeatureServer";
-	private static $token = env("ARCGIS_TOKEN");
-	/*
-	private static $token = array(	"token"		=> "SpvE91TwwP5_I32kEmQrGFndu2kdXC5zepKLBOF-cJY3ZlLLLU0tyaaiMsceXcVB",
-									"expires"	=> 1450541655362,	// Expires 12/21/2016
-									//"referer"	=> "http://resourcestatus.smirksoftware.com");
-									"referer"	=> "208.101.226.130"); 
-	*/
+	
+
+	private static function token() {
+		// Grab the ArcGIS server token from the app/.env file
+		return env('ARCGIS_TOKEN', null);
+	}
 
 
 	public static function testToken() {
@@ -22,7 +21,7 @@ class ArcServer {
 
 		$params = array();
 		$params['layerDefs']= "{\"0\":\"statusable_name!='uNlIkElYnaME'\"}";
-		$params['token']	= self::$token['token'];
+		$params['token']	= self::token();
 		$params['returnIdsOnly']	= 'true';
 		$params['f']		= 'json';
 
@@ -31,10 +30,10 @@ class ArcServer {
 		$response = self::callAPI("GET",$url,$params);
 		$json_response = json_decode($response,true);
 		if(array_key_exists("error",$json_response)) {
-			echo "Token is invalid<br />".PHP_EOL."token:".self::$token['token']."<br />".PHP_EOL;
+			echo "Token is invalid<br />".PHP_EOL."token:".$params['token']."<br />".PHP_EOL;
 		}
 		else {
-			echo "Token appears to be working<br />".PHP_EOL."token:".self::$token['token']."<br />".PHP_EOL;
+			echo "Token appears to be working<br />".PHP_EOL."token:".$params['token']."<br />".PHP_EOL;
 		}
 		echo var_export($response,true);
 		return;
@@ -66,7 +65,7 @@ class ArcServer {
 		// Set all of the query string parameters - these will be appended to the URL in the API call
 		$params = array();
 		$params['layerDefs']	= json_encode(array($layer=>$layerDef), JSON_FORCE_OBJECT); // Force Object to interpret numeric $layer values as strings
-		$params['token']		= self::$token['token'];
+		$params['token']		= self::token();
 		$params['returnIdsOnly']= 'true';
 		$params['f']			= 'json';
 
@@ -127,7 +126,7 @@ class ArcServer {
 						);
 
 		$params = array();
-		$params['token']	= self::$token['token'];
+		$params['token']	= self::token();
 		$params['features'] = json_encode(array(array("geometry" => $geometry, "attributes" => $attributes)));
 		$params['f']		= 'json';
 
@@ -199,7 +198,7 @@ class ArcServer {
 						);
 
 		$params = array();
-		$params['token']	= self::$token['token'];
+		$params['token']	= self::token();
 		$params['features'] = json_encode(array(array("geometry" => $geometry, "attributes" => $attributes)));
 		$params['f']		= 'json';
 
@@ -248,7 +247,7 @@ class ArcServer {
 
 
 		$params = array();
-		$params['token']	= self::$token['token'];
+		$params['token']	= self::token();
 		$params['objectIds'] = $objectid;
 		$params['f']		= 'json';
 
@@ -282,7 +281,7 @@ class ArcServer {
 		    }
 
 		    curl_setopt($curl, CURLOPT_URL, $url);
-		    curl_setopt($curl, CURLOPT_REFERER, self::$token['referer']); //Needed to accompany the token for authentication
+		    // curl_setopt($curl, CURLOPT_REFERER, self::$token['referer']); //Needed to accompany the token for authentication
 
 		    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 		    curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 ); // Use IPv4 (not IPv6)

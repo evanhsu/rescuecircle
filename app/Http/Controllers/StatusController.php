@@ -132,7 +132,7 @@ class StatusController extends Controller
         $status->statusable_type = "App\\".ucwords($status->statusable_type);
 
         // Build the HTML popup that will be displayed when this feature is clicked
-        $status->updatePopup();
+        $status->setPopup($obj->popupText());
 
         // Attempt to save
         if($status->save()) {
