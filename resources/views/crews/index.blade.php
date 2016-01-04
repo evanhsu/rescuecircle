@@ -21,6 +21,7 @@
 		<table class="table">
 			<thead>
 				<tr><th>Crew Name</th>
+					<th>Resource Type</th>
 					<th>Update</th>
 					<th>ID</th>
 					<th>Delete</th>
@@ -30,6 +31,7 @@
 			@foreach($crews as $crew)
 				<tr>
 					<td><a href="{{ route('edit_crew', array('id' => $crew->id)) }}">{{ $crew->name }}</td>
+					<td>{{ $crew->resource_type() }}</td>
 					<td>
 						@if($crew->statusable_type == "crew")
 							<a href="{{ route('new_status_for_crew',$crew->id) }}" class="btn btn-primary" role="button">!<a/>

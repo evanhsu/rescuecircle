@@ -73,6 +73,21 @@ class Crew extends Model
         return $this->statusable_type;
     }
 
+    public function resource_type() {
+        // Returns a human-friendly text string that describes this crew's fire resource type (i.e. Short Haul Crew or Hotshot Crew)
+        switch($this->statusable_type) {
+            case "helicopter":
+                return "Short Haul";
+                break;
+            case "crew":
+                return "Hotshot";
+                break;
+            default:
+                return "Unknown";
+                break;
+        }
+    }
+
     public function freshness() {
         // Check the timestamp of the most recent update for this Crew.
         // Return 'fresh', 'stale', 'expired', or 'missing' depending on age thresholds.
