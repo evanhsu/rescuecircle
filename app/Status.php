@@ -105,7 +105,7 @@ class Status extends Model
 
     public function crewToUpdate() {
         // Returns the ID of the Crew that CURRENTLY owns the Helicopter/Crew from $this Status.
-        
+        /*
         switch($this->statusable_type_plain()) {
             case "helicopter":
                 return $this->statusable->crew_id;
@@ -118,7 +118,9 @@ class Status extends Model
             default:
                 return null;
                 break;
-        } // End switch()
+        } // End switch()*/
+        
+        return $this->crew_id();
     }
 
     public function updatePopup() {

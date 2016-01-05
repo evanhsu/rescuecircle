@@ -13,6 +13,17 @@ class ArcServer {
 		return env('ARCGIS_TOKEN', null);
 	}
 
+	private static function getLayerFor($statusable_type_plain) {
+		// Choose which layer to query on the Feature Server (i.e. Aircrafts are on Layer 0, Crews are on Layer 1, etc.)
+		switch($statusable_type_plain) {
+			case "aircraft":
+			default:
+				$layer = 0;
+				break;
+		}
+		return $layer;
+	}
+
 
 	public static function testToken() {
 		// This will make a query to the ArcGIS server to test the token.
@@ -53,14 +64,8 @@ class ArcServer {
 		$layerDef = "statusable_id='$status->statusable_id'"
 					." AND statusable_type='$status->statusable_type'";
 
-		// Choose which layer to query on the Feature Server (i.e. Helicopters are on Layer 0, Crews are on Layer 1, etc.)
-		$type = explode("\\",$status->statusable_type)[1]; // App\Helicopter ==> Helicopter
-		switch($type) {
-			case "Helicopter":
-			default:
-				$layer = 0;
-				break;
-		}
+		// Choose which layer to query on the Feature Server (i.e. Aircrafts are on Layer 0, Crews are on Layer 1, etc.)
+		$layer = self::getLayerFor($status->statusable_type_plain);
 
 		// Set all of the query string parameters - these will be appended to the URL in the API call
 		$params = array();
@@ -100,14 +105,8 @@ class ArcServer {
 		// (docs: https://egp.nwcg.gov/arcgis/sdk/rest/index.html#/Add_Features/02ss0000009m000000/)
 		//
 
-		// Choose which layer to use on the Feature Server (i.e. Helicopters are on Layer 0, Crews are on Layer 1, etc.)
-		$type = explode("\\",$status->statusable_type)[1]; // App\Helicopter ==> Helicopter
-		switch($type) {
-			case "Helicopter":
-			default:
-				$layer = 0;
-				break;
-		}
+		// Choose which layer to query on the Feature Server (i.e. Aircrafts are on Layer 0, Crews are on Layer 1, etc.)
+		$layer = self::getLayerFor($status->statusable_type_plain);
 
 		// Construct the URL to send the POST request to.
 		$url = self::$base_url."/$layer/addFeatures";
@@ -171,14 +170,8 @@ class ArcServer {
 		// (docs: https://egp.nwcg.gov/arcgis/sdk/rest/index.html#/Update_Features/02ss00000096000000/)
 		//
 
-		// Choose which layer to use on the Feature Server (i.e. Helicopters are on Layer 0, Crews are on Layer 1, etc.)
-		$type = explode("\\",$status->statusable_type)[1]; // App\Helicopter ==> Helicopter
-		switch($type) {
-			case "Helicopter":
-			default:
-				$layer = 0;
-				break;
-		}
+		// Choose which layer to query on the Feature Server (i.e. Aircrafts are on Layer 0, Crews are on Layer 1, etc.)
+		$layer = self::getLayerFor($status->statusable_type_plain);
 
 		// Construct the URL to send the POST request to.
 		$url = self::$base_url."/$layer/updateFeatures";
@@ -242,9 +235,10 @@ class ArcServer {
 	public static function deleteFeature($objectid) {
 		// Delete the feature on the ArcGIS server with the OBJECTID specified by $objectid
 
-		$layer = 0; // Helicopters are drawn on layer 0
-		$url = self::$base_url."/$layer/deleteFeatures";
+		// Choose which layer to query on the Feature Server (i.e. Aircrafts are on Layer 0, Crews are on Layer 1, etc.)
+		$layer = self::getLayerFor($status->statusable_type_plain);
 
+		$url = self::$base_url."/$layer/deleteFeatures";
 
 		$params = array();
 		$params['token']	= self::token();

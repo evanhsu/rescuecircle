@@ -9,14 +9,14 @@ use App\User;
 use App\Auth;
 use App\Status;
 
-class Helicopter extends Model
+class Aircraft extends Model
 {
     /**
      * The database table used by the model.
      *
      * @var string
      */
-    protected $table = 'helicopters';
+    protected $table = 'aircrafts'; // Force a unique plural form for the table name
     //protected $primaryKey = 'tailnumber'; // The primary key is NOT 'id' !!
 
     /**
@@ -39,12 +39,12 @@ class Helicopter extends Model
      *
      */
     public function crew() {
-    	// Each HELICOPTER belongs to a CREW (the HELICOPTER model contains a 'crew_id' foreign index)
+    	// Each AIRCRAFT belongs to a CREW (the AIRCRAFT model contains a 'crew_id' foreign index)
         return $this->belongsTo(Crew::class);
     }
 
     public function users() {
-    	// Allow access to the Users who have permission to edit this Helicopter
+    	// Allow access to the Users who have permission to edit this Aircraft
         return $this->hasManyThrough(User::class, Crew::class);
     }
 
@@ -55,7 +55,7 @@ class Helicopter extends Model
     }
 
     public function status() {
-        // Get the MOST RECENT status for this Helicopter
+        // Get the MOST RECENT status for this Aircraft
         // If NONE are found, return a NEW, blank status to be filled in.
         $status = $this->statuses()->orderBy('created_at','desc')->first();
 
@@ -69,7 +69,7 @@ class Helicopter extends Model
     }
 
     public function freshness() {
-        // Check the timestamp of the most recent update for this Helicopter.
+        // Check the timestamp of the most recent update for this Aircraft.
         // Return 'fresh', 'stale', 'expired', or 'missing' depending on age thresholds.
 
         $max_fresh_age = config('hours_until_updates_go_stale');
@@ -77,7 +77,7 @@ class Helicopter extends Model
 
         $now = Carbon::now();
         $last_status = $this->status();
-        if($last_status->exists() != true) $freshness = "missing"; // No Status has ever been created for this Helicopter
+        if($last_status->exists() != true) $freshness = "missing"; // No Status has ever been created for this Aircraft
         else {
             $last_update = $last_status->created_at;
             $age_hours = $now->diffInHours($last_update);  // The number of hours between NOW and the last update
@@ -111,14 +111,14 @@ class Helicopter extends Model
     }
 
     public function release() {
-    	// Disassociate this helicopter from it's Crew (set Helicopter->crew_id to NULL)
+    	// Disassociate this aircraft from it's Crew (set Aircraft->crew_id to NULL)
     	$this->set('crew_id',null);
         if($this->save()) return true;
         else return false;
     }
 
-    private function differences(Helicopter $helicopter) {
-    	// Compare the current Helicopter model to the input $helicopter.
+    private function differences(Aircraft $aircraft) {
+    	// Compare the current Aircraft model to the input $aircraft.
     	// Return an array of the object properties that differ, if any differences exist.
     	// Return NULL if the two models are identical.
 
@@ -126,7 +126,7 @@ class Helicopter extends Model
 		$differences = array();
 
 		foreach($properties_to_compare as $p) {
-    		if($this->$p != $helicopter->$p) {
+    		if($this->$p != $aircraft->$p) {
     			$differences[] = $p;
     		}
 	    }
@@ -141,7 +141,7 @@ class Helicopter extends Model
     }
 
     public function updateIfChanged($attributes) {
-    	// Compare the attributes of $this Helicopter to the array of $attributes passed in.
+    	// Compare the attributes of $this Aircraft to the array of $attributes passed in.
     	// If they match, don't update this instance.
     	// If there are differences, update $this with the values from $attributes.
     	//
@@ -152,13 +152,13 @@ class Helicopter extends Model
         // Convert tailnumber to all caps before storing - Laravel has no way of performing
         // a case-insensitive search within the Eloquent ORM, so we must ensure all tailnumbers use consistent case.
         $attributes['tailnumber'] = strtoupper($attributes['tailnumber']);
-    	$proposed_helicopter = new Helicopter($attributes);
+    	$proposed_aircraft = new Aircraft($attributes);
 
-    	if(is_null($this->differences($proposed_helicopter))) {
-    		// This helicopter already matches the proposed attributes. Do nothing.
+    	if(is_null($this->differences($proposed_aircraft))) {
+    		// This aircraft already matches the proposed attributes. Do nothing.
     		return true;
     	}
-		// This helicopter instance needs to be updated
+		// This aircraft instance needs to be updated
 		elseif($this->update($attributes)) {
 			// The model was updated
 			return true;
