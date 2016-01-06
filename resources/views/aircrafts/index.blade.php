@@ -30,18 +30,18 @@
 				</tr>
 			</thead>
 			<tbody>
-			@foreach($aircrafts as $h)
+			@foreach($aircrafts as $a)
 				<tr>
-					<td>{{ $h->id }}</td>
-					<td>{{ $h->tailnumber }}</td>
-					<td>{{ $h->model }}</td>
+					<td>{{ $a->id }}</td>
+					<td>{{ $a->tailnumber }}</td>
+					<td>{{ $a->model }}</td>
 					<td>
-						@if(!empty($h->crew_id))
-							<a href="{{ route('edit_crew', array('id' => $h->crew_id)) }}">{{ $h->crew->name }}</a>
+						@if(!empty($a->crew_id))
+							<a href="{{ route('edit_crew', array('id' => $a->crew_id)) }}">{{ $a->crew->name }}</a>
 						@endif
 					</td>
-					<td><a href="{{ route('new_status_for_aircraft',$h->tailnumber) }}" class="btn btn-primary" role="button">!<a/></td>
-					<td><form action="{{ route('destroy_aircraft',$h->id) }}" method="POST" class="form-inline">
+					<td><a href="{{ route('new_status_for_aircraft',$a->tailnumber) }}" class="btn btn-primary" role="button">!<a/></td>
+					<td><form action="{{ route('destroy_aircraft',$a->id) }}" method="POST" class="form-inline">
 							{{ csrf_field() }}
 							<button type="submit" class="btn btn-sm btn-danger">X</button>
 						</form></td>
