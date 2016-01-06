@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Form;
 use Carbon\Carbon;
 use DB;
 use App\Crew;
-use App\Helicopter;
+use App\Aircraft;
 use App\Status;
 use App\ArcServer;
 
@@ -75,14 +75,14 @@ class StatusController extends Controller
      */
     public function store(Request $request)
     {
-        // Accept a form post from either the Helicopter Status Form (route: 'new_status_for_helicopter')
+        // Accept a form post from either the Aircraft Status Form (route: 'new_status_for_aircraft')
         // or the Crew Status Form (route: 'new_status_for_crew')
 
-        // Determine whether this is a status update for a Helicopter or a Crew
+        // Determine whether this is a status update for an Aircraft or a Crew
         // then store the ID of the Crew that owns this object.
         switch($request->get('statusable_type')) {
-            case "helicopter":
-                $obj = Helicopter::findOrFail($request->get('statusable_id'));
+            case "aircraft":
+                $obj = Aircraft::findOrFail($request->get('statusable_id'));
                 $crew_id = $obj->crew_id;
                 break;
 
@@ -129,7 +129,7 @@ class StatusController extends Controller
         $status->longitude = $longitude_dd;
 
         // Change the 'statusable_type' variable to a fully-namespaced class name.
-        // i.e. Change 'helicopter' to 'App\Helicopter'. This is required for the Status class to be able to retrieve the correct Helicopter (or Crew).
+        // i.e. Change 'aircraft' to 'App\Aircraft'. This is required for the Status class to be able to retrieve the correct Aircraft (or Crew).
         $status->statusable_type = "App\\".ucwords($status->statusable_type);
 
         // Build the HTML popup that will be displayed when this feature is clicked

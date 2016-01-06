@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Form;
 use App\Crew;
 use App\User;
-use App\Helicopter;
+use App\Aircraft;
 use App\Status;
 
 use App\ArcServer;

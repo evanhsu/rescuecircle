@@ -60,10 +60,10 @@ class Status extends Model
 
     public function statusable_type_plain() {
         // Returns the name of the Class that this Status belongs to, without any namespacing.
-        //   i.e. If this Status belongs to a Helicopter, then:
-        //           $this->statusable_type == "App\Helicopter"
+        //   i.e. If this Status belongs to a Aircraft, then:
+        //           $this->statusable_type == "App\Aircraft"
         //        and
-        //           $this->statusable_type_plain() == "helicopter"
+        //           $this->statusable_type_plain() == "aircraft"
 
         if ($pos = strrpos($this->statusable_type, '\\')) {
             return strtolower(substr($this->statusable_type, $pos + 1));
@@ -75,10 +75,10 @@ class Status extends Model
 
     public function redirectToNewStatus() {
         // Returns the RedirectResponse that should be used to submit a new Status for the same resource.
-        // For example, if $this is a Status for Helicopter 'N2345', then redirect to "route(new_status_for_helicopter,'N2345')"
+        // For example, if $this is a Status for Aircraft 'N2345', then redirect to "route(new_status_for_aircraft,'N2345')"
 
         // Returns an array that can be used to build a redirect
-        // ['class' => 'helicopter',
+        // ['class' => 'aircraft',
         //  'id'    => 'N2345' ]
         //
         // The calling function could do something like this:
@@ -89,8 +89,8 @@ class Status extends Model
         $parent = $this->statusable;  // The instance of the parent class that owns this Status
 
         switch($this->statusable_type_plain()) {
-            case 'helicopter':
-                $route_id = $parent->tailnumber; // Helicopters routes use the tailnumber rather than the ID
+            case 'aircraft':
+                $route_id = $parent->tailnumber; // Aircrafts routes use the tailnumber rather than the ID
                 break;
 
             default:
@@ -104,10 +104,10 @@ class Status extends Model
     }
 
     public function crewToUpdate() {
-        // Returns the ID of the Crew that CURRENTLY owns the Helicopter/Crew from $this Status.
+        // Returns the ID of the Crew that CURRENTLY owns the Aircraft/Crew from $this Status.
         /*
         switch($this->statusable_type_plain()) {
-            case "helicopter":
+            case "aircraft":
                 return $this->statusable->crew_id;
                 break;
 
@@ -120,7 +120,7 @@ class Status extends Model
                 break;
         } // End switch()*/
         
-        return $this->crew_id();
+        return $this->crew_id;
     }
 
     public function updatePopup() {
@@ -134,7 +134,7 @@ class Status extends Model
        /* $popupinfo .=   "<td class=\"logo-cell\" aria-label=\"Logo\" title=\"Crew Logo\">"
                             ."<img src=\"logos/crew_2_logo.jpg\"/></td>";
 */
-        $popupinfo .=   "<td aria-label=\"Helicopter Info\" title=\"Current manager & aircraft info\">"
+        $popupinfo .=   "<td aria-label=\"Aircraft Info\" title=\"Current manager & aircraft info\">"
                             ."<div class=\"popup-col-header\"><span class=\"glyphicon glyphicon-plane\"></span> HMGB</div>"
                             .$this->manager_name."<br />"
                             .$this->manager_phone."<br >"

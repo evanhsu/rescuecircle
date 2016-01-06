@@ -21,7 +21,7 @@ Class MapController extends Controller {
     public function getMapJSON() {
 
         /**
-        *   This will return a JSON array of all helicopters with their attached location data & contact info
+        *   This will return a JSON array of all statusable features with their attached location data & contact info
         *
         *   $data = $helicopter->jsonDump();
         *   $data = {
@@ -35,7 +35,7 @@ Class MapController extends Controller {
         *           };
         *
         */
-        return response()->json(array('helicopters' => array(array( 'tailnumber'=> "N12345", 
+        return response()->json(array('aircrafts' => array(array( 'tailnumber'=> "N12345", 
                                                             'crew_id'   => '1',
                                                             'latitude'  => '42.67893',
                                                             'longitude' => '-123.89409'))));

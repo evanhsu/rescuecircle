@@ -1,37 +1,37 @@
 @extends('../layouts.application_layout')
 
 <?php
-function drawOneHelicopterForm($index, $helicopter, $template = false) {
+function drawOneAircraftForm($index, $aircraft, $template = false) {
     // $index       integer     The array index to use when submitting this form
-    // $helicopter  Helicopter  A Helicopter model to populate this form with - ['tailnumber'=>'N12345', 'model'=>'Bell 205']
-    // $template    boolean     If TRUE, this function will draw the blank template for a Helicopter Form rather than a populated form.
+    // $aircraft    Aircraft    An Aircraft model to populate this form with - ['tailnumber'=>'N12345', 'model'=>'Bell 205']
+    // $template    boolean     If TRUE, this function will draw the blank template for an Aircraft Form rather than a populated form.
     if($template) {
-        $helicopter = new App\Helicopter(array("tailnumber"=>"","model"=>""));
+        $aircraft = new App\Aircraft(array("tailnumber"=>"","model"=>""));
         $index = "";
     }
-    $output = "<div class=\"crew-helicopter-form";
+    $output = "<div class=\"crew-aircraft-form";
     if($template) $output .= " dynamic-form-template";
     $output .= "\">
         <div class=\"form-group\">
-            <label for=\"helicopter-tailnumber\" class=\"col-xs-12 col-sm-2 control-label\">Tailnumber</label>
+            <label for=\"aircraft-tailnumber\" class=\"col-xs-12 col-sm-2 control-label\">Tailnumber</label>
             <div class=\"form-inline col-xs-8 col-sm-6\">
-                <span><input type=\"text\" class=\"form-control helicopter-tailnumber\" name=\"crew[helicopters][".$index."][tailnumber]\" value=\"".$helicopter->tailnumber."\" ";
+                <span><input type=\"text\" class=\"form-control aircraft-tailnumber\" name=\"crew[aircrafts][".$index."][tailnumber]\" value=\"".$aircraft->tailnumber."\" ";
 
     if(!$template) $output .= "readonly ";
 
     $output .= "/></span>\n";
     
     if(!$template) {
-        $output .= "<span><button class=\"btn btn-default release-helicopter-button\" data-helicopter-id=\"".$index."\" type=\"button\">Release</button></span>\n";
+        $output .= "<span><button class=\"btn btn-default release-aircraft-button\" data-aircraft-id=\"".$index."\" type=\"button\">Release</button></span>\n";
     }
      
      $output .= "</div>
         </div>
 
         <div class=\"form-group\">
-            <label for=\"helicopter-model\" class=\"col-xs-12 col-sm-2 control-label\">Make/Model</label>
+            <label for=\"aircraft-model\" class=\"col-xs-12 col-sm-2 control-label\">Make/Model</label>
             <div class=\"form-inline col-xs-8 col-sm-6\">
-                <input type=\"text\" class=\"form-control helicopter-model\" name=\"crew[helicopters][".$index."][model]\" value=\"".$helicopter->model."\" />
+                <input type=\"text\" class=\"form-control aircraft-model\" name=\"crew[aircrafts][".$index."][model]\" value=\"".$aircraft->model."\" />
             </div>
         </div>\n";
 
@@ -40,14 +40,14 @@ function drawOneHelicopterForm($index, $helicopter, $template = false) {
                                 <div class=\"col-sm-6\">\n";
 
     if(!$template) {
-        $output .= "<a href=\"".route('new_status_for_helicopter',$helicopter->tailnumber)."\" class=\"btn btn-default\" role=\"button\">Go to the Status Page</a>\n";
+        $output .= "<a href=\"".route('new_status_for_aircraft',$aircraft->tailnumber)."\" class=\"btn btn-default\" role=\"button\">Go to the Status Page</a>\n";
         
     } else {
-        $output .= "<div class=\"alert alert-warning\"><strong>Remember:</strong> this new helicopter won't show up on the map until you submit a Status Update!</div>";
+        $output .= "<div class=\"alert alert-warning\"><strong>Remember:</strong> this new aircraft won't show up on the map until you submit a Status Update!</div>";
     }
     $output .= "                </div></div>\n";
 
-    $output .= freshnessNotify($helicopter->freshness());
+    $output .= freshnessNotify($aircraft->freshness());
 
     $output .= "</div>\n";
 
@@ -55,13 +55,24 @@ function drawOneHelicopterForm($index, $helicopter, $template = false) {
 }
 
 function freshnessNotify($freshness) {
-    // Return a string that will draw a Bootstrap alert for an aging helicopter (no recent updates)
-    if($freshness == "fresh") $output = ""; // No alert needed, this is fresh
-    elseif($freshness == "stale") {
-        $output = "<div class=\"alert alert-warning\"><strong>Stale Info!</strong> This helicopter is grayed out on the map because it hasn't been updated in over 24 hours.</div>";
-    }
-    else {
-        $output = "<div class=\"alert alert-danger\"><strong>Expired Info!</strong> This helicopter has been removed from the map because it hasn't been updated in over 30 days.  Just submit a new Status Update to get it back!</div>";
+    // Return a string that will draw a Bootstrap alert for an aging aircraft (no recent updates)
+    $hours_til_stale = config('hours_until_updates_go_stale');
+    $days_til_expired = config('days_until_updates_expire');
+
+    switch($freshness) {
+        case "fresh":
+            $output = "";
+            break;
+        case "stale":
+            $output = "<div class=\"alert alert-warning\"><strong>Stale Info!</strong><br />This aircraft is grayed out on the map because it hasn't been updated in over ".$hours_til_stale." hours.</div>";
+            break;
+        case "expired":
+            $output = "<div class=\"alert alert-danger\"><strong>Expired Info!</strong><br />This aircraft has been removed from the map because it hasn't been updated in over ".$days_til_expired." days.  Just submit a new Status Update to get it back!</div>";
+            break;
+        case "missing":
+        default:
+            $output = "<div class=\"alert alert-danger\"><strong>No updates have been submitted!</strong><br />This aircraft does not appear on the map because no updates have been submitted yet.";
+            break;
     }
     return $output;
 }
@@ -169,18 +180,19 @@ function freshnessNotify($freshness) {
                 </div>
             </div>
 
-@if($crew->statusable_type == "helicopter")
+
+@if($show_aircraft)
             
-            <h3>Helicopters</h3>
+            <h3>Aircraft</h3>
             <div class="form-group">
                 <div class="col-sm-2">
-                    <label for="add-helicopter-button" class="control-label sr-only">Add a Helicopter</label>
-                    <button class="btn btn-default" id="add-helicopter-button" type="button" title="Assign another helicopter to this crew">Add a Helicopter</button>
+                    <label for="add-aircraft-button" class="control-label sr-only">Add an Aircraft</label>
+                    <button class="btn btn-default" id="add-aircraft-button" type="button" title="Assign another aircraft to this crew">Add an Aircraft</button>
                 </div>
             </div>
             <?php $i = 0; ?>
-            @foreach($crew->helicopters as $helicopter)
-                <?php drawOneHelicopterForm($i,$helicopter); ?>
+            @foreach($crew->aircrafts as $aircraft)
+                <?php drawOneAircraftForm($i,$aircraft); ?>
             <?php $i++; ?>
             @endforeach
 
@@ -194,10 +206,10 @@ function freshnessNotify($freshness) {
         </form>
 
 
-@if($crew->statusable_type == "helicopter")
-        <?php drawOneHelicopterForm(null,null,true); ?>
+@if($show_aircraft)
+        <?php drawOneAircraftForm(null,null,true); ?>
 
-        <div id="helicopter-index" style="display:none;">{{ $i }}</div>
+        <div id="aircraft-index" style="display:none;">{{ $i }}</div>
 @endif
 
     </div>
@@ -213,10 +225,10 @@ function freshnessNotify($freshness) {
         }
 
         function setStatusForAddButton() {
-            // Disable the "Add a Helicopter" button if there are any blank "Tailnumber" fields on the helicopter form
+            // Disable the "Add an Aircraft" button if there are any blank "Tailnumber" fields on the aircraft form
             // Enable the button if there are no blank "Tailnumber" fields
             var blank_field_exists = false;
-            $(".form").children(".helicopter-tailnumber").each(function( i ) {
+            $(".form").children(".aircraft-tailnumber").each(function( i ) {
 
                 if($(this).val() == "") {
                     blank_field_exists = true;
@@ -224,45 +236,45 @@ function freshnessNotify($freshness) {
             });
 
             if(blank_field_exists) {
-                    $('#add-helicopter-button').attr("disabled",true).prop("title","Fill in the existing helicopter form before adding another.");
+                    $('#add-aircraft-button').attr("disabled",true).prop("title","Fill in the existing aircraft form before adding another.");
             } else {
-                $('#add-helicopter-button').attr("disabled",false).prop("title","Assign another helicopter to this crew");
+                $('#add-aircraft-button').attr("disabled",false).prop("title","Assign another aircraft to this crew");
             }
         }
     </script>
     <script>
         (function() {
-            // Add click behavior to the 'Add Helicopter' button
-            $('#add-helicopter-button').click(function() {
-                // Get the next array index to stuff a helicopter into
-                var i = parseInt($('#helicopter-index').html());
+            // Add click behavior to the 'Add Aircraft' button
+            $('#add-aircraft-button').click(function() {
+                // Get the next array index to stuff an aircraft into
+                var i = parseInt($('#aircraft-index').html());
 
-                // Copy the helicopter form template into the active form
+                // Copy the aircraft form template into the active form
                 var newForm = $(".dynamic-form-template").clone().removeClass('dynamic-form-template');
-                newForm.find('.helicopter-tailnumber').prop("name","crew[helicopters]["+i+"][tailnumber]")
-                newForm.find('.helicopter-model').prop("name","crew[helicopters]["+i+"][model]");
-                newForm.find('.release-helicopter-button').attr("data-helicopter-id",i);
+                newForm.find('.aircraft-tailnumber').prop("name","crew[aircrafts]["+i+"][tailnumber]")
+                newForm.find('.aircraft-model').prop("name","crew[aircrafts]["+i+"][model]");
+                newForm.find('.release-aircraft-button').attr("data-aircraft-id",i);
                 newForm.insertBefore('#dynamic-form-insert-placeholder');
 
-                // Increment the 'helicopter-index' div
-                $('#helicopter-index').html(i+1);
+                // Increment the 'aircraft-index' div
+                $('#aircraft-index').html(i+1);
 
-                // Disable the "Add Helicopter" button. The form listener will take care of re-enabling it when appropriate
-                $('#add-helicopter-button').attr("disabled",true).prop("title","Fill in the existing helicopter form before adding another.");
+                // Disable the "Add Aircraft" button. The form listener will take care of re-enabling it when appropriate
+                $('#add-aircraft-button').attr("disabled",true).prop("title","Fill in the existing aircraft form before adding another.");
             });
             
-            // Disable the "Add Helicopter" button if a blank "tailnumber" field exists anywhere in the form
+            // Disable the "Add Aircraft" button if a blank "tailnumber" field exists anywhere in the form
             // Or enable the button if text is typed into a blank tailnumber field
-            $("#edit_crew_form").on("keyup",".helicopter-tailnumber", function(event) {
+            $("#edit_crew_form").on("keyup",".aircraft-tailnumber", function(event) {
                 setStatusForAddButton();
             });
 
-            // Add click behavior to the "Release" helicopter button
-            $("#edit_crew_form").on("click",".release-helicopter-button", function(event) {
+            // Add click behavior to the "Release" aircraft button
+            $("#edit_crew_form").on("click",".release-aircraft-button", function(event) {
                 
-                // Get the tailnumber of the helicopter to release
-                var parent = $(this).parents('.crew-helicopter-form');
-                var tailnumber = withoutInvalidChars(parent.find('.helicopter-tailnumber').val().trim());
+                // Get the tailnumber of the aircraft to release
+                var parent = $(this).parents('.crew-aircraft-form');
+                var tailnumber = withoutInvalidChars(parent.find('.aircraft-tailnumber').val().trim());
                 var csrf_token = $(this).parents('form').children("input[name='_token']").val();
                 var crew_id = $("input[name='crew_id']").val();
 
@@ -271,9 +283,9 @@ function freshnessNotify($freshness) {
                     parent.hide(300,function(){ this.remove(); });
                     setStatusForAddButton();
                 } else {
-                    // Send AJAX request to release this helicopter from this crew
+                    // Send AJAX request to release this aircraft from this crew
                     $.ajax({
-                        url: "/helicopters/"+encodeURIComponent(tailnumber)+"/release",
+                        url: "/aircraft/"+encodeURIComponent(tailnumber)+"/release",
                         type: "post",
                         data: {"_token":csrf_token, "sent-from-crew":crew_id}
                     }).done(function() {

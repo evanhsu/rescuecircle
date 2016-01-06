@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Form;
 use App\Crew;
 use App\User;
-use App\Helicopter;
+use App\Aircraft;
 use App\Status;
 
 use App\ArcServer;
@@ -50,7 +50,7 @@ class CrewController extends Controller
             //This 
             echo "OBJECT_IDs => [".implode(",",$response)."]";
         }
-        // Determine whether to redirect to a Crews Status Update form or a Helicopter Status Update form
+        // Determine whether to redirect to a Crews Status Update form or an Aircraft Status Update form
         // return "Showing most recent Status for Crew #".$id;
     }
 
@@ -89,13 +89,13 @@ class CrewController extends Controller
         else {
             $request->session()->flash('active_menubutton','status'); // Tell the menubar which button to highlight
         }
-        return view('crews/new_status')->with('crew',$crew)->with('status',$last_status);
+        return view('status_forms/hotshotcrew')->with('crew',$crew)->with('status',$last_status);
     }
 
     /**
      * Redirect to either:
      *   - The Crew Status Update form (CrewController@newStatus)
-     *   - The Helicopter Status Update form for the most-recently updated helicopter that this Crew owns (HelicopterController@newStatus)
+     *   - The Aircraft Status Update form for the most-recently updated aircraft that this Crew owns (AircraftController@newStatus)
      *
      * $id  The ID of a Crew
      */
@@ -113,8 +113,8 @@ class CrewController extends Controller
         // Decide where to redirect in the following order:
         //   1. Go to a New Status for the resource that was most-recently updated by this user.
         //   2. If the Crew is statusable, go to the New Status form for the crew.
-        //   3. If the Crew has helicopters that are statusable, go to the New Status form for the Helicopter with highest alphabetical priority.
-        //   4. If the Crew is supposed to have statusable helicopters but none are assigned, go to the Edit Crew form with an error message.
+        //   3. If the Crew has aircrafts that are statusable, go to the New Status form for the Aircraft with highest alphabetical priority.
+        //   4. If the Crew is supposed to have statusable aircrafts but none are assigned, go to the Edit Crew form with an error message.
 
         // Step 1
         $user = Auth::user();
@@ -133,20 +133,20 @@ class CrewController extends Controller
         }
 
         // Step 3|4
-        elseif($crew->statusable_type == 'helicopter') { 
-            // Look for the first Helicopter owned by this Crew
-            $helicopter = $crew->helicopters()->orderBy('tailnumber')->first();
-            if(is_null($helicopter)) {
-                // Step 4 (This crew is supposed to have helicopters, but none were found)
-                return redirect()->route('edit_crew',$id)->withErrors("You must add a helicopter to your crew before you can post a status update.");
+        elseif($crew->is_an_aircraft_crew()) { 
+            // Look for the first Aircraft owned by this Crew
+            $aircraft = $crew->aircrafts()->orderBy('tailnumber')->first();
+            if(is_null($aircraft)) {
+                // Step 4 (This crew is supposed to have aircrafts, but none were found)
+                return redirect()->route('edit_crew',$id)->withErrors("You must add an aircraft to your crew before you can post a status update.");
             }
             else {
-                // Step 3 (This crew has at least one helicopter)
-                return redirect()->route('new_status_for_helicopter',$helicopter->tailnumber);
+                // Step 3 (This crew has at least one aircraft)
+                return redirect()->route('new_status_for_aircraft',$aircraft->tailnumber);
             }
         }
         else {
-            // This crew has a statusable_entity OTHER than 'crew' or 'helicopter'
+            // This crew has a statusable_entity OTHER than 'crew' or 'aircraft'
             // THIS FUNCTIONALITY STILL NEEDS TO BE CREATED
             return redirect()->route('edit_crew',$id)->withErrors("This Crew type hasn't been implemented yet - CrewController@redirectToStatusUpdate");
         }
@@ -267,7 +267,10 @@ class CrewController extends Controller
                 $request->session()->flash('active_menubutton','identity'); // Tell the menubar which button to highlight
             }
 
-            return view('crews.edit')->with('crew',$crew);
+            // Decide whether to show the Aircraft section of the Edit Crew form:
+            $show_aircraft = $crew->is_an_aircraft_crew();
+
+            return view('crews.edit')->with('crew',$crew)->with('show_aircraft',$show_aircraft);
         }
         $errors = new MessageBag(['Crew' => ['That Crew doesn\'t exist.']]);
         //return redirect()->route('not_found')->withErrors($errors);
@@ -292,7 +295,7 @@ class CrewController extends Controller
 
 
         // Grab the form input
-        $crew_fields = array_except($request->input('crew'), ['helicopters']);
+        $crew_fields = array_except($request->input('crew'), ['aircrafts']);
 
         $crew = Crew::find($id);
 
@@ -311,23 +314,23 @@ class CrewController extends Controller
         // *** Add error handling/validation for the Crew model
 
 
-        // Deal with the Helicopter fields:
-        // For each Helicopter on the form, create new or update the existing Helicopter in the dB if necessary
+        // Deal with the Aircraft fields:
+        // For each Aircraft on the form, create new or update the existing Aircraft in the dB if necessary
         // (don't update the model if nothing has changed)
-        $helicopter_fields = array();
+        $aircraft_fields = array();
         
-        if(isset($request->input('crew')['helicopters'])) {
-            $helicopter_fields = $request->input('crew')['helicopters'];
+        if(isset($request->input('crew')['aircrafts'])) {
+            $aircraft_fields = $request->input('crew')['aircrafts'];
         }
         
-        foreach($helicopter_fields as $helicopter) {
-            if(!empty($helicopter['tailnumber'])) {
-                // Instantiate a new Helicopter - CONVERT TAILNUMBER TO ALL CAPS IN THE DATABASE
-                $temp_heli = Helicopter::firstOrCreate(array('tailnumber' => strtoupper($helicopter['tailnumber'])));               
+        foreach($aircraft_fields as $aircraft) {
+            if(!empty($aircraft['tailnumber'])) {
+                // Instantiate a new Aircraft - CONVERT TAILNUMBER TO ALL CAPS IN THE DATABASE
+                $temp_heli = Aircraft::firstOrCreate(array('tailnumber' => strtoupper($aircraft['tailnumber'])));               
 
-                $helicopter['crew_id'] = $id;
+                $aircraft['crew_id'] = $id;
 
-                $temp_heli->updateIfChanged($helicopter);
+                $temp_heli->updateIfChanged($aircraft);
                 // An error occurred during updateIfChanged()
                 // Go back to the form and display errors
                 // return redirect()->route('edit_crew', $crew->id)
@@ -359,8 +362,16 @@ class CrewController extends Controller
         $crew = Crew::find($id);
         $crew_name = $crew->name;
 
-        // Release all Helicopters from this crew (delete entries from the CrewsHelicopters table)
-        // Delete all Users associated with this crew?
+        // Release all Aircrafts from this crew (delete entries from the CrewsAircrafts table)
+        foreach($crew->aircrafts as $aircraft) {
+            $aircraft->release();
+        }
+
+        // Delete all Users belonging to this crew
+        foreach($crew->users as $user) {
+            $user->delete();
+        }
+
         $crew->delete();
         return redirect()->route('crews_index')->with('alert', array('message' => "'".$crew_name."' was deleted.", 'type' => 'success'));
     }

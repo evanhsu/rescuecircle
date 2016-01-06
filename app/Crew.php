@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use App\User;
-use App\Helicopter;
+use App\Aircraft;
 use App\Status;
 
 class Crew extends Model
@@ -44,8 +44,8 @@ class Crew extends Model
      * Define relationships to other Eloquent models
      *
      */
-    public function helicopters() {
-        return $this->hasMany(Helicopter::class);
+    public function aircrafts() {
+        return $this->hasMany(Aircraft::class);
     }
 
     public function users() {
@@ -73,6 +73,20 @@ class Crew extends Model
         return $this->statusable_type;
     }
 
+    public function is_an_aircraft_crew() {
+        // Check to see if this Crew's 'statusable_type' is a class that inherits from the Aircraft class.
+        $classname = "App\\".ucfirst($this->statusable_type);
+        $instance = new $classname;
+        if($instance instanceof Aircraft) {
+            $result = true;
+        }
+        else {
+            $result = false;
+        }
+        unset($instance);
+        return $result;
+    }
+
     public function crew_id() {
         // This is simply an alias for crew->id to provide a consistent notation for querying the crew id for all resource types
         return $this->id;
@@ -80,12 +94,18 @@ class Crew extends Model
 
     public function resource_type() {
         // Returns a human-friendly text string that describes this crew's fire resource type (i.e. Short Haul Crew or Hotshot Crew)
-        switch($this->statusable_type) {
-            case "helicopter":
+        switch(strtolower($this->statusable_type)) {
+            case "shorthaulhelicopter":
                 return "Short Haul";
                 break;
             case "crew":
-                return "Hotshot";
+                return "Hotshots";
+                break;
+            case "rappelhelicopter":
+                return "Rappel";
+                break;
+            case "smokejumperairplane":
+                return "Smokejumpers";
                 break;
             default:
                 return "Unknown";

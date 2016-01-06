@@ -23,7 +23,7 @@
       <ul class="nav navbar-nav">
         <li<?php is_active('map',$a); ?>><a href="/">Map</a></li>
         <li<?php is_active('crews',$a); ?>><a href="/crews">Crews</a></li>
-        <li<?php is_active('helicopters',$a); ?>><a href="/helicopters">Helicopters</a></li>
+        <li<?php is_active('aircraft',$a); ?>><a href="/aircraft">Aircraft</a></li>
         <li<?php is_active('accounts',$a); ?>><a href="/accounts">Accounts</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">

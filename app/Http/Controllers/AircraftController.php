@@ -7,10 +7,10 @@ use Carbon\Carbon;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Helicopter;
+use App\Aircraft;
 
 
-class HelicopterController extends Controller
+class AircraftController extends Controller
 {
     public function __construct()
     {
@@ -29,10 +29,10 @@ class HelicopterController extends Controller
     public function index(Request $request)
     {
         //
-        $helicopters = Helicopter::orderBy('tailnumber','asc')->get();
+        $aircrafts = Aircraft::orderBy('tailnumber','asc')->get();
 
-        $request->session()->flash('active_menubutton','helicopters'); // Tell the menubar which button to highlight
-        return view('helicopters.index')->with('helicopters',$helicopters);
+        $request->session()->flash('active_menubutton','aircraft'); // Tell the menubar which button to highlight
+        return view('aircrafts.index')->with('aircrafts',$aircrafts);
     }
 
     /**
@@ -102,25 +102,25 @@ class HelicopterController extends Controller
     }
 
     public function releaseFromCrew(Request $request, $tailnumber) {
-        // Disassociate the specified helicopter with this Crew (set crew_id = null) if the current user has authorization
+        // Disassociate the specified aircraft with this Crew (set crew_id = null) if the current user has authorization
 
-        $heli = Helicopter::where('tailnumber',$tailnumber)->first();
+        $heli = Aircraft::where('tailnumber',$tailnumber)->first();
         //echo ("Heli:".$heli.".");
 
         if(empty($heli)) {
-            // Helicopter not found. Nothing to release. Consider this success.
+            // Aircraft not found. Nothing to release. Consider this success.
             return response()->json(['status' => 'success']);
         }
         else {
-            // Make sure the current user is authorized to release this helicopter
-            // Also make sure that this 'release' request was sent from the 'Edit Crew' form of the Crew that currently owns the helicopter
+            // Make sure the current user is authorized to release this aircraft
+            // Also make sure that this 'release' request was sent from the 'Edit Crew' form of the Crew that currently owns the aircraft
             $user = Auth::user();
             $requesting_crew = $request->input('sent-from-crew');
             $affected_crew = $heli->crew_id;
 
             if($user->isAdminForCrew($heli->crew_id) && ($requesting_crew == $affected_crew)) {
                 if($heli->release()) return response()->json(['status' => 'success']);
-                else abort(500); //Something prevented the helicopter from being released
+                else abort(500); //Something prevented the aircraft from being released
             }
             else {
                 // Unauthorized
@@ -131,42 +131,43 @@ class HelicopterController extends Controller
     }
 
     /**
-     * Show the most recent Status for this Helicopter
+     * Show the most recent Status for this Aircraft
      */
     public function showCurrentStatus($tailnumber) {
 
-        $helicopter = Helicopter::findOrFail($tailnumber);
+        $aircraft = Aircraft::findOrFail($tailnumber);
 
         // Make sure this user is authorized...
-        if(Auth::user()->cannot('actAsAdminForCrew', $helicopter->crew_id)) {
+        if(Auth::user()->cannot('actAsAdminForCrew', $aircraft->crew_id)) {
             // The current user does not have permission to perform admin functions for this crew
-            return redirect()->back()->withErrors("You're not authorized to access that helicopter !");
+            return redirect()->back()->withErrors("You're not authorized to access that aircraft !");
         }
         // Authorization complete - continue...
-        return "Showing most recent Status for Helicopter ".$tailnumber;
+        return "Showing most recent Status for Aircraft ".$tailnumber;
     }
 
     /**
-     * Display the Helicopter Status update form
+     * Display the Aircraft Status update form
      * Note: this form POSTS its response to the StatusController
      */
     public function newStatus(Request $request, $tailnumber) {
         
-        $helicopter = Helicopter::where('tailnumber','=', $tailnumber)->first();
-        if(is_null($helicopter)) return "Helicopter not found";
+        $aircraft = Aircraft::where('tailnumber','=', $tailnumber)->first();
+        if(is_null($aircraft)) return "Aircraft not found";
 
         // Make sure this user is authorized...
-        if(Auth::user()->cannot('actAsAdminForCrew', $helicopter->crew_id)) {
+        if(Auth::user()->cannot('actAsAdminForCrew', $aircraft->crew_id())) {
             // The current user does not have permission to perform admin functions for this crew
-            return redirect()->back()->withErrors("You're not authorized to access that helicopter!");
+            return redirect()->back()->withErrors("You're not authorized to access that aircraft!");
         }
         // Authorization complete - continue...
 
-        // Retrieve the other Helicopters that are owned by the same Crew (to build a navigation menu)
-        $crew_helicopters = Helicopter::where('crew_id',$helicopter->crew_id)->orderBy('tailnumber')->get();
+        // Retrieve the other Aircrafts that are owned by the same Crew (to build a navigation menu)
+        $crew = $aircraft->crew;
+        $crew_aircrafts = Aircraft::where('crew_id',$aircraft->crew_id())->orderBy('tailnumber')->get();
 
         // Retrieve the most recent status update to prepopulate the form (returns a 'new Status' if none exist)
-        $last_status = $helicopter->status();
+        $last_status = $aircraft->status();
 
         // Convert the lat and lon from decimal-degrees into decimal-minutes
         // MOVE THIS FUNCTIONALITY INTO A COORDINATES CLASS
@@ -191,14 +192,17 @@ class HelicopterController extends Controller
 
         // Display the status update form
         if(Auth::user()->isGlobalAdmin()) {
-            $request->session()->flash('active_menubutton','helicopters'); // Tell the menubar which button to highlight
+            $request->session()->flash('active_menubutton','aircraft'); // Tell the menubar which button to highlight
         }
         else {
             $request->session()->flash('active_menubutton','status'); // Tell the menubar which button to highlight
         }
-        return view('helicopters.new_status')->with("helicopter",$helicopter)->with("helicopters",$crew_helicopters)->with("status",$last_status);
+        // return view('aircrafts.new_status')->with("aircraft",$aircraft)->with("aircrafts",$crew_aircrafts)->with("status",$last_status)->with("crew",$crew);
+        $resource_type = strtolower($crew->statusable_type);
+        return view('status_forms.'.$resource_type)->with("aircraft",$aircraft)->with("aircrafts",$crew_aircrafts)->with("status",$last_status)->with("crew",$crew);
+        // return view('status_forms.shorthaulhelicopter')->with("aircraft",$aircraft)->with("aircrafts",$crew_aircrafts)->with("status",$last_status)->with("crew",$crew);
 
-        // return var_dump($helicopter);
+        // return var_dump($aircraft);
         // return var_dump($last_status);
     }
 }

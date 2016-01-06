@@ -34,11 +34,11 @@ if(env("APP_DEBUG")) {
 }
 
 // HELICOPTERS
-Route::get('/helicopters',							array('as' => 'helicopters_index', 				'uses' => 'HelicopterController@index'));
-Route::get('/helicopters/{tailnumber}/status',		array('as' => 'current_status_for_helicopter', 	'uses' => 'HelicopterController@showCurrentStatus'));
-Route::get('/helicopters/{tailnumber}/update',		array('as' => 'new_status_for_helicopter', 		'uses' => 'HelicopterController@newStatus'));
-Route::post('/helicopters/{tailnumber}/release', 	array('as' => 'release_helicopter', 			'uses' => 'HelicopterController@releaseFromCrew'));
-Route::post('/helicopters/{tailnumber}/destroy',  	array('as' => 'destroy_helicopter',   			'uses' => 'HelicopterController@destroy'));
+Route::get('/aircraft',							array('as' => 'aircraft_index', 				'uses' => 'AircraftController@index'));
+Route::get('/aircraft/{tailnumber}/status',		array('as' => 'current_status_for_aircraft', 	'uses' => 'AircraftController@showCurrentStatus'));
+Route::get('/aircraft/{tailnumber}/update',		array('as' => 'new_status_for_aircraft', 		'uses' => 'AircraftController@newStatus'));
+Route::post('/aircraft/{tailnumber}/release', 	array('as' => 'release_aircraft', 				'uses' => 'AircraftController@releaseFromCrew'));
+Route::post('/aircraft/{tailnumber}/destroy',  	array('as' => 'destroy_aircraft',   			'uses' => 'AircraftController@destroy'));
 
 
 // CREWS

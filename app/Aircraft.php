@@ -16,7 +16,8 @@ class Aircraft extends Model
      *
      * @var string
      */
-    protected $table = 'aircrafts'; // Force a unique plural form for the table name
+    // protected $table = 'aircrafts'; // Force a unique plural form for the table name
+    protected $table = 'helicopters';
     //protected $primaryKey = 'tailnumber'; // The primary key is NOT 'id' !!
 
     /**
@@ -77,7 +78,10 @@ class Aircraft extends Model
 
         $now = Carbon::now();
         $last_status = $this->status();
-        if($last_status->exists() != true) $freshness = "missing"; // No Status has ever been created for this Aircraft
+
+        if($last_status->exists != true) {
+            $freshness = "missing"; // No Status has ever been created for this Aircraft
+        }
         else {
             $last_update = $last_status->created_at;
             $age_hours = $now->diffInHours($last_update);  // The number of hours between NOW and the last update
