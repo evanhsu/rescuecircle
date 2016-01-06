@@ -13,43 +13,44 @@ function drawOneAircraftForm($index, $aircraft, $template = false) {
     if($template) $output .= " dynamic-form-template";
     $output .= "\">
         <div class=\"form-group\">
-            <label for=\"aircraft-tailnumber\" class=\"col-xs-12 col-sm-2 control-label\">Tailnumber</label>
-            <div class=\"form-inline col-xs-8 col-sm-6\">
-                <span><input type=\"text\" class=\"form-control aircraft-tailnumber\" name=\"crew[aircrafts][".$index."][tailnumber]\" value=\"".$aircraft->tailnumber."\" ";
+            <label for=\"aircraft-tailnumber\" class=\"control-label col-sm-2\">Tailnumber</label>
+            <div class=\"col-sm-4 col-md-3\">
+                <input type=\"text\" class=\"form-control aircraft-tailnumber\" name=\"crew[aircrafts][".$index."][tailnumber]\" value=\"".$aircraft->tailnumber."\" ";
 
     if(!$template) $output .= "readonly ";
 
-    $output .= "/></span>\n";
+    $output .= "/>
+            </div>\n";
     
     if(!$template) {
-        $output .= "<span><button class=\"btn btn-default release-aircraft-button\" data-aircraft-id=\"".$index."\" type=\"button\">Release</button></span>\n";
+        $output .= "<button class=\"btn btn-default release-aircraft-button\" data-aircraft-id=\"".$index."\" type=\"button\">Release</button>\n";
     }
      
-     $output .= "</div>
+     $output .= "
         </div>
 
         <div class=\"form-group\">
-            <label for=\"aircraft-model\" class=\"col-xs-12 col-sm-2 control-label\">Make/Model</label>
-            <div class=\"form-inline col-xs-8 col-sm-6\">
+            <label for=\"aircraft-model\" class=\"control-label col-sm-2\">Make/Model</label>
+            <div class=\"col-sm-4 col-md-3\">
                 <input type=\"text\" class=\"form-control aircraft-model\" name=\"crew[aircrafts][".$index."][model]\" value=\"".$aircraft->model."\" />
             </div>
         </div>\n";
 
-    $output .= " <div class=\"form-group\">
-                                <div class=\"col-sm-2\"></div>
-                                <div class=\"col-sm-6\">\n";
 
     if(!$template) {
-        $output .= "<a href=\"".route('new_status_for_aircraft',$aircraft->tailnumber)."\" class=\"btn btn-default\" role=\"button\">Go to the Status Page</a>\n";
+        $output .= "<div class=\"form-group\">
+                        <div class=\"col-sm-offset-2\">
+                            <a href=\"".route('new_status_for_aircraft',$aircraft->tailnumber)."\" class=\"btn btn-default\" role=\"button\">Go to the Status Page</a>
+                        </div>
+                    </div>\n";
         
     } else {
         $output .= "<div class=\"alert alert-warning\"><strong>Remember:</strong> this new aircraft won't show up on the map until you submit a Status Update!</div>";
     }
-    $output .= "                </div></div>\n";
 
     $output .= freshnessNotify($aircraft->freshness());
 
-    $output .= "</div>\n";
+    $output .= "</div></div>\n";
 
     echo $output;
 }
