@@ -65,7 +65,7 @@ class ArcServer {
 					." AND statusable_type='$status->statusable_type'";
 
 		// Choose which layer to query on the Feature Server (i.e. Aircrafts are on Layer 0, Crews are on Layer 1, etc.)
-		$layer = self::getLayerFor($status->statusable_type_plain);
+		$layer = self::getLayerFor($status->statusable_type_plain());
 
 		// Set all of the query string parameters - these will be appended to the URL in the API call
 		$params = array();

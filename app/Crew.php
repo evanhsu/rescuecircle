@@ -68,14 +68,24 @@ class Crew extends Model
     }
 
     public function statusable_type_plain() {
-        // This is a helper function that simply returns $this->statusable_type to emulate
-        // the functionality of the Status::statusable_type_plain() function.
-        return $this->statusable_type;
+        // Returns the name of the Class that this Crew's Status Updates belongs to, without any namespacing.
+        //   i.e. If this Crew's statuses belong to a Shorthaulhelicopter, then:
+        //           $this->statusable_type == "App\Shorthaulhelicopter"
+        //        and
+        //           $this->statusable_type_plain() == "shorthaulhelicopter"
+
+        if ($pos = strrpos($this->statusable_type, '\\')) {
+            return strtolower(substr($this->statusable_type, $pos + 1));
+        }
+        else {
+            return strtolower($this->statusable_type);
+        }
     }
 
     public function is_an_aircraft_crew() {
         // Check to see if this Crew's 'statusable_type' is a class that inherits from the Aircraft class.
-        $classname = "App\\".ucfirst($this->statusable_type);
+        // $classname = "App\\".ucfirst($this->statusable_type);
+        $classname = $this->statusable_type;
         $instance = new $classname;
         if($instance instanceof Aircraft) {
             $result = true;
@@ -87,6 +97,10 @@ class Crew extends Model
         return $result;
     }
 
+    public function is_not_an_aircraft_crew() {
+        return !$this->is_an_aircraft_crew();
+    }
+
     public function crew_id() {
         // This is simply an alias for crew->id to provide a consistent notation for querying the crew id for all resource types
         return $this->id;
@@ -94,7 +108,7 @@ class Crew extends Model
 
     public function resource_type() {
         // Returns a human-friendly text string that describes this crew's fire resource type (i.e. Short Haul Crew or Hotshot Crew)
-        switch(strtolower($this->statusable_type)) {
+        switch($this->statusable_type_plain()) {
             case "shorthaulhelicopter":
                 return "Short Haul";
                 break;

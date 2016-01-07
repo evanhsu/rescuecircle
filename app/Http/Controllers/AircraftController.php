@@ -151,9 +151,11 @@ class AircraftController extends Controller
      * Note: this form POSTS its response to the StatusController
      */
     public function newStatus(Request $request, $tailnumber) {
-        
+
+        // Determine the subclass for this Aircraft (Shorthaulhelicopter, Rappelhelicopter, Smokejumperairplane, etc)
         $aircraft = Aircraft::where('tailnumber','=', $tailnumber)->first();
         if(is_null($aircraft)) return "Aircraft not found";
+        $aircraft = $aircraft->subclass(); // Instantiate a child class (Rappelhelicopter, for example) NOT the parent "Aircraft" class
 
         // Make sure this user is authorized...
         if(Auth::user()->cannot('actAsAdminForCrew', $aircraft->crew_id())) {
@@ -164,7 +166,8 @@ class AircraftController extends Controller
 
         // Retrieve the other Aircrafts that are owned by the same Crew (to build a navigation menu)
         $crew = $aircraft->crew;
-        $crew_aircrafts = Aircraft::where('crew_id',$aircraft->crew_id())->orderBy('tailnumber')->get();
+        $aircraft_class = $aircraft->classname();
+        $crew_aircrafts = $aircraft_class::where('crew_id',$aircraft->crew_id())->orderBy('tailnumber')->get();
 
         // Retrieve the most recent status update to prepopulate the form (returns a 'new Status' if none exist)
         $last_status = $aircraft->status();
@@ -198,7 +201,7 @@ class AircraftController extends Controller
             $request->session()->flash('active_menubutton','status'); // Tell the menubar which button to highlight
         }
         // return view('aircrafts.new_status')->with("aircraft",$aircraft)->with("aircrafts",$crew_aircrafts)->with("status",$last_status)->with("crew",$crew);
-        $resource_type = strtolower($crew->statusable_type);
+        $resource_type = $crew->statusable_type_plain();
         return view('status_forms.'.$resource_type)->with("aircraft",$aircraft)->with("aircrafts",$crew_aircrafts)->with("status",$last_status)->with("crew",$crew);
         // return view('status_forms.shorthaulhelicopter')->with("aircraft",$aircraft)->with("aircrafts",$crew_aircrafts)->with("status",$last_status)->with("crew",$crew);
 

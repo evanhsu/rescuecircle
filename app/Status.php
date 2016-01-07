@@ -83,42 +83,27 @@ class Status extends Model
         //
         // The calling function could do something like this:
         //   routeParams = myStatus->redirectToNewStatus();
-        //   return redirect()->route('new_status_for_'.routePrams['class'], routePrams['id']);
+        //   return redirect()->route(routePrams['route_name'], routePrams['id']);
 
-        $route_name = "new_status_for_".$this->statusable_type_plain();
-        $parent = $this->statusable;  // The instance of the parent class that owns this Status
-
-        switch($this->statusable_type_plain()) {
-            case 'aircraft':
-                $route_id = $parent->tailnumber; // Aircrafts routes use the tailnumber rather than the ID
-                break;
-
-            default:
-                $route_id = $parent->id;
-                break;
+        $parent = $this->statusable;  // The instance of the parent class that owns this Status (Shorthaulhelicopter, Crew, etc)
+        if($parent->is_an_aircraft_crew()) {
+            $route_id = $parent->tailnumber; // Aircrafts routes use the tailnumber rather than the ID
+            $route_name = "new_status_for_aircraft";
+        }
+        else {
+            $route_id = $parent->id;
+            $route_name = "new_status_for_crew";
         }
 
         // return redirect()->route($route_name,$route_id);
-        return array(   'class' => $this->statusable_type_plain(),
-                        'id'    => $route_id );
+        return array(   'route_name'=> $route_name,
+                        'id'        => $route_id );
     }
 
     public function crewToUpdate() {
         // Returns the ID of the Crew that CURRENTLY owns the Aircraft/Crew from $this Status.
-        /*
-        switch($this->statusable_type_plain()) {
-            case "aircraft":
-                return $this->statusable->crew_id;
-                break;
-
-            case "crew":
-                return $this->statusable->id;
-                break;
-
-            default:
-                return null;
-                break;
-        } // End switch()*/
+        
+        $parent = $this->statusable
         
         return $this->crew_id;
     }

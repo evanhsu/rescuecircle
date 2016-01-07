@@ -216,7 +216,7 @@ Class AuthController extends Controller
                 // Make sure this user is authorized to access this Aircraft or Crew...
                 if(Auth::user()->can('actAsAdminForCrew', $last_status_from_user->crewToUpdate())) {
                     // This User is authorized to access the same resource that was updated last time
-                    return redirect()->route('new_status_for_'.$route_params['class'], $route_params['id']);
+                    return redirect()->route($route_params['route_name'], $route_params['id']);
                 }
                 else {
                     // This aircraft/crew has changed owndership and this user can no longer access it
@@ -226,12 +226,12 @@ Class AuthController extends Controller
             }
 
             // Step 3
-            elseif($user->crew->statusable_type == 'crew') {
+            elseif($user->crew->is_not_an_aircraft_crew()) {
                 return redirect()->route('new_status_for_crew', $user->crew_id);
             }
 
             // Step 4|5
-            elseif($user->crew->statusable_type == 'aircraft') { 
+            elseif($user->crew->is_an_aircraft_crew()) { 
                 // Look for the first Aircraft owned by this Crew
                 $aircraft = $user->crew->aircrafts()->orderBy('tailnumber')->first();
                 if(is_null($aircraft)) {

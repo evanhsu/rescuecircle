@@ -34,6 +34,10 @@ class Aircraft extends Model
      */
     protected $hidden = [];
 
+    public function classname() {
+        // Return the name of the class that $this is an instance of
+        return static::class;
+    }
 
     /**
      * Define relationships to other Eloquent models
@@ -59,9 +63,14 @@ class Aircraft extends Model
         // Get the MOST RECENT status for this Aircraft
         // If NONE are found, return a NEW, blank status to be filled in.
         $status = $this->statuses()->orderBy('created_at','desc')->first();
-
         if(is_null($status)) return new Status;
         else return $status;
+    }
+
+    public function subclass() {
+        // Return an instance of the requested aircraft's subclass
+        $classname = $this->crew->statusable_type;
+        return $classname::find($this->id);
     }
 
     public function crew_id() {
@@ -78,17 +87,16 @@ class Aircraft extends Model
 
         $now = Carbon::now();
         $last_status = $this->status();
-
-        if($last_status->exists != true) {
-            $freshness = "missing"; // No Status has ever been created for this Aircraft
-        }
-        else {
+        if($last_status->exists) {
             $last_update = $last_status->created_at;
             $age_hours = $now->diffInHours($last_update);  // The number of hours between NOW and the last update
             
             if($age_hours <= $max_fresh_age) $freshness = "fresh";
             elseif(($age_hours > $max_fresh_age) && ($age_hours < $expiration_age)) $freshness = "stale";
             else $freshness = "expired";
+        }
+        else {
+            $freshness = "missing"; // No Status has ever been created for this Aircraft
         }
 
         return $freshness;

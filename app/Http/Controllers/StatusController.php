@@ -80,6 +80,15 @@ class StatusController extends Controller
 
         // Determine whether this is a status update for an Aircraft or a Crew
         // then store the ID of the Crew that owns this object.
+        $classname = "App\\".$request->get('statusable_type');
+        $obj = $classname::find($request->get('statusable_id'));
+        if(!$obj) {
+            // The 'statusable_type' from the form is not one of the polymorphic 'statusable' classes.
+            // Add the 'morphMany()' function to the desired class to make it statusable.
+            return redirect()->back()->with('alert', array('message' => 'Status update failed! This status update is not linked to a statusable entity', 'type' => 'danger'));
+        }
+        $crew_id = $obj->crew_id();
+/*
         switch($request->get('statusable_type')) {
             case "aircraft":
                 $obj = Aircraft::findOrFail($request->get('statusable_id'));
@@ -96,7 +105,7 @@ class StatusController extends Controller
                 // Add the 'morphMany()' function to the desired class to make it statusable.
                 return redirect()->back()->with('alert', array('message' => 'Status update failed! This status update is not linked to a statusable entity', 'type' => 'danger'));
         }
-
+*/
         // Make sure current user is authorized
         if(Auth::user()->cannot('actAsAdminForCrew', $crew_id)) {
             // The current user does not have permission to perform admin functions for this crew
