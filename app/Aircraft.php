@@ -82,8 +82,8 @@ class Aircraft extends Model
         // Check the timestamp of the most recent update for this Aircraft.
         // Return 'fresh', 'stale', 'expired', or 'missing' depending on age thresholds.
 
-        $max_fresh_age = config('hours_until_updates_go_stale');
-        $expiration_age= config('days_until_updates_expire') * 24; // Converted to hours
+        $max_fresh_age = config('app.hours_until_updates_go_stale');
+        $expiration_age= config('app.days_until_updates_expire') * 24; // Converted to hours
 
         $now = Carbon::now();
         $last_status = $this->status();

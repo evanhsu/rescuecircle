@@ -86,7 +86,9 @@ class Status extends Model
         //   return redirect()->route(routePrams['route_name'], routePrams['id']);
 
         $parent = $this->statusable;  // The instance of the parent class that owns this Status (Shorthaulhelicopter, Crew, etc)
-        if($parent->is_an_aircraft_crew()) {
+        $is_an_aircraft_crew = ($parent instanceof Aircraft);
+
+        if($is_an_aircraft_crew) {
             $route_id = $parent->tailnumber; // Aircrafts routes use the tailnumber rather than the ID
             $route_name = "new_status_for_aircraft";
         }
@@ -102,10 +104,9 @@ class Status extends Model
 
     public function crewToUpdate() {
         // Returns the ID of the Crew that CURRENTLY owns the Aircraft/Crew from $this Status.
-        
-        $parent = $this->statusable
-        
-        return $this->crew_id;
+
+        $parent = $this->statusable;
+        return $parent->crew_id();
     }
 
     public function updatePopup() {

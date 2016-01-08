@@ -192,6 +192,7 @@ Class AuthController extends Controller
         // Determine what page the current user should land on after a successful login.
         // Return a RedirectResponse to that page.
         $user = Auth::user();
+        // var_dump($user);
 
         if($user->isGlobalAdmin()) {
             // If this user is an Admin, land on the list of all Crews (Crews@getIndex)
@@ -207,7 +208,7 @@ Class AuthController extends Controller
 
             // Step 1
             $last_status_from_user = $user->lastStatus();
-            //return var_dump($last_status_from_user);
+            //echo "<br /><br />\n\nLast Status: ".$last_status_from_user->id."\n\n<br /><br />\n\n";
 
             // Step 2
             if(!is_null($last_status_from_user)) {

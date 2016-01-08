@@ -128,7 +128,7 @@ class CrewController extends Controller
         }
 
         // Step 2
-        elseif($crew->statusable_type == 'crew') {
+        elseif($crew->is_not_an_aircraft_crew()) {
             return redirect()->route('new_status_for_crew', $id);
         }
 
