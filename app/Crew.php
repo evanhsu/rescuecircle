@@ -45,7 +45,15 @@ class Crew extends Model
      *
      */
     public function aircrafts() {
-        return $this->hasMany(Aircraft::class);
+        // return $this->hasMany(Aircraft::class);
+        // return $this->hasMany(Aircraft::class);
+        if($this->is_an_aircraft_crew()) {
+            $classname = $this->statusable_type;
+            return $this->hasMany($classname);
+        }
+        else {
+            return false;
+        }
     }
 
     public function users() {

@@ -49,16 +49,17 @@ function drawOneAircraftForm($index, $aircraft, $template = false) {
     }
 
     $output .= freshnessNotify($aircraft->freshness());
+    //$output .= "Aircraft: ".$aircraft->freshness();
 
-    $output .= "</div></div>\n";
+    $output .= "</div>\n";
 
     echo $output;
 }
 
 function freshnessNotify($freshness) {
     // Return a string that will draw a Bootstrap alert for an aging aircraft (no recent updates)
-    $hours_til_stale = config('hours_until_updates_go_stale');
-    $days_til_expired = config('days_until_updates_expire');
+    $hours_til_stale = config('app.hours_until_updates_go_stale');
+    $days_til_expired = config('app.days_until_updates_expire');
 
     switch($freshness) {
         case "fresh":
@@ -72,7 +73,7 @@ function freshnessNotify($freshness) {
             break;
         case "missing":
         default:
-            $output = "<div class=\"alert alert-danger\"><strong>No updates have been submitted!</strong><br />This aircraft does not appear on the map because no updates have been submitted yet.";
+            $output = "<div class=\"alert alert-danger\"><strong>No updates have been submitted!</strong><br />This aircraft does not appear on the map because no updates have been submitted yet.</div>";
             break;
     }
     return $output;
@@ -196,6 +197,7 @@ function freshnessNotify($freshness) {
                 <?php drawOneAircraftForm($i,$aircraft); ?>
             <?php $i++; ?>
             @endforeach
+
 
             <div id="dynamic-form-insert-placeholder" style="display:none;"></div>
 @endif

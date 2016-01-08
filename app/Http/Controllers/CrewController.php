@@ -124,7 +124,7 @@ class CrewController extends Controller
             && Auth::user()->can('actAsAdminForCrew', $last_status_from_user->crewToUpdate())) {
 
             $route_params = $last_status_from_user->redirectToNewStatus();
-            return redirect()->route('new_status_for_'.$route_params['class'], $route_params['id']);
+            return redirect()->route($route_params['route_name'], $route_params['id']);
         }
 
         // Step 2
