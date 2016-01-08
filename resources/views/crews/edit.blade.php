@@ -43,13 +43,11 @@ function drawOneAircraftForm($index, $aircraft, $template = false) {
                             <a href=\"".route('new_status_for_aircraft',$aircraft->tailnumber)."\" class=\"btn btn-default\" role=\"button\">Go to the Status Page</a>
                         </div>
                     </div>\n";
-        
-    } else {
+        $output .= freshnessNotify($aircraft->freshness());
+    }
+    else {
         $output .= "<div class=\"alert alert-warning\"><strong>Remember:</strong> this new aircraft won't show up on the map until you submit a Status Update!</div>";
     }
-
-    $output .= freshnessNotify($aircraft->freshness());
-    //$output .= "Aircraft: ".$aircraft->freshness();
 
     $output .= "</div>\n";
 

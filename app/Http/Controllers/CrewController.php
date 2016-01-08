@@ -75,11 +75,24 @@ class CrewController extends Controller
 
         // Convert the lat and lon from decimal-degrees into decimal-minutes
         // MOVE THIS FUNCTIONALITY INTO A COORDINATES CLASS
-        $last_status->latitude_deg = empty($last_status->latitude) ? "" : floor($last_status->latitude);
-        $last_status->latitude_min = empty($last_status->latitude) ? "" : ($last_status->latitude - $last_status->latitude_deg) * 60.0;
+        if(!empty($last_status->latitude)) {
+            $sign = $last_status->latitude >= 0 ? 1 : -1; // Keep track of whether the latitude is positive or negative
+            $last_status->latitude_deg = floor(abs($last_status->latitude)) * $sign;
+            $last_status->latitude_min = round((abs($last_status->latitude) - $last_status->latitude_deg) * 60.0, 4);
 
-        $last_status->longitude_deg = empty($last_status->longitude) ? "" : floor($last_status->longitude);
-        $last_status->longitude_min = empty($last_status->longitude) ? "" : ($last_status->longitude - $last_status->longitude_deg) * 60.0;
+        } else {
+            $last_status->latitude_deg = "";
+            $last_status->latitude_min = "";
+        }
+
+        if(!empty($last_status->longitude)) {
+            $sign = $last_status->longitude >= 0 ? 1 : -1; // Keep track of whether the longitude is positive or negative
+            $last_status->longitude_deg = floor(abs($last_status->longitude)) * $sign * -1; // Convert to 'West-positive' reference
+            $last_status->longitude_min = round((abs($last_status->longitude) - $last_status->longitude_deg) * 60.0, 4);
+        } else {
+            $last_status->longitude_deg = "";
+            $last_status->longitude_min = "";
+        }
 
         // Authorization complete - continue...
         // Display the status update form

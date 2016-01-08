@@ -35,7 +35,7 @@
 
 <form action="{{ route('create_status') }}" method="POST" class="form-horizontal">
     {{ csrf_field() }}
-    <input type="hidden" name="statusable_type" value="crew" />
+    <input type="hidden" name="statusable_type" value="{{ $crew->statusable_type }}" />
     <input type="hidden" name="statusable_id" value="{{ $crew->id }}" />
     <input type="hidden" name="statusable_name" value="{{ $crew->name }}" />
     

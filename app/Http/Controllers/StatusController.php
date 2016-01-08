@@ -80,7 +80,7 @@ class StatusController extends Controller
 
         // Determine whether this is a status update for an Aircraft or a Crew
         // then store the ID of the Crew that owns this object.
-        $classname = "App\\".$request->get('statusable_type');
+        $classname = $request->get('statusable_type');
         $obj = $classname::find($request->get('statusable_id'));
         if(!$obj) {
             // The 'statusable_type' from the form is not one of the polymorphic 'statusable' classes.
@@ -88,24 +88,7 @@ class StatusController extends Controller
             return redirect()->back()->with('alert', array('message' => 'Status update failed! This status update is not linked to a statusable entity', 'type' => 'danger'));
         }
         $crew_id = $obj->crew_id();
-/*
-        switch($request->get('statusable_type')) {
-            case "aircraft":
-                $obj = Aircraft::findOrFail($request->get('statusable_id'));
-                $crew_id = $obj->crew_id;
-                break;
 
-            case "crew":
-                $obj = Crew::findOrFail($request->get('statusable_id'));
-                $crew_id = $obj->id;
-                break;
-
-            default:
-                // The 'statusable_type' from the form is not one of the polymorphic 'statusable' classes.
-                // Add the 'morphMany()' function to the desired class to make it statusable.
-                return redirect()->back()->with('alert', array('message' => 'Status update failed! This status update is not linked to a statusable entity', 'type' => 'danger'));
-        }
-*/
         // Make sure current user is authorized
         if(Auth::user()->cannot('actAsAdminForCrew', $crew_id)) {
             // The current user does not have permission to perform admin functions for this crew
@@ -137,9 +120,9 @@ class StatusController extends Controller
         $status->latitude = $latitude_dd;
         $status->longitude = $longitude_dd;
 
-        // Change the 'statusable_type' variable to a fully-namespaced class name.
-        // i.e. Change 'aircraft' to 'App\Aircraft'. This is required for the Status class to be able to retrieve the correct Aircraft (or Crew).
-        $status->statusable_type = "App\\".ucwords($status->statusable_type);
+        // Change the 'statusable_type' variable to a fully-namespaced class name (the html form only submits the class name, but not the namespace)
+        // i.e. Change 'Shorthaulhelicopter' to 'App\Shorthaulhelicopter'. This is required for the Status class to be able to retrieve the correct Aircraft (or Crew).
+        //$status->statusable_type = "App\\".ucwords($status->statusable_type);
 
         // Build the HTML popup that will be displayed when this feature is clicked
         $status->updatePopup();

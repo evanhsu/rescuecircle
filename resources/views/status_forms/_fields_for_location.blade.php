@@ -15,7 +15,7 @@
     </span>
 </div>
 <br />
-<div class="form-static-control col-xs-12 col-sm-2 col-md-3">Longitude</div>
+<div class="form-static-control col-xs-12 col-sm-2 col-md-3">Longitude!</div>
 <div class="form-group">
     <label for="longitude_deg" class="control-label sr-only">Degrees of Longitude</label>
     <span class="input-group" style="width:120px;">
