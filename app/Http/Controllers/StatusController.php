@@ -125,7 +125,7 @@ class StatusController extends Controller
         //$status->statusable_type = "App\\".ucwords($status->statusable_type);
 
         // Build the HTML popup that will be displayed when this feature is clicked
-        $status->updatePopup();
+        $status->popupinfo = $this->generatePopup($status);
 
         // Attempt to save
         if($status->save()) {
@@ -154,6 +154,17 @@ class StatusController extends Controller
             }
         }
         return redirect()->back()->with('alert', array('message' => 'Status update failed!', 'type' => 'danger'));
+    }
+
+
+    private function generatePopup($status) {
+        // Constructs the HTML that will be displayed when this Update Feature is clicked on the map view
+        // The HTML string must be stored in this object's 'popupinfo' property, which corresponds directly with a database field
+        // that is used by the ArcGIS server to generate the popup for each Feature.
+        //
+        // All properties must be defined before calling this method.
+
+        return view('map_popups.'.$status->statusable_type_plain())->with("status",$status);
     }
 
     /**

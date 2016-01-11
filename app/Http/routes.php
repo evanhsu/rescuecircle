@@ -33,7 +33,7 @@ if(env("APP_DEBUG")) {
 	Route::get('/proxyverify', 		array('as' => 'proxy', 				'uses' => 'ProxyController@proxyVerify')); // Test that the environment will support the ESRI proxy script
 }
 
-// HELICOPTERS
+// AIRCRAFT
 Route::get('/aircraft',							array('as' => 'aircraft_index', 				'uses' => 'AircraftController@index'));
 Route::get('/aircraft/{tailnumber}/status',		array('as' => 'current_status_for_aircraft', 	'uses' => 'AircraftController@showCurrentStatus'));
 Route::get('/aircraft/{tailnumber}/update',		array('as' => 'new_status_for_aircraft', 		'uses' => 'AircraftController@newStatus'));
@@ -42,20 +42,18 @@ Route::post('/aircraft/{tailnumber}/destroy',  	array('as' => 'destroy_aircraft'
 
 
 // CREWS
-Route::get('/crews',                	array('as' => 'crews_index',    		'uses' => 'CrewController@index'));
-Route::get('/crews/new',            	array('as' => 'new_crew',       		'uses' => 'CrewController@create'));
-Route::post('/crews/new',           	array('as' => 'store_crew',     		'uses' => 'CrewController@store'));
-Route::get('/crews/{id}',       		array('as' => 'crew',       			'uses' => 'CrewController@show'));
-Route::post('/crews/{id}',				array('as' => 'update_crew',			'uses' => 'CrewController@update'));
-Route::get('/crews/{id}/status',       	array('as' => 'current_status_for_crew','uses' => 'CrewController@showCurrentStatus'));
-Route::get('/crews/{id}/update',       	array('as' => 'new_status_for_crew',    'uses' => 'CrewController@newStatus'));
-Route::get('/crews/{id}/post',       	array('as' => 'status_form_selector_for_crew',    'uses' => 'CrewController@redirectToStatusUpdate'));
-
-Route::get('/crews/{id}/identity',  	array('as' => 'edit_crew',  			'uses' => 'CrewController@edit'));
-
-Route::get('/crews/{id}/accounts',  	array('as' => 'users_for_crew',			'uses' => 'CrewController@accounts'));
-Route::get( '/crews/{id}/accounts/new', array('as' => 'new_user_for_crew',  	'uses' => 'Auth\AuthController@getRegister'));
-Route::post('/crews/{id}/destroy',  	array('as' => 'destroy_crew',   		'uses' => 'CrewController@destroy'));
+Route::get('/crews',                	array('as' => 'crews_index',    				'uses' => 'CrewController@index'));
+Route::get('/crews/new',            	array('as' => 'new_crew',       				'uses' => 'CrewController@create'));
+Route::post('/crews/new',           	array('as' => 'store_crew',     				'uses' => 'CrewController@store'));
+Route::get('/crews/{id}',       		array('as' => 'crew',       					'uses' => 'CrewController@show'));
+Route::post('/crews/{id}',				array('as' => 'update_crew',					'uses' => 'CrewController@update'));
+Route::get('/crews/{id}/status',       	array('as' => 'current_status_for_crew',		'uses' => 'CrewController@showCurrentStatus'));
+Route::get('/crews/{id}/update',       	array('as' => 'new_status_for_crew',    		'uses' => 'CrewController@newStatus'));
+Route::get('/crews/{id}/post',       	array('as' => 'status_form_selector_for_crew',  'uses' => 'CrewController@redirectToStatusUpdate'));
+Route::get('/crews/{id}/identity',  	array('as' => 'edit_crew',  					'uses' => 'CrewController@edit'));
+Route::get('/crews/{id}/accounts',  	array('as' => 'users_for_crew',					'uses' => 'CrewController@accounts'));
+Route::get( '/crews/{id}/accounts/new', array('as' => 'new_user_for_crew',  			'uses' => 'Auth\AuthController@getRegister'));
+Route::post('/crews/{id}/destroy',  	array('as' => 'destroy_crew',   				'uses' => 'CrewController@destroy'));
 
 
 // ACCOUNTS

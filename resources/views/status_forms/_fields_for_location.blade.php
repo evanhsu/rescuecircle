@@ -33,6 +33,6 @@
 <div class="form-group ">
     <span class="input-group" style="width:128px;">&nbsp;</span>
     <span>
-        <a href="#" id="geolocate_button">Use current location</a>
+        <a href="#" id="geolocate_button"><span class="glyphicon glyphicon-map-marker"></span> Use current location</a>
     </span>
 </div>

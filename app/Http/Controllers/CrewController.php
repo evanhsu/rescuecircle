@@ -102,7 +102,7 @@ class CrewController extends Controller
         else {
             $request->session()->flash('active_menubutton','status'); // Tell the menubar which button to highlight
         }
-        return view('status_forms/hotshotcrew')->with('crew',$crew)->with('status',$last_status);
+        return view('status_forms/crew')->with('crew',$crew)->with('status',$last_status);
     }
 
     /**
