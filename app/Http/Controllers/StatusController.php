@@ -162,7 +162,10 @@ class StatusController extends Controller
         // The HTML string must be stored in this object's 'popupinfo' property, which corresponds directly with a database field
         // that is used by the ArcGIS server to generate the popup for each Feature.
         //
-        // All properties must be defined before calling this method.
+        // This function relies on a Blade view template existing in the /resources/views/map_popups/ folder for each Class that
+        // can have a status (e.g. Shorthaulhelicopter.blade.php, etc)
+        //
+        // All properties of the Status object must be defined before calling this method.
 
         return view('map_popups.'.$status->statusable_type_plain())->with("status",$status);
     }

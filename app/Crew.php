@@ -142,8 +142,8 @@ class Crew extends Model
         // NOTE: if this function is called on a Crew that has Helicopters, the freshness verb will
         //       refer to the length of time that has passed since ANY of this Crew's helicopters were updated.
 
-        $max_fresh_age = config('hours_until_updates_go_stale');
-        $expiration_age= config('days_until_updates_expire') * 24; // Converted to hours
+        $max_fresh_age = config('app.hours_until_updates_go_stale');
+        $expiration_age= config('app.days_until_updates_expire') * 24; // Converted to hours
 
         $now = Carbon::now();
         $last_status = $this->status();
