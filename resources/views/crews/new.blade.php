@@ -33,7 +33,7 @@
                 <label for="statusable_type" class="col-sm-3 control-label">Crew Type</label>
                 <div class="col-sm-6">
                     <select name="statusable_type" id="statusable_type" class="form-control">
-                        <option value="Hotshotcrew">Hotshots</option>
+                        <option value="Crew">Hotshots</option>
                         <option value="Rappelhelicopter">Rappel</option>
                         <option value="Shorthaulhelicopter">Short Haul</option>
                         <option value="Smokejumperairplane">Smokejumpers</option>

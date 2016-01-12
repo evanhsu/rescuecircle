@@ -239,6 +239,8 @@ class CrewController extends Controller
 
         // Form is valid, continue...
         $crew = new Crew(Input::all());
+        $crew->statusable_type = "App\\".ucfirst($request->input('statusable_type')); // Convert "crew" to "App\Crew", for example
+
         if($crew->save()) {
             return redirect()->route('crews_index');
         }
@@ -375,11 +377,14 @@ class CrewController extends Controller
         $crew = Crew::find($id);
         $crew_name = $crew->name;
 
-        // Release all Aircrafts from this crew (delete entries from the CrewsAircrafts table)
-        foreach($crew->aircrafts as $aircraft) {
-            $aircraft->release();
+        // Release all Aircrafts from this crew (null the crew_id field in the aircrafts table)
+        if($crew->is_an_aircraft_crew()) {
+            $aircrafts = $crew->aircrafts;
+            foreach($aircrafts as $aircraft) {
+                $aircraft->release();
+            }
         }
-
+        
         // Delete all Users belonging to this crew
         foreach($crew->users as $user) {
             $user->delete();

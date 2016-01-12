@@ -1,7 +1,7 @@
 @extends('../layouts.status_update_layout')
 
 @section('form')
-<h1>Short Haul Aircraft Status Update</h1>
+<h1>Smokejumper Aircraft Status Update</h1>
 
 <nav>
     <ul class="nav nav-tabs" role="tablist">
@@ -52,19 +52,19 @@
     <div class="col-xs-12">
         <h2>Staffing</h2>
         <div class="form-group">
-            <label for="staffing_value1" class="col-xs-4 col-sm-2 control-label">Short-Haulers</label>
+            <label for="staffing_value1" class="col-xs-4 col-sm-2 control-label">Rounds</label>
             <div class="col-xs-4 col-sm-2 col-md-1">
                 <input type="text" name="staffing_value1" id="staffing_value1" class="form-control" value="{{ $status->staffing_value1 }}">
             </div>
         </div>
         <div class="form-group">
-            <label for="staffing_value2" class="col-xs-4 col-sm-2 control-label">EMTs</label>
+            <label for="staffing_value2" class="col-xs-4 col-sm-2 control-label">Squares</label>
             <div class="col-xs-4 col-sm-2 col-md-1">
                 <input type="text" name="staffing_value2" id="staffing_value2" class="form-control" value="{{ $status->staffing_value2 }}">
             </div>
         </div>
         <div class="form-group">
-            <label for="manager_name" class="col-xs-4 col-sm-2 control-label">Manager</label>
+            <label for="manager_name" class="col-xs-4 col-sm-2 control-label">Spotter</label>
             <div class="col-xs-12 col-sm-4 col-md-3">
                 <input type="text" name="manager_name" id="manager_name" class="form-control" value="{{ $status->manager_name }}">
             </div>

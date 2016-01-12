@@ -1,7 +1,7 @@
 @extends('../layouts.status_update_layout')
 
 @section('form')
-<h1>Short Haul Aircraft Status Update</h1>
+<h1>Rappel Aircraft Status Update</h1>
 
 <nav>
     <ul class="nav nav-tabs" role="tablist">
@@ -52,13 +52,13 @@
     <div class="col-xs-12">
         <h2>Staffing</h2>
         <div class="form-group">
-            <label for="staffing_value1" class="col-xs-4 col-sm-2 control-label">Short-Haulers</label>
+            <label for="staffing_value1" class="col-xs-4 col-sm-2 control-label">Rappellers</label>
             <div class="col-xs-4 col-sm-2 col-md-1">
                 <input type="text" name="staffing_value1" id="staffing_value1" class="form-control" value="{{ $status->staffing_value1 }}">
             </div>
         </div>
         <div class="form-group">
-            <label for="staffing_value2" class="col-xs-4 col-sm-2 control-label">EMTs</label>
+            <label for="staffing_value2" class="col-xs-4 col-sm-2 control-label">HRAP Surplus</label>
             <div class="col-xs-4 col-sm-2 col-md-1">
                 <input type="text" name="staffing_value2" id="staffing_value2" class="form-control" value="{{ $status->staffing_value2 }}">
             </div>

@@ -34,7 +34,7 @@
 					<td><a href="{{ route('edit_crew', array('id' => $crew->id)) }}">{{ $crew->name }}</td>
 					<td>{{ $crew->resource_type() }}</td>
 					<td>
-						@if(strtolower($crew->statusable_type) == "crew")
+						@if(strtolower($crew->statusable_type_plain()) == "crew")
 							<a href="{{ route('new_status_for_crew',$crew->id) }}" class="btn btn-primary" role="button">!<a/>
 						@endif
 					</td>

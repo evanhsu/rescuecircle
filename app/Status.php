@@ -100,7 +100,7 @@ class Status extends Model
         // Returns the ID of the Crew that CURRENTLY owns the Aircraft/Crew from $this Status.
 
         $parent = $this->statusable;
-        return $parent->crew_id();
+        return $parent->get_crew_id();
     }
 
     

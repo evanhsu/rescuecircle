@@ -94,6 +94,7 @@ class Crew extends Model
         // Check to see if this Crew's 'statusable_type' is a class that inherits from the Aircraft class.
         // $classname = "App\\".ucfirst($this->statusable_type);
         $classname = $this->statusable_type;
+        
         $instance = new $classname;
         if($instance instanceof Aircraft) {
             $result = true;
@@ -102,6 +103,7 @@ class Crew extends Model
             $result = false;
         }
         unset($instance);
+        
         return $result;
     }
 
@@ -109,7 +111,7 @@ class Crew extends Model
         return !$this->is_an_aircraft_crew();
     }
 
-    public function crew_id() {
+    public function get_crew_id() {
         // This is simply an alias for crew->id to provide a consistent notation for querying the crew id for all resource types
         return $this->id;
     }

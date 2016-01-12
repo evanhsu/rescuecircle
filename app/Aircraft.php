@@ -73,7 +73,7 @@ class Aircraft extends Model
         return $classname::find($this->id);
     }
 
-    public function crew_id() {
+    public function get_crew_id() {
         // This is simply an alias for this->crew->id to provide a consistent notation for querying the crew id for all resource types
         return $this->crew_id;
     }

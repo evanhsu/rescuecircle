@@ -87,7 +87,7 @@ class StatusController extends Controller
             // Add the 'morphMany()' function to the desired class to make it statusable.
             return redirect()->back()->with('alert', array('message' => 'Status update failed! This status update is not linked to a statusable entity', 'type' => 'danger'));
         }
-        $crew_id = $obj->crew_id();
+        $crew_id = $obj->get_crew_id();
 
         // Make sure current user is authorized
         if(Auth::user()->cannot('actAsAdminForCrew', $crew_id)) {

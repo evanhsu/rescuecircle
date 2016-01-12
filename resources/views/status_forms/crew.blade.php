@@ -1,7 +1,7 @@
 @extends('../layouts.status_update_layout')
 
 @section('form')
-<h1>Crew Status Update</h1>
+<h1>Hotshot Status Update</h1>
 <?php
     $freshness = $crew->freshness();
     switch($freshness) {

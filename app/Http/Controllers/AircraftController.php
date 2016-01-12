@@ -158,7 +158,7 @@ class AircraftController extends Controller
         $aircraft = $aircraft->subclass(); // Instantiate a child class (Rappelhelicopter, for example) NOT the parent "Aircraft" class
 
         // Make sure this user is authorized...
-        if(Auth::user()->cannot('actAsAdminForCrew', $aircraft->crew_id())) {
+        if(Auth::user()->cannot('actAsAdminForCrew', $aircraft->crew_id)) {
             // The current user does not have permission to perform admin functions for this crew
             return redirect()->back()->withErrors("You're not authorized to access that aircraft!");
         }
@@ -167,7 +167,7 @@ class AircraftController extends Controller
         // Retrieve the other Aircrafts that are owned by the same Crew (to build a navigation menu)
         $crew = $aircraft->crew;
         $aircraft_class = $aircraft->classname();
-        $crew_aircrafts = $aircraft_class::where('crew_id',$aircraft->crew_id())->orderBy('tailnumber')->get();
+        $crew_aircrafts = $aircraft_class::where('crew_id',$aircraft->crew_id)->orderBy('tailnumber')->get();
 
         // Retrieve the most recent status update to prepopulate the form (returns a 'new Status' if none exist)
         $last_status = $aircraft->status();
