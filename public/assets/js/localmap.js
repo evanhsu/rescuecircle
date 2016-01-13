@@ -56,7 +56,7 @@ require([   "esri/map",
     }, domConstruct.create("div"));
     popup.resize(450,200);
 
-    var infoTemplate = new InfoTemplate("${updated_at}","${popupcontent}");
+    var infoTemplate = new InfoTemplate("${popuptitle}","${popupcontent}");
     
     // Grab the basemap, set the initial map view, and load the map into the specified DOM element ("mapDiv")
     map = new Map(mapDiv, {
@@ -107,7 +107,9 @@ require([   "esri/map",
                 heli = new Helicopter(fireResources[i]);
 
                 gl1.add(heli.mapGraphic());              // Add a helicopter icon to the appropriate GraphicsLayer
-                gl2.add(heli.mapResponseRingGraphic());  // Add a circle to a different GraphicsLayer to represent the response range for this helicopter
+                if(heli.showResponseRing()) {
+                    gl2.add(heli.mapResponseRingGraphic());  // Add a circle to a different GraphicsLayer to represent the response range for this helicopter
+                }
             }
             
 /*

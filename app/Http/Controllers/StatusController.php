@@ -109,6 +109,9 @@ class StatusController extends Controller
         // Form is valid, continue...
         $status = new Status(Input::all());
 
+        // Add a period to the LabelText field - this is a a workaround for the ArcGIS server to be able to render a buffer around the shorthaulhelicopter features
+        $status->LabelText = ".";
+
         // Insert the identity of the User who created this Status update (the CURRENT user):
         $status->created_by_name = Auth::user()->fullname();
         $status->created_by_id = Auth::user()->id;

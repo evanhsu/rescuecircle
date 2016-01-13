@@ -14,6 +14,7 @@
 </nav>
 <form action="{{ route('create_status') }}" method="POST" class="form-horizontal">
     @include("status_forms._aircraft_form_headers")
+    <input type="hidden" name="Distance" value="100" />
     
 
     <div class="col-xs-12 col-md-6 form-inline">

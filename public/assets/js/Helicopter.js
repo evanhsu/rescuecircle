@@ -25,13 +25,10 @@ define([	"dojo/_base/declare",
 
 				this.freshTime			= 18 * 60 * 60 * 1000;	// Milliseconds until this helicopter's position info is considered stale
 				
-				this.activeIconPath		= '/assets/images/heli-icon-active.png';
-				this.inactiveIconPath	= '/assets/images/heli-icon-inactive.png';
 				this.iconSize = 75;		// Pixel dimensions of the helicopter icon on the map
+				this.iconPath = '/assets/images/symbols/';	// The folder that contains all of the map-symbol image files
 
-				this.responseRingVisible = true;	// Display a circle on the map to represent this helicopter's response range
-				this.responseRingRadius  = 100;		// NAUTICAL MILES  -  Default: 100
-
+				this.responseRingRadius  = this.params.Distance || 100;	// NAUTICAL MILES (Default 100)
 		    },
 
 			isFresh: function() {
@@ -46,6 +43,13 @@ define([	"dojo/_base/declare",
 				}
 			},
 
+			showResponseRing: function() {
+				// Return TRUE or FALSE, depending on whether a ring should be drawn around this feature on the map to denote its response radius.
+				var type = this.params.statusable_type.replace("App\\","").toLowerCase();
+				if(type == "shorthaulhelicopter") return true;
+				else return false;
+			},
+
 			mapPoint: function() {
 				// Returns an ArcGIS POINT object (requires "esri/geometry/Point" module).
 				return new esri.geometry.Point(Number(this.longitude),Number(this.latitude));
@@ -53,17 +57,13 @@ define([	"dojo/_base/declare",
 
 			mapMarker: function() {
 				// Returns an ArcGIS PICTUREMARKERSYMBOL object (requires "esri/symbols/PictureMarkerSymbol" module).
+				var type = this.params.statusable_type.replace("App\\","").toLowerCase();
+				var freshness = this.isFresh() ? "fresh" : "stale";
+				var filename = this.iconPath + type + '-' + freshness + '.png';
 
 				try {
-					var that = this;
 					return new esri.symbol.PictureMarkerSymbol(
-						(function() {
-							if(that.isFresh()) {
-								return that.activeIconPath;
-							} else {
-								return that.inactiveIconPath;
-							}
-						})(),
+						filename,
 						this.iconSize,
 						this.iconSize);
 
@@ -78,14 +78,14 @@ define([	"dojo/_base/declare",
 
 				return {	popuptitle: 	prefix+this.params.statusable_name,
 							popupcontent:	this.params.popupinfo,
-							updated_at: 	Date.now() - Date.parse(this.iso_date) + "::" + this.freshTime
+							updated_at: 	this.iso_date
 						};
 			},
 
 			mapGraphic: function() {
 				// Returns an ArcGIS GRAPHIC object (requires "esri/graphic" module) that can be placed onto a GraphicsLayer.
 				// The GRAPHIC object combines an ArcGIS POINT with a PICTUREMARKERSYMBOL to produce an image with a location.
-				// 
+				// The 3rd parameter sets the content that is used to construct a popup when this Graphic is clicked on the map.
 				// 
 				// Example:
 				// 	var myHelicopter = new Helicopter;
@@ -124,9 +124,10 @@ define([	"dojo/_base/declare",
 			    var responseRingParams = {	radius: this.responseRingRadius,
 			                                radiusUnit: esri.Units.NAUTICAL_MILES,
 			                                numberOfPoints: 120,
-			                                geodesic: true };
+			                                geodesic: false };
 
 			    var c = new esri.geometry.Circle(this.mapPoint(), responseRingParams);
+			    console.error(this.responseRingRadius);
 
 			    return new esri.Graphic(c, responseRingSymbol);
 			}
