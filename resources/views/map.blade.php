@@ -41,5 +41,6 @@
 @section('scripts-postload')
     @parent
     <script src="http://js.arcgis.com/3.14/"></script>  <?php /* ArcGIS API - must load before other classes */?>
-    <script src="assets/js/arcmap.js"></script>         <?php /* Render the map and all layers - waits for the DOM to load so dependencies will always load first */?>
+    <?php /* <script src="assets/js/arcmap.js"></script> */ ?>
+    <script src="assets/js/localmap.js"></script>         <?php /* Render the map and all layers - waits for the DOM to load so dependencies will always load first */?>
 @endsection

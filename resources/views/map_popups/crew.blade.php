@@ -7,16 +7,15 @@
 // $status is a Status object that must be passed to this view by the controller.
 ?>
 <table class="popup-table">
-    <tr>";
+    <tr>
         <td class="logo-cell" aria-label="Logo" title="Crew Logo">
-            <img src="logos/crew_2_logo.jpg"/>
+            <img src="{{ $crew->logo_filename }}"/>
         </td>
 
         <td aria-label="Crew Info" title="Current crew boss & crew info">
-            <div class="popup-col-header"><span class="glyphicon glyphicon-plane"></span> CRWB</div>
+            <div class="popup-col-header"><span class="glyphicon glyphicon-user"></span> CRWB</div>
             {{ $status->manager_name }}<br />
-            {{ $status->manager_phone }}<br >
-            {{ $status->statusable_name }}
+            {{ $status->manager_phone }}
         </td>
 
         <td aria-label="Current Staffing" title="Current staffing levels">
@@ -24,9 +23,9 @@
             <table class="staffing_table">
                 <tr><td>Crew size:</td><td>{{ $status->staffing_value1 }}</td></tr>
                 @if($status->comments2)
-                <tr><td>Available</td></tr>
+                <tr><td>Available: Yes</td></tr>
                 @else
-                <tr><td>Unavailable</td></tr>
+                <tr><td>Available: No</td></tr>
                 @endif
             </table>
         </td>
@@ -41,6 +40,6 @@
 
     </tr>
     <tr>
-        <td class="timestamp-cell" colspan="4">{{ $status->created_at }}</td>
+        <td class="timestamp-cell" colspan="4">Updated: {{ $status->created_at }}</td>
     </tr>
 </table>

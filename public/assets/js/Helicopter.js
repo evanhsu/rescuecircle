@@ -18,15 +18,12 @@ define([	"dojo/_base/declare",
     		constructor: function(params) {
         		this.params = params || {};
 
-        		this.tailnumber	= this.params.tailnumber;
+        		this.iso_date 	= this.params.updated_at.replace(/-/g,"/") + " GMT"; // Convert date string from YYYY-mm-dd HH:mm:ss to YYYY/mm/dd HH:mm:ss
+
 		        this.latitude 	= this.params.latitude;
 		        this.longitude 	= this.params.longitude;
 
-		        this.staffing_emts		= this.params.staffing_emts;
-		        this.staffing_shorthaul	= this.params.staffing_shorthaul;
-
-				this.freshTime			= 24 * 60 * 60;	// Seconds until this helicopter's position info is considered stale
-				this.fresh = true;
+				this.freshTime			= 18 * 60 * 60 * 1000;	// Milliseconds until this helicopter's position info is considered stale
 				
 				this.activeIconPath		= '/assets/images/heli-icon-active.png';
 				this.inactiveIconPath	= '/assets/images/heli-icon-inactive.png';
@@ -40,10 +37,13 @@ define([	"dojo/_base/declare",
 			isFresh: function() {
 				// Returns TRUE | FALSE
 				// 
-				// If the database entry for this helicopter's location has been updated within the past 24hr, return TRUE.
-
-				// if(time.now - position.updated_at < this.freshtime) return true;       else false;
-				return this.fresh;
+				// If the database entry for this helicopter's location has been updated within the past 18hr, return TRUE.
+				var age = Date.now() - Date.parse(this.iso_date);
+				if(age < this.freshTime) {
+					return true;
+				} else {
+					return false;
+				}
 			},
 
 			mapPoint: function() {
@@ -72,6 +72,16 @@ define([	"dojo/_base/declare",
 				}
 			},
 
+			getAttributes: function() {
+				var prefix = "";
+				if(this.params.statusable_type.indexOf("helicopter") >= 0 ) prefix = "Helicopter ";
+
+				return {	popuptitle: 	prefix+this.params.statusable_name,
+							popupcontent:	this.params.popupinfo,
+							updated_at: 	Date.now() - Date.parse(this.iso_date) + "::" + this.freshTime
+						};
+			},
+
 			mapGraphic: function() {
 				// Returns an ArcGIS GRAPHIC object (requires "esri/graphic" module) that can be placed onto a GraphicsLayer.
 				// The GRAPHIC object combines an ArcGIS POINT with a PICTUREMARKERSYMBOL to produce an image with a location.
@@ -82,7 +92,7 @@ define([	"dojo/_base/declare",
 				// 	var gl = new GraphicsLayer();
 				//	gl.add(myHelicopter.mapGraphic);
 
-				return new esri.Graphic(this.mapPoint(),this.mapMarker());
+				return new esri.Graphic(this.mapPoint(),this.mapMarker(),this.getAttributes());
 			},
 
 			mapResponseRingGraphic: function() {

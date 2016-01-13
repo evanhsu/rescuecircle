@@ -38,7 +38,7 @@ class StatusController extends Controller
         // 1. Retrieve the most recent Status for each resource that's been updated within the last 30 days.
         // 2. Package the response into a JSON object and return.
 
-        $max_age = config('days_until_updates_expire');
+        $max_age = config('app.days_until_updates_expire');
         $earliest_date = Carbon::now()->subDays($max_age); // The oldest Status that will be displayed
 
         $resources = DB::table('statuses as newest')
@@ -51,7 +51,6 @@ class StatusController extends Controller
                         ->where('newest.updated_at','>=',$earliest_date)
                         ->get();
 
-        // return response()->json($resources);
         // sleep(4); // Test asynchronous loading on the map view
         return json_encode($resources);
     }
@@ -88,6 +87,7 @@ class StatusController extends Controller
             return redirect()->back()->with('alert', array('message' => 'Status update failed! This status update is not linked to a statusable entity', 'type' => 'danger'));
         }
         $crew_id = $obj->get_crew_id();
+        $crew = Crew::find($crew_id);
 
         // Make sure current user is authorized
         if(Auth::user()->cannot('actAsAdminForCrew', $crew_id)) {
@@ -125,7 +125,7 @@ class StatusController extends Controller
         //$status->statusable_type = "App\\".ucwords($status->statusable_type);
 
         // Build the HTML popup that will be displayed when this feature is clicked
-        $status->popupinfo = $this->generatePopup($status);
+        $status->popupinfo = $this->generatePopup($status, $crew);
 
         // Attempt to save
         if($status->save()) {
@@ -157,7 +157,7 @@ class StatusController extends Controller
     }
 
 
-    private function generatePopup($status) {
+    private function generatePopup($status, $crew) {
         // Constructs the HTML that will be displayed when this Update Feature is clicked on the map view
         // The HTML string must be stored in this object's 'popupinfo' property, which corresponds directly with a database field
         // that is used by the ArcGIS server to generate the popup for each Feature.
@@ -167,7 +167,7 @@ class StatusController extends Controller
         //
         // All properties of the Status object must be defined before calling this method.
 
-        return view('map_popups.'.$status->statusable_type_plain())->with("status",$status);
+        return view('map_popups.'.$status->statusable_type_plain())->with("status",$status)->with("crew",$crew);
     }
 
     /**
