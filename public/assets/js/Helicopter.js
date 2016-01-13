@@ -4,6 +4,7 @@
 
 define([	"dojo/_base/declare",
 			"esri/Color",
+			"esri/SpatialReference",
             "esri/geometry/Point",
             "esri/geometry/Circle",
             "esri/symbols/PictureMarkerSymbol",
@@ -52,7 +53,9 @@ define([	"dojo/_base/declare",
 
 			mapPoint: function() {
 				// Returns an ArcGIS POINT object (requires "esri/geometry/Point" module).
-				return new esri.geometry.Point(Number(this.longitude),Number(this.latitude));
+				// wkid: 4326 (GCS_WGS_1984) - geographic coordinate system (lat/lon)
+				var spatialReference = new esri.SpatialReference({ wkid: 4326 });
+				return new esri.geometry.Point(Number(this.longitude),Number(this.latitude), spatialReference);
 			},
 
 			mapMarker: function() {
@@ -124,10 +127,9 @@ define([	"dojo/_base/declare",
 			    var responseRingParams = {	radius: this.responseRingRadius,
 			                                radiusUnit: esri.Units.NAUTICAL_MILES,
 			                                numberOfPoints: 120,
-			                                geodesic: false };
+			                                geodesic: true };
 
 			    var c = new esri.geometry.Circle(this.mapPoint(), responseRingParams);
-			    console.error(this.responseRingRadius);
 
 			    return new esri.Graphic(c, responseRingSymbol);
 			}
