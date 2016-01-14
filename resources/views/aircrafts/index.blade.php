@@ -40,7 +40,11 @@
 							<a href="{{ route('edit_crew', array('id' => $a->crew_id)) }}">{{ $a->crew->name }}</a>
 						@endif
 					</td>
-					<td><a href="{{ route('new_status_for_aircraft',$a->tailnumber) }}" class="btn btn-primary" role="button">!<a/></td>
+					<td>
+						@if(!empty($a->crew_id))
+							<a href="{{ route('new_status_for_aircraft',$a->tailnumber) }}" class="btn btn-primary" role="button">!<a/>
+						@endif
+					</td>
 					<td><form action="{{ route('destroy_aircraft',$a->id) }}" method="POST" class="form-inline">
 							{{ csrf_field() }}
 							<button type="submit" class="btn btn-sm btn-danger">X</button>
