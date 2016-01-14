@@ -35,6 +35,11 @@
         <div id="legendContainer">
             <div id="legendDiv"></div>
         </div>
+        <button type="button" class="btn btn-default" id="legendToggler">
+            <span id="left-arrow" class="glyphicon glyphicon-triangle-left" style="display:none"></span>
+            <span id="right-arrow" class="glyphicon glyphicon-triangle-right"></span>
+            Layers
+        </button>
     </div>
 @endsection
 
@@ -42,5 +47,19 @@
     @parent
     <script src="http://js.arcgis.com/3.14/"></script>  <?php /* ArcGIS API - must load before other classes */?>
     <?php /* <script src="assets/js/arcmap.js"></script> */ ?>
+    <script>
+        $(document).ready(function() {
+            $('#legendToggler').click(function() {
+                $('#legendDiv').toggle("fast");
+                $('#left-arrow').toggle();
+                $('#right-arrow').toggle();
+            });
+            $('#legendDiv').click(function() {
+                $('#legendDiv').toggle("fast");
+                $('#left-arrow').toggle();
+                $('#right-arrow').toggle();
+            });
+        });
+    </script>
     <script src="assets/js/localmap.js"></script>         <?php /* Render the map and all layers - waits for the DOM to load so dependencies will always load first */?>
 @endsection

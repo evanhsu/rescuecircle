@@ -19,6 +19,7 @@ define([	"dojo/_base/declare",
     		constructor: function(params) {
         		this.params = params || {};
 
+        		this.resourceType = this.params.statusable_type.replace("App\\","").toLowerCase(); // 'App\Shorthaulhelicopter' --> 'shorthaulhelicopter'
         		this.iso_date 	= this.params.updated_at.replace(/-/g,"/") + " GMT"; // Convert date string from YYYY-mm-dd HH:mm:ss to YYYY/mm/dd HH:mm:ss
 
 		        this.latitude 	= this.params.latitude;
@@ -46,8 +47,8 @@ define([	"dojo/_base/declare",
 
 			showResponseRing: function() {
 				// Return TRUE or FALSE, depending on whether a ring should be drawn around this feature on the map to denote its response radius.
-				var type = this.params.statusable_type.replace("App\\","").toLowerCase();
-				if(type == "shorthaulhelicopter") return true;
+				// var type = this.params.statusable_type.replace("App\\","").toLowerCase();
+				if(this.resourceType == "shorthaulhelicopter") return true;
 				else return false;
 			},
 
@@ -60,9 +61,9 @@ define([	"dojo/_base/declare",
 
 			mapMarker: function() {
 				// Returns an ArcGIS PICTUREMARKERSYMBOL object (requires "esri/symbols/PictureMarkerSymbol" module).
-				var type = this.params.statusable_type.replace("App\\","").toLowerCase();
+				//var type = this.params.statusable_type.replace("App\\","").toLowerCase();
 				var freshness = this.isFresh() ? "fresh" : "stale";
-				var filename = this.iconPath + type + '-' + freshness + '.png';
+				var filename = this.iconPath + this.resourceType + '-' + freshness + '.png';
 
 				try {
 					return new esri.symbol.PictureMarkerSymbol(
