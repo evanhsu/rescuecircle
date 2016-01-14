@@ -96,7 +96,7 @@ require([   "esri/map",
 
             // Add the Legend to the map - this must be done AFTER all of the data layers have been added
             // so that it knows which symbols to describe.
-            /*var legend = new Legend({
+/*            var legend = new Legend({
                 map: map
             }, "legendDiv");
             legend.startup();
