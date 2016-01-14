@@ -17,7 +17,7 @@ class Aircraft extends Model
      * @var string
      */
     // protected $table = 'aircrafts'; // Force a unique plural form for the table name
-    protected $table = 'helicopters';
+    protected $table = 'aircrafts';
     //protected $primaryKey = 'tailnumber'; // The primary key is NOT 'id' !!
 
     /**

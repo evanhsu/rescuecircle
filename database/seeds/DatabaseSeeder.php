@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use App\database\seeds\CrewsWithAdminUsersSeeder;
-use App\database\seeds\HelicoptersSeeder;
+use App\database\seeds\AircraftSeeder;
 use App\database\seeds\StatusesSeeder;
 
 class DatabaseSeeder extends Seeder
@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(CrewsWithAdminUsersSeeder::class);
         //$this->call(UserTableSeeder::class);
-        $this->call(HelicoptersSeeder::class);
+        $this->call(AircraftSeeder::class);
         $this->call(StatusesSeeder::class);
 
         Model::reguard();

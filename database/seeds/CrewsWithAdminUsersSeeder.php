@@ -23,6 +23,13 @@ public function run()
         'encrypted_password'=> Hash::make('password'),
         'global_admin'      => 1
     ));
+    User::create(array(
+        'firstname'         => 'Ed',
+        'lastname'          => 'Ministrator',
+        'email'             => 'test@admin.com',
+        'encrypted_password'=> Hash::make('password'),
+        'global_admin'      => 1
+    ));
 
     $crew = Crew::create(array(
         'name'              => 'Grand Canyon Short Haul Crew',
@@ -31,12 +38,12 @@ public function run()
         'address_state'     => 'AZ',
         'address_zip'       => '77890',
         'phone'             => '330-404-5050',
-        'statusable_type'   => 'helicopter'
+        'statusable_type'   => "App\Shorthaulhelicopter"
     ));
     User::create(array(
     	'firstname'               => 'Grant',
 		'lastname'                => 'Kenyon',
-		'email'                   => 'evanhsu@grandcanyon.com',
+		'email'                   => 'test@shorthaul.com',
 		'encrypted_password'      => Hash::make('password'),
 		'crew_id'                 => $crew->id,
 		'global_admin'            => 0
@@ -49,12 +56,12 @@ public function run()
         'address_state'     => 'ID',
         'address_zip'       => '54678',
         'phone'             => '280-324-2909',
-        'statusable_type'   => 'helicopter'
+        'statusable_type'   => "App\Rappelhelicopter"
     ));
     User::create(array(
     	'firstname'           => 'Pete',
 		'lastname'            => 'Valles',
-		'email'               => 'evanhsu@pricevalley.com',
+		'email'               => 'test@rappel.com',
 		'encrypted_password'  => Hash::make('password'),
 		'crew_id'             => $crew->id,
 		'global_admin'        => 0
@@ -67,16 +74,33 @@ public function run()
         'address_state'     => 'OR',
         'address_zip'       => '97754',
         'phone'             => '541-887-5477',
-        'statusable_type'   => 'crew'
+        'statusable_type'   => "App\Crew"
     ));
     User::create(array(
     	'firstname'	=> 'Prine',
 		'lastname'	=> 'Vill',
-		'email'		=> 'evanhsu@prineville.com',
+		'email'		=> 'test@hotshot.com',
 		'encrypted_password'	=> Hash::make('password'),
 		'crew_id' => $crew->id,
 		'global_admin'	=>	0
 	));
+    $crew = Crew::create(array(
+        'name'              => 'Redding Smokejumpers',
+        'address_street1'   => '456 Airport Rd.',
+        'address_city'      => 'Redding',
+        'address_state'     => 'CA',
+        'address_zip'       => '56789',
+        'phone'             => '541-555-6677',
+        'statusable_type'   => "App\Smokejumperairplane"
+    ));
+    User::create(array(
+        'firstname' => 'Red',
+        'lastname'  => 'Ding',
+        'email'     => 'test@smokejumper.com',
+        'encrypted_password'    => Hash::make('password'),
+        'crew_id' => $crew->id,
+        'global_admin'  =>  0
+    ));
 }
 
 }

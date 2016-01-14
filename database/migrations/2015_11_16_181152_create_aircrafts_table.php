@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateHelicoptersTable extends Migration
+class CreateAircraftsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,9 +12,9 @@ class CreateHelicoptersTable extends Migration
      */
     public function up()
     {
-        Schema::create('helicopters', function (Blueprint $table) {
+        Schema::create('aircrafts', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('tailnumber', 6)->unique();
+            $table->string('tailnumber', 7)->unique();
             $table->string('model', 50)->nullable();
             $table->integer('crew_id')->nullable();
             $table->timestamps();
@@ -28,6 +28,6 @@ class CreateHelicoptersTable extends Migration
      */
     public function down()
     {
-        Schema::drop('helicopters');
+        Schema::drop('aircrafts');
     }
 }
