@@ -74,9 +74,9 @@ require([   "esri/map",
 
     var gl1 = new GraphicsLayer({ id: "Short Haul", infoTemplate: infoTemplate });    // This layer holds the short haul helicopters
     //var gl2 = new GraphicsLayer({ id: "Response Range" });                 // This layer holds the 100nm distance rings around each short haul helicopter
-    var gl3 = new GraphicsLayer({ id: "Rappel" });       // This layer holds the rappel helicopters
-    var gl4 = new GraphicsLayer({ id: "Hotshots" });                   // This layer holds the hotshot crews
-    var gl5 = new GraphicsLayer({ id: "Smokejumpers" });    // This layer holds the smokejumper airplanes
+    var gl3 = new GraphicsLayer({ id: "Rappel", infoTemplate: infoTemplate });       // This layer holds the rappel helicopters
+    var gl4 = new GraphicsLayer({ id: "Hotshots", infoTemplate: infoTemplate });                   // This layer holds the hotshot crews
+    var gl5 = new GraphicsLayer({ id: "Smokejumpers", infoTemplate: infoTemplate });    // This layer holds the smokejumper airplanes
 
 
     //Add each Feature point to the GraphicsLayer
