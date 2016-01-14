@@ -44,13 +44,22 @@ class StatusController extends Controller
         $resources = DB::table('statuses as newest')
                         ->leftjoin('statuses as newer', function($join) {
                             $join->on('newer.statusable_id','=','newest.statusable_id');
-                            $join->on('newer.updated_at','>','newest.updated_at');
+                            $join->on('newer.created_at','>','newest.created_at');
                             })
                         ->select('newest.*')
-                        ->whereNull('newer.updated_at')
-                        ->where('newest.updated_at','>=',$earliest_date)
+                        ->whereNull('newer.created_at')
+                        ->where('newest.created_at','>=',$earliest_date)
                         ->get();
 
+/*      Here's the raw SQL query for testing and debugging:
+
+        select newest.* from
+        statuses as newest
+        left outer join statuses as newer
+        on newer.statusable_id = newest.statusable_id
+        and newer.updated_at > newest.updated_at
+        where newer.updated_at IS NULL;
+*/
         // sleep(4); // Test asynchronous loading on the map view
         return json_encode($resources);
     }
