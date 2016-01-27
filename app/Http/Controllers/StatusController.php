@@ -16,6 +16,8 @@ use App\Aircraft;
 use App\Status;
 use App\ArcServer;
 
+use Log;
+
 class StatusController extends Controller
 {
     /**
@@ -136,12 +138,17 @@ class StatusController extends Controller
         // i.e. Change 'Shorthaulhelicopter' to 'App\Shorthaulhelicopter'. This is required for the Status class to be able to retrieve the correct Aircraft (or Crew).
         //$status->statusable_type = "App\\".ucwords($status->statusable_type);
 
+        $status->created_at = date('Y-m-d H:m:s'); // Temporarily set the timestamp so that it can be included in the popup (timestamp will be reset when $status is saved)
+
         // Build the HTML popup that will be displayed when this feature is clicked
         $status->popupinfo = $this->generatePopup($status, $crew);
 
         // Attempt to save
         if($status->save()) {
             // Changes have been saved to the local database, now initiate an update on the ArcGIS Server...
+            // Render a different popup view to be sent to the EGP, but don't save it locally
+            $status->popupinfo = $this->generatePopup($status, $crew, "egp");
+
             $objectids = ArcServer::findFeature($status);
             if($objectids === false) {
                 // An error occurred in findFeature() - check 'laravel.log' for details
@@ -169,7 +176,7 @@ class StatusController extends Controller
     }
 
 
-    private function generatePopup($status, $crew) {
+    private function generatePopup($status, $crew, $folder = "local") {
         // Constructs the HTML that will be displayed when this Update Feature is clicked on the map view
         // The HTML string must be stored in this object's 'popupinfo' property, which corresponds directly with a database field
         // that is used by the ArcGIS server to generate the popup for each Feature.
@@ -177,9 +184,14 @@ class StatusController extends Controller
         // This function relies on a Blade view template existing in the /resources/views/map_popups/ folder for each Class that
         // can have a status (e.g. Shorthaulhelicopter.blade.php, etc)
         //
+        // $folder designates the subfolder within the /views/map_popups/ folder that will be searched for a matching View template.
+        // This allows a different View to be rendered for local display versus the one that sent to the EGP database. 
+        //
         // All properties of the Status object must be defined before calling this method.
+        $v = view('map_popups.'.$folder.".".$status->statusable_type_plain())->with("status",$status)->with("crew",$crew)->render();
+        $v_no_whitespace = preg_replace('/\s+/', ' ', $v); // Remove line-breaks, new-line and repeated spaces
 
-        return view('map_popups.'.$status->statusable_type_plain())->with("status",$status)->with("crew",$crew);
+        return $v_no_whitespace;
     }
 
     /**

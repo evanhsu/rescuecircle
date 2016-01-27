@@ -3,8 +3,6 @@
 
 // Configuration variables
 var mapDiv = "mapDiv";
-var arcServerUrl = "https://egp.nwcg.gov/arcgis/rest/services/FireCOP/ShortHaul/FeatureServer/0";
-
 
 // Send AJAX request to retrieve all active Fire Resources
 

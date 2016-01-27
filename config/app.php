@@ -30,6 +30,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | ArcGIS Feature Service URL
+    |--------------------------------------------------------------------------
+    |
+    | This is the URL of the REST endpoint for the ArcGIS Feature Service where
+    | status updates from this site will be sent.
+    |
+    */
+
+    'arcgis_feature_service_url' => 'https://egp.nwcg.gov/arcgis/rest/services/Beacon/Beacon/FeatureServer/',
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

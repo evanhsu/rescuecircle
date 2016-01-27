@@ -5,8 +5,13 @@ use Log;
 
 
 class ArcServer {
-	private static $base_url = "https://egp.nwcg.gov/arcgis/rest/services/FireCOP/ShortHaul/FeatureServer";
+	// private static $base_url = "https://egp.nwcg.gov/arcgis/rest/services/FireCOP/ShortHaul/FeatureServer";
+	// private static $base_url = "https://egp.nwcg.gov/arcgis/rest/services/Beacon/Beacon/FeatureServer";
 	
+	private static function baseUrl() {
+		// Grab the ArcGIS Feature Service url from the config/app file
+		return config('app.arcgis_feature_service_url', null);
+	}
 
 	private static function token() {
 		// Grab the ArcGIS server token from the app/.env file
@@ -36,7 +41,8 @@ class ArcServer {
 		$params['returnIdsOnly']	= 'true';
 		$params['f']		= 'json';
 
-		$url = self::$base_url."/query";
+		// $url = self::$base_url."/query";
+		$url = self::baseUrl()."query";
 
 		$response = self::callAPI("GET",$url,$params);
 		$json_response = json_decode($response,true);
@@ -58,7 +64,8 @@ class ArcServer {
 		// Returns FALSE if an error occurs (including errors returned by the ArcGIS server).
 
 		// Specify the REST endpoint to query
-		$url = self::$base_url."/query";
+		// $url = self::$base_url."/query";
+		$url = self::baseUrl()."query";
 
 		// Define the query that will be used on the ArcGIS server to retrieve the desired Features
 		$layerDef = "statusable_id='$status->statusable_id'"
@@ -106,10 +113,11 @@ class ArcServer {
 		//
 
 		// Choose which layer to query on the Feature Server (i.e. Aircrafts are on Layer 0, Crews are on Layer 1, etc.)
-		$layer = self::getLayerFor($status->statusable_type_plain);
+		$layer = self::getLayerFor($status->statusable_type_plain());
 
 		// Construct the URL to send the POST request to.
-		$url = self::$base_url."/$layer/addFeatures";
+		// $url = self::$base_url."/$layer/addFeatures";
+		$url = self::baseUrl()."$layer/addFeatures";
 
 		// Build an array of attributes from this Status update that will be sent to the ArcGIS server
 		$attributes = $status->toArray(); // Convert this Status object into an array
@@ -171,10 +179,10 @@ class ArcServer {
 		//
 
 		// Choose which layer to query on the Feature Server (i.e. Aircrafts are on Layer 0, Crews are on Layer 1, etc.)
-		$layer = self::getLayerFor($status->statusable_type_plain);
+		$layer = self::getLayerFor($status->statusable_type_plain());
 
 		// Construct the URL to send the POST request to.
-		$url = self::$base_url."/$layer/updateFeatures";
+		$url = self::baseUrl()."$layer/updateFeatures";
 
 		// Build an array of attributes from this Status update that will be sent to the ArcGIS server
 		$attributes = $status->toArray(); 		// Convert this Status object into an array
@@ -238,7 +246,7 @@ class ArcServer {
 		// Choose which layer to query on the Feature Server (i.e. Aircrafts are on Layer 0, Crews are on Layer 1, etc.)
 		$layer = self::getLayerFor($status->statusable_type_plain);
 
-		$url = self::$base_url."/$layer/deleteFeatures";
+		$url = self::baseUrl()."$layer/deleteFeatures";
 
 		$params = array();
 		$params['token']	= self::token();
@@ -297,6 +305,7 @@ class ArcServer {
 			if(env('APP_DEBUG')) {
 				Log::debug("Request sent with cURL:".PHP_EOL,["File"=>__FILE__,"Method"=>__METHOD__, "Params"=>($data ? http_build_query($data) : ""),"curl_getInfo"=>curl_getinfo($curl)]);
 				Log::debug("Response from ArcGIS Server:".PHP_EOL.var_export($result,true));
+				Log::debug("Data sent to callAPI method:".PHP_EOL.var_export($data,true));
 			}
 
 		    

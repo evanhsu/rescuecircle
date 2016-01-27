@@ -29,10 +29,4 @@ return [
         'region' => 'us-east-1',
     ],
 
-    'arcgis' => [
-        'username'  => env('ARCGIS_USERNAME'),
-        'password'  => env('ARCGIS_PASSWORD'),
-        'token'     => env('ARCGIS_TOKEN'),
-    ],
-
 ];

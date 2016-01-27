@@ -1,8 +1,8 @@
 <?php
-// views/map_popups/hotshotcrew.blade.php
+// views/map_popups/local/rappelhelicopter.blade.php
 //
-// This file contains the HTML that will be displayed in a popup box when a Hotshot Crew
-// feature is clicked on the ArcGIS map.
+// This file contains the HTML that will be displayed in a popup box when a Rappel Helicopter
+// feature is clicked on the ResourceBeacon map.
 //
 // $status is a Status object that must be passed to this view by the controller.
 ?>
@@ -12,8 +12,8 @@
             <img src="{{ $crew->logo_filename }}"/>
         </td>
 
-        <td aria-label="Crew Info" title="Current crew boss & crew info">
-            <div class="popup-col-header"><span class="glyphicon glyphicon-user"></span> CRWB</div>
+        <td aria-label="Aircraft Info" title="Current manager & aircraft info">
+            <div class="popup-col-header"><span class="glyphicon glyphicon-plane"></span> HMGB</div>
             {{ $status->manager_name }}<br />
             {{ $status->manager_phone }}
         </td>
@@ -21,12 +21,8 @@
         <td aria-label="Current Staffing" title="Current staffing levels">
             <div class="popup-col-header"><span class="glyphicon glyphicon-user"></span> Staffing</div>
             <table class="staffing_table">
-                <tr><td>Crew size:</td><td>{{ $status->staffing_value1 }}</td></tr>
-                @if($status->comments2)
-                <tr><td>Available: Yes</td></tr>
-                @else
-                <tr><td>Available: No</td></tr>
-                @endif
+                <tr><td>HRAP:</td><td>{{ $status->staffing_value1 }}</td></tr>
+                <tr><td>Surplus:</td><td>{{ $status->staffing_value2 }}</td></tr>
             </table>
         </td>
 
@@ -35,11 +31,9 @@
             {{ $status->assigned_fire_name }}<br />
             {{ $status->assigned_fire_number }}<br />
             {{ $status->assigned_supervisor }}<br />
-            {{ $status->assigned_supervisor_phone }}
-            Day 1: {{ $status->staffing_value2 }}</td>
-
+            {{ $status->assigned_supervisor_phone }}</td>
     </tr>
     <tr>
-        <td class="timestamp-cell" colspan="4">Updated: {{ $status->created_at }}</td>
+        <td class="timestamp-cell" colspan="4">Updated: {{ date('m-d-Y H:m', strtotime($status->created_at)) }}</td>
     </tr>
 </table>

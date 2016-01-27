@@ -1,8 +1,8 @@
 <?php
-// views/map_popups/smokejumperairplane.blade.php
+// views/map_popups/local/smokejumperairplane.blade.php
 //
 // This file contains the HTML that will be displayed in a popup box when a Smokejumper Airplane
-// feature is clicked on the ArcGIS map.
+// feature is clicked on the ResourceBeacon map.
 //
 // $status is a Status object that must be passed to this view by the controller.
 ?>
